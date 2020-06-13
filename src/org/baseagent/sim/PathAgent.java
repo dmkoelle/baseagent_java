@@ -1,10 +1,10 @@
 package org.baseagent.sim;
 
-import org.baseagent.DrawableAgent;
 import org.baseagent.path.HasPathPosition;
 import org.baseagent.path.Intersection;
 import org.baseagent.path.Segment;
 import org.baseagent.ui.Drawable;
+import org.baseagent.ui.DrawableAgent;
 
 public class PathAgent extends DrawableAgent implements HasPathPosition {
 

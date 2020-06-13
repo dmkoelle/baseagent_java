@@ -2,7 +2,7 @@ package org.baseagent.apps.s1;
 
 import org.baseagent.behaviors.grid.RandomWanderBehavior;
 import org.baseagent.sim.GridAgent;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.GridCanvasContext;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -17,7 +17,7 @@ public class S1Agent extends GridAgent {
 	}
 
 	@Override
-	public void draw(SimulationCanvasContext sc) {
+	public void draw(GridCanvasContext sc) {
 		GraphicsContext gc = sc.getGraphicsContext();
 		gc.setStroke(sc.getColorPalette().get(1));
 		gc.strokeLine(getCellX() + (sc.getCellWidth()/ 2.0), getCellY() + (sc.getCellHeight()/ 2.0), getCellX() + 10.0 * Math.cos(getHeading()), getCellY() + 10.0 * Math.sin(getHeading()));

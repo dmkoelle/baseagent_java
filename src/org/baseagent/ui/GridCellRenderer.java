@@ -6,18 +6,18 @@ import javafx.scene.paint.Color;
 
 public interface GridCellRenderer extends GridLayerRenderer {
 	@Override
-	public default void draw(SimulationCanvasContext sc, GridLayer layer, double canvasWidth, double canvasHeight) {
+	public default void draw(GridCanvasContext gcc, GridLayer layer, double canvasWidth, double canvasHeight) {
 		int gridSizeWidth = layer.getParentGrid().getWidthInCells();
 		int gridSizeHeight = layer.getParentGrid().getHeightInCells();
-		double xPixelsPerCell = (canvasWidth - (gridSizeWidth-1) * sc.getCellXSpacing()) / gridSizeWidth;
-		double yPixelsPerCell = (canvasHeight - (gridSizeHeight-1) * sc.getCellYSpacing()) / gridSizeHeight;
+		double xPixelsPerCell = (canvasWidth - (gridSizeWidth-1) * gcc.getCellXSpacing()) / gridSizeWidth;
+		double yPixelsPerCell = (canvasHeight - (gridSizeHeight-1) * gcc.getCellYSpacing()) / gridSizeHeight;
 
 		for (int i=0; i < gridSizeWidth; i++) {
 			for (int u=0; u < gridSizeHeight; u++) {
-				drawCell(sc, layer.current().get(i, u), i * xPixelsPerCell + i * sc.getCellXSpacing(), u * yPixelsPerCell + u * sc.getCellYSpacing(), xPixelsPerCell, yPixelsPerCell);
+				drawCell(gcc, layer.current().get(i, u), i * xPixelsPerCell + i * gcc.getCellXSpacing(), u * yPixelsPerCell + u * gcc.getCellYSpacing(), xPixelsPerCell, yPixelsPerCell);
 			}
 		}
 	}
 	
-	public void drawCell(SimulationCanvasContext sc, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels);
+	public void drawCell(GridCanvasContext gcc, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels);
 }

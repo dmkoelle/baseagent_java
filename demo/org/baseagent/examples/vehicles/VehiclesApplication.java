@@ -9,7 +9,7 @@ import org.baseagent.signals.Signal;
 import org.baseagent.sim.GridAgent;
 import org.baseagent.sim.Simulation;
 import org.baseagent.ui.GridCanvas;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.GridCanvasContext;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 
 import javafx.application.Application;
@@ -29,7 +29,7 @@ public class VehiclesApplication extends Application {
     public void start(Stage primaryStage) {
         Simulation simulation = setupSimulation();
         GridCanvas simulationCanvas = new GridCanvas(simulation, 40, 40);
-        simulationCanvas.setOnMouseClicked(e -> moveLight(simulationCanvas.getSimulationCanvasContext(), e.getX(), e.getY()));
+        simulationCanvas.setOnMouseClicked(e -> moveLight(simulationCanvas.getGridCanvasContext(), e.getX(), e.getY()));
 
         primaryStage.setTitle("Valentino Braitenberg's \"Vehicles\"");
         primaryStage.setScene(new Scene(new Group(simulationCanvas), 1200, 1200));
@@ -67,7 +67,7 @@ public class VehiclesApplication extends Application {
 		}
 	}
 
-	private void moveLight(SimulationCanvasContext scc, double graphicX, double graphicY) {
+	private void moveLight(GridCanvasContext scc, double graphicX, double graphicY) {
 		int gridX = VisualizationLibrary.getCellXForGraphicX(scc, graphicX);
 		int gridY = VisualizationLibrary.getCellXForGraphicX(scc, graphicX);
 		light.setCellX(gridX); light.setCellY(gridY);

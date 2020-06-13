@@ -3,13 +3,14 @@ package org.baseagent.sim;
 import java.util.List;
 import java.util.Random;
 
-import org.baseagent.DrawableAgent;
 import org.baseagent.behaviors.Behavior;
+import org.baseagent.grid.DefaultHasGridPosition;
 import org.baseagent.grid.Grid;
 import org.baseagent.grid.GridLayer;
 import org.baseagent.grid.HasGridPosition;
 import org.baseagent.ui.Drawable;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.DrawableAgent;
+import org.baseagent.ui.GridCanvasContext;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 import org.baseagent.util.BaseAgentMath;
 import org.baseagent.util.CellPoint2D;
@@ -23,12 +24,18 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	private double heading;
 	private String gridLayerName;
 	
+	// Moving subsystem
+	private double movingX;
+	private double movingY;
+	private HasGridPosition destinationPoint;
+	private double movingSpeed;
+	
 	public GridAgent() {
 		super();
 		setDrawable(new Drawable() {
 			@Override
-			public void draw(SimulationCanvasContext sc) {
-				VisualizationLibrary.drawTriangleWithHeading2(sc.getGraphicsContext(), getCellX(), getCellY(), sc.getCellWidth(), sc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
+			public void draw(GridCanvasContext gcc) {
+				VisualizationLibrary.drawTriangleWithHeading2(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
 			}
 		});
 	}
@@ -125,6 +132,38 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	// Movement respects the grid's bounds policy
 	//
 	
+	public void startMovingToward(int destinationX, int destinationY, double speed) {
+		this.destinationPoint = new DefaultHasGridPosition(destinationX, destinationY);
+		this.movingSpeed = speed;
+		startMovingToward0();
+	}
+	
+	public void startMovingToward(HasGridPosition pos, double speed) {
+		this.destinationPoint = pos;
+		this.movingSpeed = speed;
+		startMovingToward0();
+	}
+	
+	private void startMovingToward0() {
+		setHeading(BaseAgentMath.direction(this, this.destinationPoint));
+		this.movingX = getCellX();
+		this.movingY = getCellY();
+	}
+
+	public boolean continueMovingToward() {
+		if (BaseAgentMath.distance(destinationPoint, this) <= movingSpeed) {
+			setCellX(destinationPoint.getCellX());
+			setCellY(destinationPoint.getCellY());
+			return true;
+		} else {
+			setHeading(BaseAgentMath.direction(this, this.destinationPoint));
+			movingX += movingSpeed * Math.cos(getHeading());
+			movingY += movingSpeed * Math.sin(getHeading());
+			moveTo((int)movingX, (int)movingY);
+			return false;
+		}
+	}
+	
 	public void moveToward(int destinationX, int destinationY) {
 		double direction = BaseAgentMath.direction(this, destinationX, destinationY);
 		moveAlong(1.0, direction); // 1.0 should be 'speed'
@@ -162,6 +201,14 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 		Grid grid = (Grid)getSimulation().getUniverse();
 		setCellX(grid.getBoundsPolicy().boundX(x));
 		setCellY(grid.getBoundsPolicy().boundY(y));
+	}
+	
+	public boolean isAt(int cellX, int cellY) {
+		return (getCellX() == cellX) && (getCellY() == cellY);
+	}
+	
+	public boolean isAt(HasGridPosition pos) {
+		return (getCellX() == pos.getCellX()) && (getCellY() == pos.getCellY());
 	}
 	
 	public void rotateDelta(double deltaR) {
@@ -241,7 +288,6 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	}
 
 	public void moveRandomly() {
-		Random random = new Random();
 		moveRandomly(1);
 	}
 	

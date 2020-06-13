@@ -78,8 +78,8 @@ public class Toast {
 		else return true;
 	}
 
-	public void draw(SimulationCanvasContext sc) {
-		GraphicsContext gc = sc.getGraphicsContext();
+	public void draw(GridCanvasContext gcc) {
+		GraphicsContext gc = gcc.getGraphicsContext();
 		gc.setFill(Color.BLACK);
 		gc.fillRect(graphicX+2, graphicY+2, graphicX+width+2,graphicY+height+2);
 		gc.setFill(Color.GOLDENROD);
@@ -87,6 +87,6 @@ public class Toast {
 		gc.setFill(Color.BLACK);
 		gc.setFont(Font.font(null, FontWeight.BOLD, 16));
 		gc.fillText(text, graphicX+5, graphicY+20);
-		System.out.println("Living toast! "+sc.getSimulation().getStepTime());
+		System.out.println("Living toast! "+gcc.getSimulation().getStepTime());
 	}
 }

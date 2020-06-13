@@ -2,16 +2,20 @@ package org.baseagent.ui;
 
 import org.baseagent.grid.Grid;
 
+import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
 public abstract class GridController {
-	private GridCanvas simulationCanvas;
+	private GridCanvas gridCanvas;
 	
-	public GridController(GridCanvas simulationCanvas) {
-		this.simulationCanvas = simulationCanvas;
-		throw new UnsupportedOperationException("GridController has not been fully implemented.");
-//		this.simulationCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>(event -> mouseClicked(event)));
-		
+	public GridController(GridCanvas gridCanvas) {
+		this.gridCanvas = gridCanvas;
+		this.gridCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				mouseClicked(e);
+			}
+		});
 	}
 	
 	private void mouseClicked(MouseEvent event) {

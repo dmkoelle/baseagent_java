@@ -11,6 +11,7 @@ import org.baseagent.Agent;
 import org.baseagent.Beacon;
 import org.baseagent.HasStep;
 import org.baseagent.Patch;
+import org.baseagent.comms.BroadcastCommunicator;
 import org.baseagent.comms.Communicator;
 import org.baseagent.comms.MessageListener;
 import org.baseagent.data.DataCollector;
@@ -53,6 +54,8 @@ public class Simulation {
 		this.properties = new HashMap<>();
 		this.listeners = new ArrayList<>();
 		this.time = 0L;
+		
+		this.communicator = new BroadcastCommunicator(this);
 	}
 	
 	public void setUniverse(Universe universe) {

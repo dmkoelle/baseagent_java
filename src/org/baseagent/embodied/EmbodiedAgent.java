@@ -12,7 +12,7 @@ import org.baseagent.grid.HasGridPosition;
 import org.baseagent.network.Network;
 import org.baseagent.sim.GridAgent;
 import org.baseagent.ui.Drawable;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.GridCanvasContext;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 import org.baseagent.util.Vector2D;
 
@@ -51,12 +51,12 @@ public class EmbodiedAgent extends GridAgent implements HasBody {
 		
 		this.setDrawable(new Drawable() {
 			@Override
-			public void draw(SimulationCanvasContext sc) {
+			public void draw(GridCanvasContext gcc) {
 				// TODO: actually, you do want this agent to draw itself if it's asked to by the prime agent
 				if ((EmbodiedAgent.this.primeAgent != null) && (EmbodiedAgent.this.primeAgent != EmbodiedAgent.this)) {
-					VisualizationLibrary.drawEmbodiedAgent(sc.getGraphicsContext(), getCellX(), getCellY(), sc.getCellWidth(), sc.getCellHeight(), EmbodiedAgent.this, getColorOrUse(Color.LIGHTBLUE));
+					VisualizationLibrary.drawEmbodiedAgent(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), EmbodiedAgent.this, getColorOrUse(Color.LIGHTBLUE));
 				} else {
-					VisualizationLibrary.drawEmbodiedAgent(sc.getGraphicsContext(), getCellX(), getCellY(), sc.getCellWidth(), sc.getCellHeight(), EmbodiedAgent.this, getColorOrUse(Color.LIGHTBLUE));
+					VisualizationLibrary.drawEmbodiedAgent(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), EmbodiedAgent.this, getColorOrUse(Color.LIGHTBLUE));
 				}
 			}
 		});

@@ -41,7 +41,7 @@ public class NearestNeighborCommunicator extends Communicator {
 		List<Pair<MessageListener, Double>> messageListenersAndDistancesSortedByDistance = new ArrayList<>();
 		
 		// Step 1. Calculate the distances
-		// TODO: I DON"T KNOW IF THESE SHOULD BE MESSAGELISTENERS OR AGENTS. Like, what about a Beacon?
+		// TODO: I DON'T KNOW IF THESE SHOULD BE MESSAGELISTENERS OR AGENTS. Like, what about a Beacon?
 		for (MessageListener messageListener : getSimulation().getMessageListeners()) {
 			if ((messageListener instanceof HasGridPosition) && !(messageListener.equals(fromAgent))) {
 				double distance = BaseAgentMath.distance(((HasGridPosition)messageListener), fromAgent);

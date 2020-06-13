@@ -5,21 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.baseagent.grid.Grid;
 import org.baseagent.sim.Simulation;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class SimulationCanvasContext {
+public class GridCanvasContext {
 	private GraphicsContext graphicsContext;
 	private List<Color> colorPalette;
 	private Map<String, Object> properties;
+	private Grid grid;
+	private GridCanvas gridCanvas;
 	private Simulation simulation;
 	private int cellWidth, cellHeight;
 	private int cellXSpacing, cellYSpacing;
 	
-	public SimulationCanvasContext(Simulation simulation, int cellWidth, int cellHeight, int cellXSpacing, int cellYSpacing) {
+	public GridCanvasContext(Simulation simulation, Grid grid, GridCanvas gridCanvas, int cellWidth, int cellHeight, int cellXSpacing, int cellYSpacing) {
 		this.simulation = simulation;
+		this.grid = grid;
+		this.gridCanvas = gridCanvas;
 		this.colorPalette = new ArrayList<>();
 		this.properties = new HashMap<>();
 		this.cellWidth = cellWidth;
@@ -30,6 +35,14 @@ public class SimulationCanvasContext {
 	
 	public Simulation getSimulation() {
 		return this.simulation;
+	}
+	
+	public Grid getGrid() {
+		return this.grid;
+	}
+	
+	public GridCanvas getGridCanvas() {
+		return this.gridCanvas;
 	}
 	
 	public int getCellWidth() {

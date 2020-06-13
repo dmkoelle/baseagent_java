@@ -5,7 +5,7 @@ import org.baseagent.embodied.EmbodiedAgent;
 import org.baseagent.grid.Grid;
 import org.baseagent.sim.Simulation;
 import org.baseagent.ui.GridCanvas;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.GridCanvasContext;
 
 import javafx.application.Application;
 import javafx.scene.Group;

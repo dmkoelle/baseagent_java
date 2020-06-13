@@ -46,9 +46,9 @@ public class ExperimentApplication extends Application {
 		return simulation;
 	}
 	
-	protected GridCanvas setupSimulationCanvas(Simulation simulation, int width, int height) {
-		final GridCanvas canvas = new GridCanvas(simulation, width, height);
-		canvas.getSimulationCanvasContext().setColorPalette(Color.SEASHELL, Color.BLUEVIOLET, Color.MAGENTA);
+	protected GridCanvas setupGridCanvas(Simulation simulation, Grid grid, int width, int height) {
+		final GridCanvas canvas = new GridCanvas(simulation, grid, width, height);
+		canvas.getGridCanvasContext().setColorPalette(Color.SEASHELL, Color.BLUEVIOLET, Color.MAGENTA);
 		canvas.addToast(new Toast(10, 50, "You there!", 80, 100, 40, 20));
 		return canvas;
 	}

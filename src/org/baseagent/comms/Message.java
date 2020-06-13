@@ -9,6 +9,7 @@ public class Message {
 	private MessageListener originalSender;
 	private MessageListener currentSender;
 	private String messageType;
+	private String messageSubtype;
 	private Map<String, Object> payload;
 	
 	public Message() {
@@ -32,6 +33,24 @@ public class Message {
 		this.originalSender = originalSender;
 	}
 
+	public Message(MessageListener currentSender, String messageType, String messageSubtype) {
+		this();
+		this.originalSender = currentSender;
+		this.currentSender = currentSender;
+		this.messageType = messageType;
+		this.messageSubtype = messageSubtype;
+	}
+
+	public Message(MessageListener currentSender, String messageType, String messageSubtype, Map<String, Object> payload) {
+		this(currentSender, messageType, messageSubtype);
+		setPayload(payload);
+	}
+
+	public Message(MessageListener originalSender, MessageListener currentSender, String messageType, String messageSubtype, Map<String, Object> payload) {
+		this(currentSender, messageType, messageSubtype, payload);
+		this.originalSender = originalSender;
+	}
+	
 	public void setSender(MessageListener sender) {
 		this.currentSender = sender;
 	}
@@ -55,9 +74,30 @@ public class Message {
 	public String getMessageType() {
 		return this.messageType;
 	}
+
+	public void setMessageSubtype(String messageSubtype) {
+		this.messageSubtype = messageSubtype;
+	}
+	
+	public String getMessageSubtype() {
+		return this.messageSubtype;
+	}
+	
+	public boolean is(String messageType) {
+		return getMessageType().equals(messageType);
+	}
+	
+	public boolean is(String messageType, String messageSubtype) {
+		return getMessageType().equals(messageType) && getMessageSubtype().equals(messageSubtype);
+	}
 	
 	public UUID getUUID() {
 		return this.uuid;
+	}
+	
+	public Map<String, Object> createPayload() {
+		this.payload = new HashMap<>();
+		return this.payload;
 	}
 	
 	public void setPayload(Map<String, Object> payload) {

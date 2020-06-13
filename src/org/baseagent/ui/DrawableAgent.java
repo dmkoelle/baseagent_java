@@ -1,7 +1,6 @@
-package org.baseagent;
+package org.baseagent.ui;
 
-import org.baseagent.ui.Drawable;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.Agent;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 
 import javafx.scene.paint.Color;
@@ -16,8 +15,8 @@ public class DrawableAgent extends Agent implements Drawable {
 		super();
 		setDrawable(new Drawable() {
 			@Override
-			public void draw(SimulationCanvasContext sc) {
-				VisualizationLibrary.drawCircleForCell(sc, drawX, drawY, getColorOrUse(Color.CADETBLUE));
+			public void draw(GridCanvasContext gcc) {
+				VisualizationLibrary.drawCircleForCell(gcc, drawX, drawY, getColorOrUse(Color.CADETBLUE));
 			}
 		});	
 	}
@@ -55,9 +54,9 @@ public class DrawableAgent extends Agent implements Drawable {
 	//
 	
 	@Override
-	public void draw(SimulationCanvasContext sc) {
+	public void draw(GridCanvasContext gcc) {
 		if (drawable != null) {
-			drawable.draw(sc);
+			drawable.draw(gcc);
 		}
 	}
 

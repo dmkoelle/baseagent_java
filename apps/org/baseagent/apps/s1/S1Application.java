@@ -58,7 +58,7 @@ public class S1Application extends Application {
 //				takeSnapshot(canvas);
 //			}
 //		});
-		canvas.getSimulationCanvasContext().setColorPalette(Color.SEASHELL, Color.BLUEVIOLET, Color.MAGENTA);
+		canvas.getGridCanvasContext().setColorPalette(Color.SEASHELL, Color.BLUEVIOLET, Color.MAGENTA);
 		return canvas;
 	}
 	

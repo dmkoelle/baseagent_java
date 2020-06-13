@@ -22,8 +22,7 @@ public class BaseAgentMath {
 	}
 
 	public static double direction(int x1, int y1, int x2, int y2) {
-//		return Math.atan2(y2-y1, x2-x1);
-		return Math.atan2(y2, x2) - Math.atan2(y1, x1);  // https://stackoverflow.com/questions/21483999/using-atan2-to-find-angle-between-two-vectors
+		return Math.atan2(y2-y1, x2-x1);
 	}
 
 	public static double direction(HasGridPosition p1, HasGridPosition p2) {

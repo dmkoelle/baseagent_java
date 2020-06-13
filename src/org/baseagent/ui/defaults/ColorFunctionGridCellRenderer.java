@@ -3,7 +3,7 @@ package org.baseagent.ui.defaults;
 import java.util.function.Function;
 
 import org.baseagent.ui.GridCellRenderer;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.GridCanvasContext;
 
 import javafx.scene.paint.Color;
 
@@ -15,8 +15,8 @@ public class ColorFunctionGridCellRenderer implements GridCellRenderer {
 	}
 	
 	@Override
-	public void drawCell(SimulationCanvasContext sc, Object object, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels) {
-		sc.getGraphicsContext().setFill(this.colorFunction.apply(object));
-		sc.getGraphicsContext().fillRect(xInPixels, yInPixels, widthInPixels, heightInPixels);
+	public void drawCell(GridCanvasContext gcc, Object object, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels) {
+		gcc.getGraphicsContext().setFill(this.colorFunction.apply(object));
+		gcc.getGraphicsContext().fillRect(xInPixels, yInPixels, widthInPixels, heightInPixels);
 	}
 }

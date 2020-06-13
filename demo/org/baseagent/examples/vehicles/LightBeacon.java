@@ -2,7 +2,7 @@ package org.baseagent.examples.vehicles;
 
 import org.baseagent.Beacon;
 import org.baseagent.signals.Signal;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.GridCanvasContext;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 
 import javafx.scene.paint.Color;
@@ -21,7 +21,7 @@ public class LightBeacon extends Beacon {
 	}
 
 	@Override
-	public void draw(SimulationCanvasContext sc) {
+	public void draw(GridCanvasContext sc) {
 		VisualizationLibrary.fillCircle(sc.getGraphicsContext(), getCellX(), getCellY(), sc.getCellWidth(), sc.getCellHeight(), Color.YELLOW, Color.ORANGE);
 	}
 }

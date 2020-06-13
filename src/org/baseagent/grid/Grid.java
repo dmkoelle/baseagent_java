@@ -9,14 +9,21 @@ import org.baseagent.sim.SimulationComponent;
 import org.baseagent.sim.Universe;
 
 public class Grid extends SimulationComponent implements Universe {
+	public static String DEFAULT_GRID = "DEFAULT_GRID";
 	private int widthInCells, heightInCells;
+	private String id;
 	private Map<String, GridLayer> layers;
 	private GridBoundsPolicy boundsPolicy;
 	private GridStepPolicy stepPolicy;
 	
 	public Grid(int widthInCells, int heightInCells) {
+		this(Grid.DEFAULT_GRID, widthInCells, heightInCells);
+	}
+	
+	public Grid(String id, int widthInCells, int heightInCells) {
 		super();
 		
+		this.id = id;
 		this.widthInCells = widthInCells;
 		this.heightInCells = heightInCells;
 	

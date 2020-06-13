@@ -9,7 +9,7 @@ import org.baseagent.embodied.effectors.EmbodiedEffector;
 import org.baseagent.embodied.sensors.EmbodiedSensor;
 import org.baseagent.grid.Grid;
 import org.baseagent.grid.HasGridPosition;
-import org.baseagent.ui.SimulationCanvasContext;
+import org.baseagent.ui.GridCanvasContext;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -60,12 +60,12 @@ public class VisualizationLibrary {
 		graphics.strokeOval(centerX - xRadius, centerY - yRadius, xRadius * 2, yRadius * 2);
 	}
 
-	public static void drawCircleForCell(SimulationCanvasContext scc, int cellX, int cellY, Color stroke) {
-		VisualizationLibrary.drawCircle(scc.getGraphicsContext(), cellX * (scc.getCellWidth() + scc.getCellXSpacing()), cellY * (scc.getCellHeight() + scc.getCellYSpacing()), scc.getCellWidth() / 2.0, scc.getCellHeight() / 2.0, stroke);
+	public static void drawCircleForCell(GridCanvasContext gcc, int cellX, int cellY, Color stroke) {
+		VisualizationLibrary.drawCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()), cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()), gcc.getCellWidth() / 2.0, gcc.getCellHeight() / 2.0, stroke);
 	}
 	
-	public static void drawCircleForCell(SimulationCanvasContext scc, int cellX, int cellY, double magnifier, Color stroke) {
-		VisualizationLibrary.drawCircle(scc.getGraphicsContext(), cellX * (scc.getCellWidth() + scc.getCellXSpacing()), cellY * (scc.getCellHeight() + scc.getCellYSpacing()), (scc.getCellWidth() / 2.0) * magnifier, (scc.getCellHeight() / 2.0) * magnifier, stroke);
+	public static void drawCircleForCell(GridCanvasContext gcc, int cellX, int cellY, double magnifier, Color stroke) {
+		VisualizationLibrary.drawCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()), cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()), (gcc.getCellWidth() / 2.0) * magnifier, (gcc.getCellHeight() / 2.0) * magnifier, stroke);
 	}
 
 	public static void fillCircle(GraphicsContext graphics, double centerX, double centerY, double xRadius, double yRadius, Color stroke, Color fill) {
@@ -75,18 +75,18 @@ public class VisualizationLibrary {
 		graphics.strokeOval(centerX - xRadius, centerY - yRadius, xRadius * 2, yRadius * 2);
 	}
 
-	public static void fillCircleForCell(SimulationCanvasContext scc, int cellX, int cellY, Color stroke, Color fill) {
-		VisualizationLibrary.fillCircle(scc.getGraphicsContext(), cellX * (scc.getCellWidth() + scc.getCellXSpacing()), cellY * (scc.getCellHeight() + scc.getCellYSpacing()), scc.getCellWidth() / 2.0, scc.getCellHeight() / 2.0, stroke, fill);
+	public static void fillCircleForCell(GridCanvasContext gcc, int cellX, int cellY, Color stroke, Color fill) {
+		VisualizationLibrary.fillCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()), cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()), gcc.getCellWidth() / 2.0, gcc.getCellHeight() / 2.0, stroke, fill);
 	}
 	
-	public static void fillCircleForCell(SimulationCanvasContext scc, int cellX, int cellY, double magnifier, Color stroke, Color fill) {
-		VisualizationLibrary.fillCircle(scc.getGraphicsContext(), cellX * (scc.getCellWidth() + scc.getCellXSpacing()), cellY * (scc.getCellHeight() + scc.getCellYSpacing()), (scc.getCellWidth() / 2.0) * magnifier, (scc.getCellHeight() / 2.0) * magnifier, stroke, fill);
+	public static void fillCircleForCell(GridCanvasContext gcc, int cellX, int cellY, double magnifier, Color stroke, Color fill) {
+		VisualizationLibrary.fillCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()), cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()), (gcc.getCellWidth() / 2.0) * magnifier, (gcc.getCellHeight() / 2.0) * magnifier, stroke, fill);
 	}
 
-	public static void drawEmbodiedAgent(GraphicsContext gc, int x, int y, int width, int height, EmbodiedAgent embodied, Color color) {
-		gc.save(); // saves the current state on stack, including the current transform
+	public static void drawEmbodiedAgent(GraphicsContext gcc, int x, int y, int width, int height, EmbodiedAgent embodied, Color color) {
+		gcc.save(); // saves the current state on stack, including the current transform
         Rotate r = new Rotate(Math.toDegrees(embodied.getHeading()), x + width / 2.0, y + height / 2.0);
-        gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+        gcc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
 
 		Grid grid = embodied.getBody();
 		double miniWidth = width * 1.0D / grid.getWidthInCells();
@@ -95,8 +95,8 @@ public class VisualizationLibrary {
 		// First, draw each cell of the body
 		for (int i=0; i < grid.getWidthInCells(); i++) {
 			for (int u=0; u < grid.getHeightInCells(); u++) {
-				gc.setFill(color);
-				gc.fillRect(x + i*miniWidth, y + u*miniHeight, miniWidth, miniHeight);
+				gcc.setFill(color);
+				gcc.fillRect(x + i*miniWidth, y + u*miniHeight, miniWidth, miniHeight);
 			}
 		}
 
@@ -105,14 +105,14 @@ public class VisualizationLibrary {
 			for (int u=0; u < grid.getHeightInCells(); u++) {
 				Object o = grid.getGridLayer("body").get(i, u);
 				if ((o instanceof ConnectedComponent) && (o instanceof HasGridPosition)) {
-					gc.setStroke(Color.MEDIUMVIOLETRED);
+					gcc.setStroke(Color.MEDIUMVIOLETRED);
 					ConnectedComponent cc = (ConnectedComponent)o;
 					HasGridPosition pos = (HasGridPosition)o;
 					List<ConnectedComponent> outgoingConnections = cc.getOutgoingConnections();
 					for (ConnectedComponent outgoingConnection : outgoingConnections) {
 						if (outgoingConnection instanceof HasGridPosition) {
 							HasGridPosition pos2 = (HasGridPosition)outgoingConnection;
-							gc.strokeLine(x + pos.getCellX() * miniWidth + (miniWidth / 2.0), y + pos.getCellY() * miniHeight + (miniHeight / 2.0), x + pos2.getCellX() * miniWidth + (miniWidth / 2.0), y + pos2.getCellY() * miniHeight + (miniHeight / 2.0));
+							gcc.strokeLine(x + pos.getCellX() * miniWidth + (miniWidth / 2.0), y + pos.getCellY() * miniHeight + (miniHeight / 2.0), x + pos2.getCellX() * miniWidth + (miniWidth / 2.0), y + pos2.getCellY() * miniHeight + (miniHeight / 2.0));
 						}
 					}
 				}
@@ -124,16 +124,16 @@ public class VisualizationLibrary {
 			for (int u=0; u < grid.getHeightInCells(); u++) {
 				Object o = grid.getGridLayer("body").get(i, u);
 				if (o instanceof EmbodiedSensor) {
-					gc.setFill(Color.DARKSLATEGRAY);
-					gc.fillPolygon(new double[] { x + i*miniWidth + miniWidth / 2.0, x + i*miniWidth, x + (i+1)*miniWidth-1.0 }, new double[] { y + u*miniHeight, y + (u+1)*miniHeight - 1.0, y + (u+1)*miniHeight - 1.0 }, 3);
+					gcc.setFill(Color.DARKSLATEGRAY);
+					gcc.fillPolygon(new double[] { x + i*miniWidth + miniWidth / 2.0, x + i*miniWidth, x + (i+1)*miniWidth-1.0 }, new double[] { y + u*miniHeight, y + (u+1)*miniHeight - 1.0, y + (u+1)*miniHeight - 1.0 }, 3);
 				}
 				else if (o instanceof EmbodiedEffector) {
-					gc.setFill(Color.DARKSLATEGRAY);
-					gc.fillRect(x + i*miniWidth + 1.0, y + u*miniHeight + 1.0, miniWidth - 2.0, miniHeight - 2.0);
+					gcc.setFill(Color.DARKSLATEGRAY);
+					gcc.fillRect(x + i*miniWidth + 1.0, y + u*miniHeight + 1.0, miniWidth - 2.0, miniHeight - 2.0);
 				}
 			}
 		}
-        gc.restore(); 
+        gcc.restore(); 
 	}
 	
 	public static void drawArrow(GraphicsContext graphics, int x1, int y1, int x2, int y2, Color fill, Color stroke, int thickness, boolean drawPointAtOrigin, boolean drawPointAtDestination) {
@@ -164,20 +164,20 @@ public class VisualizationLibrary {
 //		graphics.fillPolygon(xPoints, yPoints, numPoints);
 	}
 	
-	public static int getGraphicXForCellX(SimulationCanvasContext scc, int cellX) {
-		return cellX * (scc.getCellWidth() + scc.getCellXSpacing());
+	public static int getGraphicXForCellX(GridCanvasContext gcc, int cellX) {
+		return cellX * (gcc.getCellWidth() + gcc.getCellXSpacing());
 	}
 	
-	public static int getGraphicYForCellY(SimulationCanvasContext scc, int cellY) {
-		return cellY * (scc.getCellHeight() + scc.getCellYSpacing());
+	public static int getGraphicYForCellY(GridCanvasContext gcc, int cellY) {
+		return cellY * (gcc.getCellHeight() + gcc.getCellYSpacing());
 	}
 	
-	public static int getCellXForGraphicX(SimulationCanvasContext scc, double graphicX) {
-		return (int)(graphicX / (scc.getCellWidth() + scc.getCellXSpacing()));
+	public static int getCellXForGraphicX(GridCanvasContext gcc, double graphicX) {
+		return (int)(graphicX / (gcc.getCellWidth() + gcc.getCellXSpacing()));
 	}
 
-	public static int getCellYForGraphicY(SimulationCanvasContext scc, double graphicY) {
-		return (int)(graphicY / (scc.getCellHeight() + scc.getCellYSpacing()));
+	public static int getCellYForGraphicY(GridCanvasContext gcc, double graphicY) {
+		return (int)(graphicY / (gcc.getCellHeight() + gcc.getCellYSpacing()));
 	}
 
 }

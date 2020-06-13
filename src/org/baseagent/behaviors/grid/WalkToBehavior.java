@@ -9,6 +9,8 @@ import org.baseagent.util.BaseAgentMath;
 public class WalkToBehavior extends StatefulBehavior {
 	private int destinationX;
 	private int destinationY;
+	private double movingX = Double.MAX_VALUE;
+	private double movingY = Double.MAX_VALUE;
 	private double speed = 1.0;
 	
 	public WalkToBehavior() {
@@ -21,6 +23,13 @@ public class WalkToBehavior extends StatefulBehavior {
 
 		GridAgent agent = (GridAgent)xagent;
 
+		if (movingX == Double.MAX_VALUE) {
+			movingX = agent.getCellX();
+		}
+		if (movingY == Double.MAX_VALUE) {
+			movingY = agent.getCellY();
+		}
+
 		double distance = BaseAgentMath.distance(agent, destinationX, destinationY);
 		double direction = BaseAgentMath.direction(agent, destinationX, destinationY);
 		
@@ -29,8 +38,10 @@ public class WalkToBehavior extends StatefulBehavior {
 				agent.moveTo(destinationX, destinationY);
 				setState(ARRIVED_STATE);
 			} else {
-				agent.moveDelta(speed * Math.cos(direction), speed * Math.sin(direction));
-				agent.moveAlong(distance, direction);
+				movingX += speed * Math.cos(direction);
+				movingY += speed * Math.sin(direction);
+				agent.setHeading(direction);
+				agent.moveTo((int)movingX, (int)movingY);
 			}
 		}
 	}
