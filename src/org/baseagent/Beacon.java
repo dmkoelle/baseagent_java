@@ -1,8 +1,11 @@
 package org.baseagent;
 
 import org.baseagent.grid.HasGridPosition;
-import org.baseagent.sim.SimulationComponent;
+import org.baseagent.signals.Signal;
 import org.baseagent.sim.GridAgent;
+import org.baseagent.sim.SimulationComponent;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Beacon extends GridAgent {
 
@@ -13,7 +16,12 @@ public class Beacon extends GridAgent {
 	public Beacon(String gridLayerName) {
 		super(gridLayerName);
 	}
+
+	public Beacon(Signal signal) {
+		throw new NotImplementedException();
+	}
 	
+
 	@Override
 	public Type getType() {
 		return SimulationComponent.Type.BEACON;

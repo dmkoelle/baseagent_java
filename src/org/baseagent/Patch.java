@@ -13,5 +13,4 @@ public abstract class Patch extends SimulationComponent {
 	}
 	
 	public abstract void applyPatch(Grid grid, int x, int y); // TODO: Patch should be generalized to take a Universe and a Position
-	
 }

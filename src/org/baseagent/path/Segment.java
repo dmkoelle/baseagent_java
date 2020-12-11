@@ -16,7 +16,7 @@ public class Segment extends Edge<Segment, PathComponent> {
 	}
 
 	public Segment(Directionality directionality, PathComponent... pathComponents) {
-		super();
+		super(null,null,null);// TODO - NO PASSING NULLs TO EDGE!
 		this.destinations = new ArrayList<>();
 		this.directionality = Directionality.BIDIRECTIONAL;
 		this.pathComponents = new ArrayList<>();

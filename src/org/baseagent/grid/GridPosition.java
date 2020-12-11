@@ -1,11 +1,11 @@
 package org.baseagent.grid;
 
-public class DefaultHasGridPosition implements HasGridPosition {
+public class GridPosition implements HasGridPosition {
 	private int cellX, cellY;
 	
-	public DefaultHasGridPosition() { }
+	public GridPosition() { }
 
-	public DefaultHasGridPosition(int cellX, int cellY) {
+	public GridPosition(int cellX, int cellY) {
 		this.cellX = cellX;
 		this.cellY = cellY;
 	}

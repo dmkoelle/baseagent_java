@@ -44,7 +44,7 @@ public class MaxSignalSensor extends EmbodiedSensor {
 		System.out.println("BEACON'S GRID LAYER = "+agent.getSimulation().getBeacons().get(0).getGridLayer());
 		System.out.println("BEACON'S LAYER NAME = "+agent.getSimulation().getBeacons().get(0).getGridLayer().getLayerName());
 		System.out.println("THIS LAYER = "+getLayerName());
-		List<Beacon> beacons = agent.getSimulation().getBeacons().stream().filter(beacon -> beacon.getGridLayer().getLayerName().equals(this.layerName)).collect(Collectors.toList());
+		List<Beacon> beacons = agent.getSimulation().getBeacons().stream().filter(beacon -> beacon.getGridLayer().getLayerName().equals(getGridLayer().getLayerName())).collect(Collectors.toList());
    
 		Beacon maxBeacon = null;
 		double maxIntensity = 0.0d;

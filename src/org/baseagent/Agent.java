@@ -6,12 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.baseagent.behaviors.Behavior;
-import org.baseagent.behaviors.ExecuteAllBehaviorsPolicy;
+import org.baseagent.behaviors.ParallelBehaviorsPolicy;
 import org.baseagent.comms.Message;
 import org.baseagent.comms.MessageListener;
 import org.baseagent.sim.Simulation;
 import org.baseagent.sim.SimulationComponent;
 
+/**
+ * An important aspect about this general Agent is that the only thing it maintains is
+ * internal state and knowledge. It does not specifically include those things that 
+ * connect it to the world, whether that world is a Universe inside within BaseAgent 
+ * 
+ * @author David Koelle
+ *
+ */
 public class Agent extends SimulationComponent implements MessageListener, HasStep {
 	public static int SIMPLE_ID_COUNTER = 0;
 	
@@ -50,7 +58,7 @@ public class Agent extends SimulationComponent implements MessageListener, HasSt
 		this.inventory = new Inventory();
 		this.knowledge = new HashMap<>();
 		this.properties = new HashMap<>();
-		this.behaviorPolicy = new ExecuteAllBehaviorsPolicy();
+		this.behaviorPolicy = new ParallelBehaviorsPolicy();
 		this.behaviors = new ArrayList<>();
 	}
 	

@@ -2,8 +2,8 @@ package org.baseagent.behaviors;
 
 import org.baseagent.Agent;
 
-public class ExecuteAllBehaviorsPolicy implements Behavior {
-	public ExecuteAllBehaviorsPolicy() { }
+public class ParallelBehaviorsPolicy implements Behavior {
+	public ParallelBehaviorsPolicy() { }
 	
 	@Override
 	public void executeBehavior(Agent agent) {

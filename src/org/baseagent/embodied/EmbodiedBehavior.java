@@ -4,10 +4,10 @@ import org.baseagent.Agent;
 import org.baseagent.behaviors.Behavior;
 import org.baseagent.embodied.effectors.EmbodiedEffector;
 import org.baseagent.embodied.sensors.EmbodiedSensor;
-import org.baseagent.grid.DefaultHasGridPosition;
+import org.baseagent.grid.GridPosition;
 import org.baseagent.grid.GridLayer;
 
-public class EmbodiedBehavior extends DefaultHasGridPosition implements Behavior {
+public class EmbodiedBehavior extends GridPosition implements Behavior {
 	
 	public EmbodiedBehavior() { 
 		super();

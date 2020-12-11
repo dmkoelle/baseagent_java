@@ -8,6 +8,7 @@ import org.baseagent.embodied.effectors.EmbodiedEffector;
 import org.baseagent.embodied.sensors.EmbodiedSensor;
 import org.baseagent.grid.Grid;
 import org.baseagent.grid.GridLayer;
+import org.baseagent.grid.GridLayer.GridLayerUpdateOption;
 import org.baseagent.grid.HasGridPosition;
 import org.baseagent.network.Network;
 import org.baseagent.sim.GridAgent;
@@ -40,7 +41,7 @@ public class EmbodiedAgent extends GridAgent implements HasBody {
 	
 	private void initAgent(int bodyWidth, int bodyHeight) {
 		this.bodyGrid = new Grid(bodyWidth, bodyHeight);
-		this.bodyGrid.createGridLayer("body");
+		this.bodyGrid.createGridLayer("body", GridLayerUpdateOption.NO_SWITCH);
 //		this.bodyLogic = new NetworkBehavior<>();
 		this.embodiedBehavior = new EmbodiedBehavior();
 		sensors = new ArrayList<>();

@@ -1,80 +1,115 @@
 package org.baseagent.behaviors.grid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.baseagent.Agent;
-import org.baseagent.behaviors.StatefulBehavior;
+import org.baseagent.behaviors.LifecycleBehavior;
+import org.baseagent.grid.GridPosition;
 import org.baseagent.sim.GridAgent;
-import org.baseagent.statemachine.State;
 import org.baseagent.util.BaseAgentMath;
 
-public class WalkToBehavior extends StatefulBehavior {
-	private int destinationX;
-	private int destinationY;
+public class WalkToBehavior extends LifecycleBehavior {
+	private List<GridPosition> destinationList;
+	private int currentDestinationIndex = -1;
+	private boolean pausedBecauseNoMoreDestinations;
+	private double speed = 1.0;
 	private double movingX = Double.MAX_VALUE;
 	private double movingY = Double.MAX_VALUE;
-	private double speed = 1.0;
+
+	public WalkToBehavior() { 
+		super();
+		this.destinationList = new ArrayList<>();
+	}
 	
-	public WalkToBehavior() {
-		setState(STARTING_STATE);
+	public WalkToBehavior(GridAgent agent, int destinationX, int destinationY, double speed) { 
+		this();
+		addDestination(agent, destinationX, destinationY);
+		setSpeed(speed);
 	}
 	
 	@Override
-	public void executeBehavior(Agent xagent) {
-//		System.out.println("WTB State is "+getState().toString());
-
-		GridAgent agent = (GridAgent)xagent;
-
-		if (movingX == Double.MAX_VALUE) {
-			movingX = agent.getCellX();
-		}
-		if (movingY == Double.MAX_VALUE) {
-			movingY = agent.getCellY();
-		}
-
-		double distance = BaseAgentMath.distance(agent, destinationX, destinationY);
-		double direction = BaseAgentMath.direction(agent, destinationX, destinationY);
-		
-		if (isState(WALKING_STATE)) {
-			if (speed > distance) {
-				agent.moveTo(destinationX, destinationY);
-				setState(ARRIVED_STATE);
-			} else {
-				movingX += speed * Math.cos(direction);
-				movingY += speed * Math.sin(direction);
-				agent.setHeading(direction);
-				agent.moveTo((int)movingX, (int)movingY);
-			}
+	public void startBehavior(Agent agent) {
+		if (destinationList.size() > 0) {
+			super.startBehavior(agent);
+			currentDestinationIndex = 0;
 		}
 	}
 	
-	public void setDestination(int destinationX, int destinationY) {
-		this.destinationX = destinationX;
-		this.destinationY = destinationY;
-		setState(WALKING_STATE);
+	@Override
+	public void executeBehavior(Agent agent) {
+		if (isPaused()) return;
+		
+		if (!isStarted()) {
+			startBehavior(agent);
+		}
+		
+		if (isStarted()) {
+			GridAgent gridAgent = (GridAgent)agent;
+	
+			if (movingX == Double.MAX_VALUE) {
+				movingX = gridAgent.getCellX();
+			}
+			if (movingY == Double.MAX_VALUE) {
+				movingY = gridAgent.getCellY();
+			}
+	
+			GridPosition currentDestination = destinationList.get(currentDestinationIndex);
+			double distance = BaseAgentMath.distance(gridAgent, currentDestination);
+			double direction = BaseAgentMath.direction(gridAgent, currentDestination);
+			
+			if (speed >= distance) {
+				gridAgent.moveTo(destinationList.get(currentDestinationIndex));
+				selectNextDestination(agent);
+			} else {
+				movingX += speed * Math.cos(direction);
+				movingY += speed * Math.sin(direction);
+				gridAgent.setHeading(direction);
+				gridAgent.moveTo((int)movingX, (int)movingY);
+
+				// These checks update movingX and movingY in case the 
+				// agent goes out of its bounds 
+				if (gridAgent.getCellX() != (int)movingX) {
+					this.movingX = gridAgent.getCellX() + (movingX - gridAgent.getCellX());
+				}
+				if (gridAgent.getCellY() != (int)movingY) {
+					this.movingX = gridAgent.getCellX() + (movingY - gridAgent.getCellY());
+				}
+			}
+		}
+	}
+
+	private void selectNextDestination(Agent agent) {
+		if (destinationList.size()-1 > currentDestinationIndex) {
+			currentDestinationIndex++;
+			if (pausedBecauseNoMoreDestinations) {
+				resumeBehavior(agent);
+				pausedBecauseNoMoreDestinations = false;
+			}
+		} else {
+			pauseBehavior(agent);
+			pausedBecauseNoMoreDestinations = true;
+		}
+	}
+	
+	public void addDestination(GridAgent gridAgent, int destinationX, int destinationY) {
+		int boundedDestinationX = gridAgent.getGrid().getBoundsPolicy().boundX(destinationX);
+		int boundedDestinationY = gridAgent.getGrid().getBoundsPolicy().boundY(destinationY);
+		this.destinationList.add(new GridPosition(boundedDestinationX, boundedDestinationY));
+		if (pausedBecauseNoMoreDestinations) {
+			selectNextDestination(gridAgent); 
+		}
 	}
 	
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
 	
+	public GridPosition getCurrentDestination() {
+		return this.destinationList.get(currentDestinationIndex);
+	}
+	
 	public double getSpeed() {
 		return this.speed;
 	}
-	
-	public void pause() {
-		if (isState(WALKING_STATE)) {
-			setState(PAUSED_STATE);
-		}
-	}
-	
-	public void resume() {
-		if (isState(PAUSED_STATE)) {
-			setState(WALKING_STATE);
-		}
-	}
-	
-	public static State STARTING_STATE = new State("Not yet started");
-	public static State WALKING_STATE = new State("Walking");
-	public static State PAUSED_STATE = new State("Paused");
-	public static State ARRIVED_STATE = new State("Arrived");
-
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.baseagent.behaviors.Behavior;
-import org.baseagent.grid.DefaultHasGridPosition;
+import org.baseagent.grid.GridPosition;
 import org.baseagent.grid.Grid;
 import org.baseagent.grid.GridLayer;
 import org.baseagent.grid.HasGridPosition;
@@ -133,7 +133,7 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	//
 	
 	public void startMovingToward(int destinationX, int destinationY, double speed) {
-		this.destinationPoint = new DefaultHasGridPosition(destinationX, destinationY);
+		this.destinationPoint = new GridPosition(destinationX, destinationY);
 		this.movingSpeed = speed;
 		startMovingToward0();
 	}
@@ -312,5 +312,18 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 		rotateTo(r);
 	}
 	
+	/** 
+	 * Place this agent in a random position within the bounding rectangle provided in the parameters
+	 */
+	public void placeRandomly(int x1, int y1, int x2, int y2) {
+		Grid grid = (Grid)getSimulation().getUniverse();
+		Random random = new Random();
+		int x = x1 + random.nextInt(x2-x1);
+		int y = y1 + random.nextInt(y2-y1);
+		moveTo(x, y);
+
+		double r = random.nextDouble() * Math.PI * 2.0;
+		rotateTo(r);
+	}
 
 }

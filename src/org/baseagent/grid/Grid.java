@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.baseagent.grid.GridLayer.GridLayerUpdateOption;
 import org.baseagent.sim.Simulation;
 import org.baseagent.sim.SimulationComponent;
 import org.baseagent.sim.Universe;
@@ -57,8 +58,8 @@ public class Grid extends SimulationComponent implements Universe {
 		return this.stepPolicy;
 	}
 	
-	public GridLayer createGridLayer(String name) {
-		GridLayer layer = new GridLayer(name, this);
+	public GridLayer createGridLayer(String name, GridLayerUpdateOption updateOption) {
+		GridLayer layer = new GridLayer(name, this, updateOption);
 		this.addGridLayer(name, layer);
 		return layer;
 	}

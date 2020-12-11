@@ -36,20 +36,21 @@ public class AllSignalSensor extends EmbodiedSensor {
 	}
 
 	/** Posts a list of every signal found by the sensor */
-	public void sense(Agent xagent)	{
-		GridAgent agent = (GridAgent)xagent;
+	public void sense(Agent agent)	{
+		GridAgent gridAgent = (GridAgent)agent;
 
-		List<Beacon> beacons = agent.getSimulation().getBeacons().stream().filter(beacon -> beacon.getGridLayer().getLayerName().equals(this.layerName)).collect(Collectors.toList());
+		List<Beacon> beacons = gridAgent.getSimulation().getBeacons().stream().filter(beacon -> beacon.getGridLayer().getLayerName().equals(this.getGridLayer().getLayerName())).collect(Collectors.toList());
 
 		List<Double> intensities = new ArrayList<>();
 		List<Double> directions = new ArrayList<>();
 		List<Object> values = new ArrayList<>();
 		
 		for (Beacon beacon : beacons) {
-			if (beacon.reaches(agent, this)) {
-				intensities.add(beacon.getSignalValueAt(agent, this));
-				directions.add(BaseAgentMath.fineDistance(beacon, agent, this));
-				values.add(beacon.getSignalValueAt(p2));
+			if (beacon.reaches(gridAgent, this)) {
+				intensities.add(beacon.getSignalValueAt(gridAgent, this));
+				System.out.println("TODO: Embodied distance");
+//				directions.add(BaseAgentMath.fineDistance(beacon, gridAgent, this));
+//				values.add(beacon.getSignalValueAt(p2));
 			}
 		}
 		

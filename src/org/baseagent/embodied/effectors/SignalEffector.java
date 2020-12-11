@@ -21,7 +21,7 @@ public class SignalEffector extends EmbodiedEffector {
 
 	@Override
 	public void effect(Agent agent) {
-		Beacon beacon = new Beacon(this.getOutputValue());
+		Beacon beacon = new Beacon(this.signalPort.getOutputValue());
 		
 	}
 

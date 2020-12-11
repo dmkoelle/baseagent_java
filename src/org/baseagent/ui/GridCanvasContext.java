@@ -89,9 +89,9 @@ public class GridCanvasContext {
 		this.colorPalette = colors;
 	}
 	
-	public void setColorPalette(Color... colors) {
-		this.colorPalette = List.of(colors);
-	}
+//	public void setColorPalette(Color... colors) {
+//		this.colorPalette = List.of(colors);
+//	}
 
 	public List<Color> getColorPalette() {
 		return this.colorPalette;

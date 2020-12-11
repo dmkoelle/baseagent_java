@@ -2,10 +2,10 @@ package org.baseagent.embodied.sensors;
 
 import org.baseagent.Agent;
 import org.baseagent.Sensor;
-import org.baseagent.grid.DefaultHasGridPosition;
+import org.baseagent.grid.GridPosition;
 import org.baseagent.grid.GridLayer;
 
-public abstract class EmbodiedSensor extends DefaultHasGridPosition implements Sensor {
+public abstract class EmbodiedSensor extends GridPosition implements Sensor {
 	private String layerName;
 	
 	public EmbodiedSensor(String layerName) {

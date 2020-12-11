@@ -3,7 +3,7 @@ package org.baseagent.signals;
 import org.baseagent.grid.HasGridPosition;
 import org.baseagent.sim.Simulation;
 
-public class PheromonePropagation implements SignalPropagation, HasGridPosition {
+public class PheromonePropagation implements SignalPropagation {
 
 	private Signal signal;
 	private int cellX;
@@ -21,15 +21,6 @@ public class PheromonePropagation implements SignalPropagation, HasGridPosition 
 		this.dissipationRate = dissipationRate;
 	}
 
-	@Override
-	public int getCellX() {
-		return this.cellX;
-	}
-
-	@Override
-	public int getCellY() {
-		return this.cellY;
-	}
 
 	@Override
 	public void propagateSignal(Simulation simulation) {

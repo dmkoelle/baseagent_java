@@ -2,6 +2,7 @@ package org.baseagent.grid.generators;
 
 import org.baseagent.grid.Grid;
 import org.baseagent.grid.GridLayer;
+import org.baseagent.grid.GridLayer.GridLayerUpdateOption;
 import org.baseagent.grid.GridLayerStep;
 
 public class HillyDoubleGridLayerGenerator implements GridLayerGenerator {
@@ -15,7 +16,7 @@ public class HillyDoubleGridLayerGenerator implements GridLayerGenerator {
 	
 	@Override
 	public GridLayer generateGridLayer(String name, Grid parentGrid) {
-		GridLayer g = new GridLayer(name, parentGrid);
+		GridLayer g = new GridLayer(name, parentGrid, GridLayerUpdateOption.NO_SWITCH);
 
 		g.current().fill(0.0D);
 		g.current().scatter(1.0D, numSpots);

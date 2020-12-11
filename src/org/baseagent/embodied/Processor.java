@@ -12,6 +12,6 @@ public class Processor<T, U> extends ConnectedComponent {
 	}
 	
 	public void process(EmbodiedAgent agent) {
-		this.step(agent.getSimulation());
+//		this.step(agent.getSimulation());
 	}
 }

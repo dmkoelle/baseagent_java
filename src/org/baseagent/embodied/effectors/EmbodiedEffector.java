@@ -1,7 +1,7 @@
 package org.baseagent.embodied.effectors;
 
 import org.baseagent.Agent;
-import org.baseagent.grid.DefaultHasGridPosition;
+import org.baseagent.grid.GridPosition;
 import org.baseagent.grid.GridLayer;
 
 /**
@@ -10,7 +10,7 @@ import org.baseagent.grid.GridLayer;
  *  
  * @author David Koelle
  */
-public abstract class EmbodiedEffector extends DefaultHasGridPosition implements Effector {
+public abstract class EmbodiedEffector extends GridPosition implements Effector {
 	private String layerName;
 	
 	public EmbodiedEffector(String layerName) {

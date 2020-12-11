@@ -8,10 +8,10 @@ public class LifecycleBehaviorPolicy implements Behavior {
 	public LifecycleBehaviorPolicy() {
 	}
 	
-	public void transitionToBehavior(LifecycleBehavior newBehavior) {
-		if (this.currentBehavior != null) this.currentBehavior.endBehavior();
+	public void transitionToBehavior(LifecycleBehavior newBehavior, Agent agent) {
+		if (this.currentBehavior != null) this.currentBehavior.endBehavior(agent);
 		this.currentBehavior = newBehavior;
-		if (this.currentBehavior != null) this.currentBehavior.startBehavior();
+		if (this.currentBehavior != null) this.currentBehavior.startBehavior(agent);
 	}
 
 	@Override

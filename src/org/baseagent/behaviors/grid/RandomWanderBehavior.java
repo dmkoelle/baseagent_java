@@ -8,21 +8,27 @@ import org.baseagent.sim.GridAgent;
 import org.baseagent.sim.Simulation;
 import org.baseagent.statemachine.State;
 
-public class RandomWanderBehavior extends StatefulBehavior {
+public class RandomWanderBehavior extends WalkToBehavior {
 	private int distance;
 	private WalkToBehavior walkToBehavior;
 	private Predicate<Simulation> endCondition;
+	private int nextX;
+	private int nextY;
 	
 	public RandomWanderBehavior() {
-		this.walkToBehavior = new WalkToBehavior();
-		setState(CHOOSE_POINT_STATE);
+		super();
 	}
 	
 	public RandomWanderBehavior(int distance) {
 		this();
 		setDistance(distance);
 	}
-	
+
+	public RandomWanderBehavior(int distance, double speed) {
+		this(distance);
+		setSpeed(speed);
+	}
+
 	public void setDistance(int distance) {
 		this.distance = distance;
 	}
@@ -32,36 +38,36 @@ public class RandomWanderBehavior extends StatefulBehavior {
 	}
 	
 	@Override
-	public void executeBehavior(Agent xagent) {
-//		System.out.println("RWB State is "+getState().toString());
-		GridAgent agent = (GridAgent)xagent;
-
-		if ((endCondition != null) && (endCondition.test(agent.getSimulation()))) {
-			setState(ENDED_STATE);
-			return;
-		}
-	
-		if (isState(CHOOSE_POINT_STATE)) {
-			double randomDirection = Math.random() * 2.0 * Math.PI;
-			int newX = agent.getCellX() + (int)(distance * Math.cos(randomDirection));
-			int newY = agent.getCellY() + (int)(distance * Math.sin(randomDirection));
-//			System.out.println("WARNING: RandomWanderBehavior is keeping y as-is for testing purposes");
-//			int newY = agent.currentY();
-			walkToBehavior.setDestination(newX, newY);
-			agent.setHeading(randomDirection);
-			setState(WALKING_TO_STATE);
-		}
-		
-		if (isState(WALKING_TO_STATE)) {
-			walkToBehavior.executeBehavior(agent);
-			if (walkToBehavior.isState(WalkToBehavior.ARRIVED_STATE)) {
-				setState(CHOOSE_POINT_STATE);
-			}
-		}
+	public void startBehavior(Agent agent) {
+		super.startBehavior(agent);
+		selectNextPoint((GridAgent)agent);
 	}
 	
-	public static State ENDED_STATE = new State("Ended");
-	public static State CHOOSE_POINT_STATE = new State("Choose point");
-	public static State WALKING_TO_STATE = new State("Walking to");
-
+	private void selectNextPoint(GridAgent gridAgent) {
+		double randomDirection = Math.random() * 2.0 * Math.PI;
+		int nextX = gridAgent.getCellX() + (int)(distance * Math.cos(randomDirection));
+		int nextY = gridAgent.getCellY() + (int)(distance * Math.sin(randomDirection));
+		addDestination(gridAgent, nextX, nextY);
+	}
+	
+	@Override
+	public void executeBehavior(Agent agent) {
+		if (isPaused()) return;
+		
+		if (!isStarted()) {
+			startBehavior(agent);
+		}
+		
+		super.executeBehavior(agent);
+		
+		GridAgent gridAgent = (GridAgent)agent;
+		if (gridAgent.isAt(getCurrentDestination())) {
+			selectNextPoint(gridAgent);
+		}
+		
+		if ((endCondition != null) && (endCondition.test(gridAgent.getSimulation()))) {
+			endBehavior(agent);
+			return;
+		}
+	}
 }

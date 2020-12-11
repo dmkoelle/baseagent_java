@@ -3,21 +3,26 @@ package org.baseagent.grid;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.baseagent.examples.ui.GameOfRain.GameOfRainThing;
+
 public class GridLayer {
 //	private String layerName = "default";
 	private String layerName;
 	private GridLayerStep current;
 	private GridLayerStep next;
 	private Grid parentGrid;
-	private boolean shouldSwitch = true;
+	private GridLayerUpdateOption updateOption;
 	
-	public GridLayer(Grid parentGrid) { 
+	public enum GridLayerUpdateOption { NEXT_BECOMES_CURRENT, NO_SWITCH };
+	
+	public GridLayer(Grid parentGrid, GridLayerUpdateOption updateOption) { 
 		super();
 		setParentGrid(parentGrid);
+		setUpdateOption(updateOption);
 	}
 
-	public GridLayer(String layerName, Grid parentGrid) { 
-		this(parentGrid);
+	public GridLayer(String layerName, Grid parentGrid, GridLayerUpdateOption updateOption) { 
+		this(parentGrid, updateOption);
 		this.layerName = layerName;
 		parentGrid.addGridLayer(layerName, this);
 	}
@@ -45,16 +50,22 @@ public class GridLayer {
 	}
 
 	public void switchToNextStep() {
-		if (shouldSwitch) {
+		if (updateOption == GridLayerUpdateOption.NEXT_BECOMES_CURRENT) {
 			this.current = this.next;
 			this.next = new GridLayerStep(parentGrid);
 		}
 	}
 	
-	public void setShouldSwitch(boolean shouldSwitch) {
-		this.shouldSwitch = shouldSwitch;
+	public void setUpdateOption(GridLayerUpdateOption updateOption) {
+		this.updateOption = updateOption;
 	}
 
+	public void persist(Object value, int x, int y) {
+		if (current().get(x, y) == value) {
+			next().set(x, y, value);
+		}
+	}
+	
 	//
 	// Methods typically seen in GridLayerStep that should be delegated to current()
 	//
