@@ -12,6 +12,7 @@ import javafx.scene.text.FontWeight;
 public class Toast {
 	private long startTime = -1;
 	private long endTime = -1;
+	private long duration = 1L;
 	private Predicate<Simulation> activeCondition;
 	private Predicate<Simulation> removeCondition;
 	private int graphicX;
@@ -19,6 +20,7 @@ public class Toast {
 	private int width;
 	private int height;
 	private String text;
+	private boolean needsTimes = true;
 
 	public Toast(String text, int graphicX, int graphicY, int width, int height) {
 		this.text = text;
@@ -28,18 +30,61 @@ public class Toast {
 		this.height = height;
 	}
 
+	public Toast(String text, int graphicX, int graphicY, int width, int height, long duration) {
+		this(text, graphicX, graphicY, width, height);
+		setDuration(duration);
+	}
+
 	public Toast(long startTime, long endTime, String text, int graphicX, int graphicY, int width, int height) {
 		this(text, graphicX, graphicY, width, height);
-		this.startTime = startTime;
-		this.endTime = endTime;
+		setStartTime(startTime);
+		setEndTime(endTime);
+		setDuration(endTime - startTime);
+		this.needsTimes = false;
 	}
-	
+
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+		if (getDuration() != 0) {
+			setEndTime(startTime + getDuration());
+		} 
+		needsTimes = false;
+	}
+
 	public long getStartTime() {
 		return this.startTime;
 	}
 	
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
+		if (getDuration() != 0) {
+			setEndTime(endTime - getDuration());
+		} 
+		needsTimes = false;
+	}
+	
 	public long getEndTime() {
 		return this.endTime;
+	}
+	
+	public void setDuration(long duration) {
+		if (this.getStartTime() != -1) {
+			setEndTime(getStartTime() + duration);
+			needsTimes = false;
+		}
+		else if (this.getEndTime() != -1) {
+			setStartTime(getEndTime() - duration);
+			needsTimes = false;
+		}
+		this.duration = duration;
+	}
+	
+	public long getDuration() {
+		return this.duration;
+	}
+	
+	public boolean needsTimes() {
+		return this.needsTimes;
 	}
 	
 	public void activeWhen(Predicate<Simulation> activeCondition) {

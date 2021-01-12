@@ -84,6 +84,10 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		return this.simulation;
 	}
 	
+	public Grid getGrid() {
+		return this.grid;
+	}
+	
 	public GridCanvasContext getGridCanvasContext() {
 		return this.gcc;
 	}

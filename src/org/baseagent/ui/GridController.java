@@ -19,12 +19,11 @@ public abstract class GridController {
 	}
 	
 	private void mouseClicked(MouseEvent event) {
-		System.out.println("TODO: GridController.mouseClicked");
-//		Grid grid = simulationCanvas.getSimulation().getGrid();
-//		// TODO The math below clearly isn't including the cellspacing!
-//		int cellX = (int)(event.getSceneX() / grid.getWidthInCells());
-//		int cellY = (int)(event.getSceneY() / grid.getHeightInCells());
-//		mouseClickedOnGrid(grid, event.getSceneX(), event.getSceneY(), cellX, cellY);
+		Grid grid = gridCanvas.getGrid();
+		// TODO the GridController.mouseClicked is not factoring in cell spacing or zoom (getXFactor / getYFactor)
+		int cellX = (int)(event.getSceneX() / gridCanvas.getGridCanvasContext().getCellWidth());
+		int cellY = (int)(event.getSceneY() / gridCanvas.getGridCanvasContext().getCellHeight());
+		mouseClickedOnGrid(grid, event.getSceneX(), event.getSceneY(), cellX, cellY);
 	}
 	
 	public abstract void mouseClickedOnGrid(Grid grid, double sceneX, double sceneY, int cellX, int cellY);

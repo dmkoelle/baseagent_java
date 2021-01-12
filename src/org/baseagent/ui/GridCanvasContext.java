@@ -20,6 +20,7 @@ public class GridCanvasContext {
 	private Simulation simulation;
 	private int cellWidth, cellHeight;
 	private int cellXSpacing, cellYSpacing;
+	private double zoom;
 	
 	public GridCanvasContext(Simulation simulation, Grid grid, GridCanvas gridCanvas, int cellWidth, int cellHeight, int cellXSpacing, int cellYSpacing) {
 		this.simulation = simulation;
@@ -31,6 +32,7 @@ public class GridCanvasContext {
 		this.cellHeight = cellHeight;
 		this.cellXSpacing = cellXSpacing;
 		this.cellYSpacing = cellYSpacing;
+		this.zoom = 1.0;
 	}
 	
 	public Simulation getSimulation() {
@@ -77,6 +79,16 @@ public class GridCanvasContext {
 		this.cellYSpacing = cellYSpacing;
 	}
 
+	/** Returns a factor of (the cell width plus the cell X spacing) times the zoom. */ 
+	public double getXFactor() {
+		return (getCellWidth() + getCellXSpacing()) * getZoom();
+	}
+	
+	/** Returns a factor of (the cell height plus the cell Y spacing) times the zoom. */ 
+	public double getYFactor() {
+		return (getCellHeight() + getCellYSpacing()) * getZoom();
+	}
+	
 	public void setGraphicsContext(GraphicsContext gc) {
 		this.graphicsContext = gc;
 	}
@@ -103,5 +115,17 @@ public class GridCanvasContext {
 	
 	public Map<String, Object> getProperties() {
 		return this.properties;
+	}
+	
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+	}
+	
+	public double getZoom() {
+		return this.zoom;
+	}
+	
+	public void changeZoom(double delta) {
+		setZoom(getZoom() + delta);
 	}
 }
