@@ -21,7 +21,7 @@ public class Toast {
 	private int height;
 	private String text;
 	private boolean needsTimes = true;
-
+	
 	public Toast(String text, int graphicX, int graphicY, int width, int height) {
 		this.text = text;
 		this.graphicX = graphicX;
@@ -37,16 +37,16 @@ public class Toast {
 
 	public Toast(long startTime, long endTime, String text, int graphicX, int graphicY, int width, int height) {
 		this(text, graphicX, graphicY, width, height);
-		setStartTime(startTime);
-		setEndTime(endTime);
-		setDuration(endTime - startTime);
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.duration = endTime - startTime;
 		this.needsTimes = false;
 	}
 
 	public void setStartTime(long startTime) {
 		this.startTime = startTime;
 		if (getDuration() != 0) {
-			setEndTime(startTime + getDuration());
+			this.endTime = startTime + getDuration();
 		} 
 		needsTimes = false;
 	}
@@ -58,7 +58,7 @@ public class Toast {
 	public void setEndTime(long endTime) {
 		this.endTime = endTime;
 		if (getDuration() != 0) {
-			setEndTime(endTime - getDuration());
+			this.startTime = endTime - getDuration();
 		} 
 		needsTimes = false;
 	}
@@ -104,13 +104,19 @@ public class Toast {
 	}
 	
 	public boolean isActive(Simulation simulation) {
+		System.out.print("Toast: Testing if this toast is active. At timestep "+simulation.getStepTime()+" it...");
 		if ((getStartTime() > -1) && (getEndTime() > -1)) {
+			System.out.println("might be if its time is current: " + ((simulation.getStepTime() > getStartTime()) && (simulation.getStepTime() < getEndTime())));
 			return (simulation.getStepTime() > getStartTime()) && (simulation.getStepTime() < getEndTime());
 		}
 		else if (getActiveCondition() != null) {
+			System.out.println("might be if its active condition tests: " +getActiveCondition().test(simulation));
 			return getActiveCondition().test(simulation);
 		} 
-		else return false;
+		else {
+			System.out.println("is not.");
+			return false;
+		}
 	}
 
 	public boolean readyToRemove(Simulation simulation) {
@@ -127,8 +133,8 @@ public class Toast {
 		GraphicsContext gc = gcc.getGraphicsContext();
 		gc.setFill(Color.BLACK);
 		gc.fillRect(graphicX+2, graphicY+2, graphicX+width+2,graphicY+height+2);
-		gc.setFill(Color.GOLDENROD);
-		gc.fillRect(graphicX, graphicY, graphicX+width,graphicY+height);
+		gc.setFill(Color.YELLOW);
+		gc.fillRect(graphicX, graphicY, width, height);
 		gc.setFill(Color.BLACK);
 		gc.setFont(Font.font(null, FontWeight.BOLD, 16));
 		gc.fillText(text, graphicX+5, graphicY+20);

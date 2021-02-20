@@ -71,6 +71,10 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 		return this.cellY;
 	}
 	
+	public GridPosition getGridPosition() {
+		return new GridPosition(getCellX(), getCellY());
+	}
+	
 	@Override
 	public double getHeading() {
 		return this.heading;

@@ -3,8 +3,6 @@ package org.baseagent.grid;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.baseagent.examples.ui.GameOfRain.GameOfRainThing;
-
 public class GridLayer {
 //	private String layerName = "default";
 	private String layerName;

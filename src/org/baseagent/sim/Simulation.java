@@ -87,6 +87,7 @@ public class Simulation {
 	
 	public void addScheduler(Scheduler scheduler) {
 		this.schedulers.add(scheduler);
+		this.listeners.add(scheduler);
 	}
 	
 	public void removeSchedule(Scheduler scheduler) {
@@ -293,6 +294,18 @@ public class Simulation {
 		for (Metric metric : metrics) {
 			metric.evaluate(this);
 		}
+	}
+	
+	public boolean isPaused() {
+		return this.paused;
+	}
+	
+	public boolean isRunning() {
+		return !this.paused && !this.stopped;
+	}
+	
+	public boolean isStopped() {
+		return this.stopped;
 	}
 	
 	public void start() {

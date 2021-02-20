@@ -17,11 +17,11 @@ public class ExperimentAgent extends GridAgent {
 	}
 
 	@Override
-	public void draw(GridCanvasContext sc) {
-		GraphicsContext gc = sc.getGraphicsContext();
-		gc.setStroke(sc.getColorPalette().get(1));
-		gc.strokeLine(getCellX() + (sc.getCellWidth()/ 2.0), getCellY() + (sc.getCellHeight()/ 2.0), getCellX() + 10.0 * Math.cos(getHeading()), getCellY() + 10.0 * Math.sin(getHeading()));
+	public void draw(GridCanvasContext gcc) {
+		GraphicsContext gc = gcc.getGraphicsContext();
+		gc.setStroke(gcc.getColorPalette().get(1));
+		gc.strokeLine(getCellX() * gcc.getXFactor() + (gcc.getCellWidth()/ 2.0), getCellY() * gcc.getYFactor() + (gcc.getCellHeight()/ 2.0), getCellX() * gcc.getXFactor() + 10.0 * Math.cos(getHeading()), getCellY() * gcc.getYFactor() + 10.0 * Math.sin(getHeading()));
 		gc.setFill(color);
-		gc.fillOval(getCellX(), getCellY(), sc.getCellWidth(), sc.getCellHeight());
+		gc.fillOval(getCellX() * gcc.getXFactor(), getCellY() * gcc.getYFactor(), gcc.getCellWidth(), gcc.getCellHeight());
 	}
 }

@@ -29,10 +29,12 @@ public class GridCanvas extends Canvas implements SimulationListener {
 	private GridCanvasContext gcc;
 	private List<String> orderedListOfLayerNames;
 	private Map<String, GridLayerRenderer> renderersByName;
-	private List<String> renderersToShow;
+//	private List<String> renderersToShow;
+	private List<Drawable> customDrawables;
 	private List<Toast> toasts;
 	boolean drawBeacons = true;
 	boolean drawAgents = true;
+	boolean drawCustomDrawables = false;
 	boolean drawToasts = true;
 	
 	public GridCanvas(Simulation simulation, Grid grid) {
@@ -52,6 +54,7 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		this.gcc = new GridCanvasContext(simulation, grid, this, cellWidth, cellHeight, cellXSpacing, cellYSpacing);
 		this.orderedListOfLayerNames = new ArrayList<>();
 		this.renderersByName = new HashMap<>();
+		this.customDrawables = new ArrayList<>();
 		this.toasts = new ArrayList<>();
 		
         AnimationTimer timer = new AnimationTimer() {
@@ -126,7 +129,7 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		this.drawAgents = drawAgents;
 	}
 
-	public boolean drawsToasts() {
+	public boolean willDrawToasts() {
 		return drawToasts;
 	}
 
@@ -136,6 +139,18 @@ public class GridCanvas extends Canvas implements SimulationListener {
 
 	public List<Toast> getToasts() {
 		return this.toasts;
+	}
+	
+	public List<Drawable> getCustomDrawables() {
+		return this.customDrawables;
+	}
+	
+	public boolean willDrawCustomDrawables() {
+		return this.drawCustomDrawables;
+	}
+
+	public void setDrawCustomDrawables(boolean drawCustom) {
+		this.drawCustomDrawables = drawCustom;
 	}
 	
 	public void update() {
@@ -168,6 +183,12 @@ public class GridCanvas extends Canvas implements SimulationListener {
 			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).drawBefore(gcc));
 			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).draw(gcc));
 			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).drawAfter(gcc));
+		}
+		
+		if (drawCustomDrawables) {
+			customDrawables.stream().forEach(drawable -> drawable.drawBefore(gcc));
+			customDrawables.stream().forEach(drawable -> drawable.draw(gcc));
+			customDrawables.stream().forEach(drawable -> drawable.drawAfter(gcc));
 		}
 		
 		if (drawToasts) {
