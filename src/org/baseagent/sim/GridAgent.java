@@ -103,7 +103,12 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	public GridLayer getGridLayer() {
 		return getGrid().getGridLayer(this.gridLayerName);
 	}
-	
+
+	/** Get any grid layer that the grid knows about */
+	public GridLayer getGridLayer(String gridLayerName) {
+		return getGrid().getGridLayer(gridLayerName);
+	}
+
 	public Object getObjectFromLayer(String layerName) {
 		return getGrid().getGridLayer(layerName).current().get(getCellX(), getCellY());
 	}
