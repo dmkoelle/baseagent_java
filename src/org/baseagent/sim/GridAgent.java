@@ -35,7 +35,7 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 		setDrawable(new Drawable() {
 			@Override
 			public void draw(GridCanvasContext gcc) {
-				VisualizationLibrary.drawTriangleWithHeading2(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
+				VisualizationLibrary.drawTriangleWithHeadingForCell(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
 			}
 		});
 	}

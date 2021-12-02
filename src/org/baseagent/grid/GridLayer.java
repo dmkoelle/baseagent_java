@@ -74,16 +74,16 @@ public class GridLayer {
 	public void set(int x, int y, Object value) { current().set(x, y, value); }
 	public void clear(int x, int y) { current().clear(x, y); }
 	public Object get(int x, int y) { return current().get(x, y); }
-	public int count8Neighbors(int x, int y, Predicate<Object> predicate) { return current().count8Neighbors(x, y, predicate); }
-	public int count4Neighbors(int x, int y, Predicate<Object> predicate) { return current().count4Neighbors(x, y, predicate); }
+	public int count8Neighbors(int x, int y, Predicate<? super Object> predicate) { return current().count8Neighbors(x, y, predicate); }
+	public int count4Neighbors(int x, int y, Predicate<? super Object> predicate) { return current().count4Neighbors(x, y, predicate); }
 	public double average9Neighbors(int x, int y) { return current().average9Neighbors(x, y); }
 	public double average8Neighbors(int x, int y) { return current().average8Neighbors(x, y); }
 	public double average4Neighbors(int x, int y) { return current().average4Neighbors(x, y); }
 	public long count(Predicate<Object> predicate) { return current().count(predicate); }
-	public int getBooleanAsOneOrZero(int x, int y, Predicate<Object> predicate) { return current().getBooleanAsOneOrZero(x, y, predicate); }
+	public int getBooleanAsOneOrZero(int x, int y, Predicate<? super Object> predicate) { return current().getBooleanAsOneOrZero(x, y, predicate); }
 	public void scatter(Object thing, int howMany) { current().scatter(thing, howMany); }
-	public void scatter(List<Object> things) { current().scatter(things); }
-	public void scatter(List<Object> things, int x1, int y1, int x2, int y2) { current().scatter(things, x1, y1, x2, y2); }
     public void scatter(Object thing, int howMany, int x1, int y1, int x2, int y2) { current().scatter(thing, howMany, x1, y1, x2, y2); }
+	public void scatter(List<? super Object> things) { current().scatter(things); }
+	public void scatter(List<? super Object> things, int x1, int y1, int x2, int y2) { current().scatter(things, x1, y1, x2, y2); }
 	public void form(Object thing, int x, int y, String... strings) { current().form(thing, x, y, strings); }
 }

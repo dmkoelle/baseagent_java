@@ -36,7 +36,7 @@ public class VisualizationLibrary {
 		graphics.strokePolygon(xPoints, yPoints, 3);
 	}
 	
-	public static void drawTriangleWithHeading2(GraphicsContext graphics, int cellX, int cellY, int cellWidth, int cellHeight, double headingInRadians, Color fill, Color stroke) {
+	public static void drawTriangleWithHeadingForCell(GraphicsContext graphics, int cellX, int cellY, int cellWidth, int cellHeight, double headingInRadians, Color fill, Color stroke) {
 		double cellSpacing = 0.0D;
 		double centerX = cellX*(cellWidth+cellSpacing) + cellWidth * 0.5;
 		double centerY = cellY*(cellHeight+cellSpacing) + cellHeight * 0.5;
@@ -75,14 +75,29 @@ public class VisualizationLibrary {
 		graphics.strokeOval(centerX - xRadius, centerY - yRadius, xRadius * 2, yRadius * 2);
 	}
 
-	public static void fillCircleForCell(GridCanvasContext gcc, int cellX, int cellY, Color stroke, Color fill) {
-		VisualizationLibrary.fillCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()), cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()), gcc.getCellWidth() / 2.0, gcc.getCellHeight() / 2.0, stroke, fill);
+	public static void fillCircleForCell(GridCanvasContext gcc, int cellX, int cellY, Color stroke, Color fill, double margin) {
+		VisualizationLibrary.fillCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()) + gcc.getCellWidth()/2.0, cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()) + gcc.getCellHeight()/2.0, gcc.getCellWidth() / 2.0 - margin, gcc.getCellHeight() / 2.0 - margin, stroke, fill);
 	}
 	
-	public static void fillCircleForCell(GridCanvasContext gcc, int cellX, int cellY, double magnifier, Color stroke, Color fill) {
-		VisualizationLibrary.fillCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()), cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()), (gcc.getCellWidth() / 2.0) * magnifier, (gcc.getCellHeight() / 2.0) * magnifier, stroke, fill);
+	public static void fillCircleForCell(GridCanvasContext gcc, int cellX, int cellY, double magnifier, Color stroke, Color fill, double margin) {
+		VisualizationLibrary.fillCircle(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()), cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()), (gcc.getCellWidth() / 2.0) * magnifier - margin, (gcc.getCellHeight() / 2.0) * magnifier - margin, stroke, fill);
 	}
 
+	public static void fillRect(GraphicsContext graphics, double x, double y, double width, double height, Color stroke, Color fill) {
+		graphics.setFill(fill);
+		graphics.fillRect(x, y, width, height);
+		graphics.setStroke(stroke);
+		graphics.strokeOval(x, y, width, height);
+	}
+
+	public static void fillRectForCell(GridCanvasContext gcc, int cellX, int cellY, Color stroke, Color fill, double margin) {
+		VisualizationLibrary.fillRect(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()) + margin/2.0, cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()) + margin/2.0, gcc.getCellWidth() - margin/2.0, gcc.getCellHeight() - margin/2.0, stroke, fill);
+	}
+	
+	public static void fillRectForCell(GridCanvasContext gcc, int cellX, int cellY, double magnifier, Color stroke, Color fill, double margin) {
+		VisualizationLibrary.fillRect(gcc.getGraphicsContext(), cellX * (gcc.getCellWidth() + gcc.getCellXSpacing()) + margin/2.0, cellY * (gcc.getCellHeight() + gcc.getCellYSpacing()) + margin/2.0, gcc.getCellWidth() * magnifier - margin/2.0, gcc.getCellHeight() * magnifier - margin/2.0, stroke, fill);
+	}
+	
 	public static void drawEmbodiedAgent(GraphicsContext gcc, int x, int y, int width, int height, EmbodiedAgent embodied, Color color) {
 		gcc.save(); // saves the current state on stack, including the current transform
         Rotate r = new Rotate(Math.toDegrees(embodied.getHeading()), x + width / 2.0, y + height / 2.0);

@@ -104,7 +104,7 @@ public class GridLayerStep {
 	 * Returns a count of the neighbors surrounding
 	 * the given cell that match the predicate.
 	 */
-	public int count8Neighbors(int x, int y, Predicate<Object> predicate) {
+	public int count8Neighbors(int x, int y, Predicate<? super Object> predicate) {
 		int retVal = 0;
 		if (predicate.test(get(x-1, y-1))) retVal++;
 		if (predicate.test(get(x,   y-1))) retVal++;
@@ -121,7 +121,7 @@ public class GridLayerStep {
 	 * Returns a count of the neighbors to the north, south, east, and west
 	 * of the given cell that match the predicate.
 	 */
-	public int count4Neighbors(int x, int y, Predicate<Object> predicate) {
+	public int count4Neighbors(int x, int y, Predicate<? super Object> predicate) {
 		int retVal = 0;
 		if (predicate.test(get(x,   y-1))) retVal++;
 		if (predicate.test(get(x-1, y  ))) retVal++;

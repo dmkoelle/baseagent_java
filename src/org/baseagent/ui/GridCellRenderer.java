@@ -2,8 +2,6 @@ package org.baseagent.ui;
 
 import org.baseagent.grid.GridLayer;
 
-import javafx.scene.paint.Color;
-
 public interface GridCellRenderer extends GridLayerRenderer {
 	@Override
 	public default void draw(GridCanvasContext gcc, GridLayer layer, double canvasWidth, double canvasHeight) {

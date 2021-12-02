@@ -21,7 +21,7 @@ public class Flocker extends GridAgent {
 		setDrawable(new Drawable() {
 			@Override
 			public void draw(GridCanvasContext sc) {
-				VisualizationLibrary.drawTriangleWithHeading2(sc.getGraphicsContext(), getCellX(), getCellY(), sc.getCellWidth(), sc.getCellHeight(), getHeading(), Color.BLACK, Color.BLUE);
+				VisualizationLibrary.drawTriangleWithHeadingForCell(sc.getGraphicsContext(), getCellX(), getCellY(), sc.getCellWidth(), sc.getCellHeight(), getHeading(), Color.BLACK, Color.BLUE);
 			}
 		});	
 	}

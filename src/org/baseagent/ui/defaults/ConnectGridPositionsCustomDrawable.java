@@ -10,9 +10,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
 public class ConnectGridPositionsCustomDrawable implements Drawable {
-	private List<GridPosition> points;
-	private Paint stroke;
-	private double width;
+	protected List<GridPosition> points;
+	protected Paint stroke;
+	protected double width;
 
 	public ConnectGridPositionsCustomDrawable(List<GridPosition> points, Paint stroke, double width) {
 		this.points = points;
@@ -26,7 +26,7 @@ public class ConnectGridPositionsCustomDrawable implements Drawable {
 		gc.setStroke(stroke);
 		gc.setLineWidth(width);
 		for (int i=1; i < points.size(); i++) {
-			gc.strokeLine(points.get(i-1).getCellX() * gcc.getXFactor(), points.get(i-1).getCellY() * gcc.getYFactor(), points.get(i).getCellX() * gcc.getXFactor(), points.get(i).getCellY() * gcc.getYFactor());
+			gc.strokeLine(points.get(i-1).getCellX() * gcc.getXFactor() + (gcc.getCellWidth() / 2.0), points.get(i-1).getCellY() * gcc.getYFactor() + (gcc.getCellHeight() / 2.0), points.get(i).getCellX() * gcc.getXFactor() + (gcc.getCellWidth() / 2.0), points.get(i).getCellY() * gcc.getYFactor() + (gcc.getCellHeight() / 2.0));
 		}
 	}
 }
