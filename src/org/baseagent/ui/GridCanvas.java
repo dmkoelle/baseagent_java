@@ -27,6 +27,7 @@ public class GridCanvas extends Canvas implements SimulationListener {
 	private Grid grid;
 	private String id = DEFAULT_GRID_CANVAS_ID;
 	private GridCanvasContext gcc;
+	private GridLayerRenderer defaultGridCanvasRenderer;
 	private List<String> orderedListOfLayerNames;
 	private Map<String, GridLayerRenderer> renderersByName;
 //	private List<String> renderersToShow;
@@ -153,6 +154,14 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		this.drawCustomDrawables = drawCustom;
 	}
 	
+	public void setGridRenderer(GridLayerRenderer defaultGridCanvasRenderer) {
+		this.defaultGridCanvasRenderer = defaultGridCanvasRenderer;
+	}
+	
+	public GridLayerRenderer getGridRenderer() {
+		return this.defaultGridCanvasRenderer;
+	}
+	
 	public void update() {
 		GraphicsContext gc = this.getGraphicsContext2D();
 		gcc.setGraphicsContext(gc);
@@ -163,7 +172,12 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		gc.setFill(backgroundColor);
 		gc.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
-		// First, draw the grid layers
+		// Draw the default renderer for the grid itself
+		if (defaultGridCanvasRenderer != null) {
+			defaultGridCanvasRenderer.draw(gcc, grid.getGridLayer(Grid.DEFAULT_GRID_LAYER), this.getWidth(), this.getHeight());
+		}
+		
+		// Then, draw the grid layers
 		for (String layerName : orderedListOfLayerNames) {
 			GridLayerRenderer renderer = renderersByName.get(layerName);
 			if ((renderer != null) && (grid.getGridLayer(layerName) != null)) {
@@ -171,26 +185,28 @@ public class GridCanvas extends Canvas implements SimulationListener {
 			}
 		}
 		
+		// Then draw beacons
 		if (drawBeacons) {
-			// Then draw beacons
 			simulation.getBeacons().stream().forEach(beacon -> ((Drawable)beacon).drawBefore(gcc));
 			simulation.getBeacons().stream().forEach(beacon -> ((Drawable)beacon).draw(gcc));
 			simulation.getBeacons().stream().forEach(beacon -> ((Drawable)beacon).drawAfter(gcc));
 		}
 		
+		// Then draw agents
 		if (drawAgents) {
-			// Then draw agents
 			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).drawBefore(gcc));
 			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).draw(gcc));
 			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).drawAfter(gcc));
 		}
-		
+
+		// Then draw any custom art
 		if (drawCustomDrawables) {
 			customDrawables.stream().forEach(drawable -> drawable.drawBefore(gcc));
 			customDrawables.stream().forEach(drawable -> drawable.draw(gcc));
 			customDrawables.stream().forEach(drawable -> drawable.drawAfter(gcc));
 		}
 		
+		// Finally, draw toasts on top
 		if (drawToasts) {
 			// Then draw any toasts, and remove old toasts
 			toasts.stream().filter(toast -> toast.isActive(getSimulation())).forEach(toast -> toast.draw(gcc));

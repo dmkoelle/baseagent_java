@@ -41,7 +41,7 @@ public class SimpleEmbodiedApplication extends Application {
 
 		SimpleEmbodiedAgent agent = new SimpleEmbodiedAgent();
 		
-		simulation.addSimulationComponent(agent);
+		simulation.add(agent);
 		agent.placeRandomly();
 
 		// Place some random things of interest

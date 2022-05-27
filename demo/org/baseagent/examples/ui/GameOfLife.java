@@ -55,7 +55,7 @@ public class GameOfLife extends Application {
 				}
 			}
 		};
-		simulation.addSimulationComponent(patch);
+		simulation.add(patch);
 		
 		// Create a GridCanvas, which visualizes the contents of the grid
 		GridCanvas canvas = new GridCanvas(simulation, grid, 5, 5);

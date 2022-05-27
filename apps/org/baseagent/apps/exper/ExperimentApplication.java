@@ -39,7 +39,7 @@ public class ExperimentApplication extends Application {
 		
 		for (int i=0; i < 100; i++) {
 			GridAgent drone = new ExperimentAgent();
-			simulation.addSimulationComponent(drone);
+			simulation.add(drone);
 			drone.placeRandomly();
 		}
 

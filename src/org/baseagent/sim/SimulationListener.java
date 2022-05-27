@@ -10,6 +10,9 @@ public interface SimulationListener {
 	default public void onBeforeStepEnded(Simulation simulation) { }
 	default public void onStepEnded(Simulation simulation) { }
 	default public void onAfterStepEnded(Simulation simulation) { }
+	
+	default public void onSimulationComponentAdded(Simulation simulation, SimulationComponent component) { }
+	default public void onSimulationComponentRemoved(Simulation simulation, SimulationComponent component) { }
 
 	// Intentional (user-directed) events
 	default public void onSimulationPaused(Simulation simulation) { }

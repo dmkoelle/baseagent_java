@@ -29,7 +29,7 @@ public class CommunicatingAgents extends BaseAgentApplication {
 
 		for (int i=0; i < 1000; i++) {
 			Agent agent = createBroadcastingAgent();
-			simulation.addSimulationComponent(agent);
+			simulation.add(agent);
 		}
 		
 		simulation.endWhen(sim -> sim.getStepTime() == 5000);

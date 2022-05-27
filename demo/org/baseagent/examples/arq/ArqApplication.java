@@ -31,7 +31,7 @@ public class ArqApplication extends Application {
 		
 		for (int i=0; i < 100; i++) {
 			Agent agent = new ArqAgent("agents");
-			simulation.addSimulationComponent(agent);
+			simulation.add(agent);
 			agent.placeRandomly();
 		}
 		

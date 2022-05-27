@@ -49,7 +49,7 @@ public class ExplorersApplication extends Application {
 		explorers.add(new MagentaExplorer());
 		
 		for (int i=0; i < 5; i++) {
-			simulation.addSimulationComponent(explorers.get(i));
+			simulation.add(explorers.get(i));
 			explorers.get(i).placeRandomly();
 		}
 

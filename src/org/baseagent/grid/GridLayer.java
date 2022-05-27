@@ -71,8 +71,11 @@ public class GridLayer {
 	public void fill(Object value, int x1, int y1, int x2, int y2) { current().fill(value, x1, y1, x2, y2); }
 	public double laplacian_3x3(int x, int y, double centerWeight, double adjacentWeight, double diagonalWeight) { return current().laplacian_3x3(x, y, centerWeight, adjacentWeight, diagonalWeight); }
 	public void set(int x, int y, Object value) { current().set(x, y, value); }
+	public void set(GridPosition position, Object value) { current().set(position, value); }
 	public void clear(int x, int y) { current().clear(x, y); }
+	public void clear(GridPosition position) { current().clear(position); }
 	public Object get(int x, int y) { return current().get(x, y); }
+	public Object get(GridPosition position) { return current().get(position); }
 	public int count8Neighbors(int x, int y, Predicate<? super Object> predicate) { return current().count8Neighbors(x, y, predicate); }
 	public int count4Neighbors(int x, int y, Predicate<? super Object> predicate) { return current().count4Neighbors(x, y, predicate); }
 	public double average9Neighbors(int x, int y) { return current().average9Neighbors(x, y); }
@@ -86,4 +89,5 @@ public class GridLayer {
 	public void scatter(List<? super Object> things) { current().scatter(things); }
 	public void scatter(List<? super Object> things, int x1, int y1, int x2, int y2) { current().scatter(things, x1, y1, x2, y2); }
 	public void form(Object thing, int x, int y, String... strings) { current().form(thing, x, y, strings); }
+	public GridPosition getRandomUnoccupiedPosition() { return current().getRandomUnoccupiedPosition(); }
 }

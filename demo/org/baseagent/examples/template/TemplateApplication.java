@@ -31,7 +31,7 @@ public class TemplateApplication extends Application {
 		
 		for (int i=0; i < 100; i++) {
 			Agent agent = new TemplateAgent("agents");
-			simulation.addSimulationComponent(agent);
+			simulation.add(agent);
 			agent.placeRandomly();
 		}
 		

@@ -174,10 +174,14 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	}
 	
 	public void moveToward(int destinationX, int destinationY) {
-		double direction = BaseAgentMath.direction(this, destinationX, destinationY);
-		moveAlong(1.0, direction); // 1.0 should be 'speed'
+		moveToward(destinationX, destinationY, 1.0);
 	}
-	
+
+	public void moveToward(int destinationX, int destinationY, double speed) {
+		double direction = BaseAgentMath.direction(this, destinationX, destinationY);
+		moveAlong(speed, direction); 
+	}
+
 	public void moveToward(HasGridPosition point, double speed) {
 		double direction = BaseAgentMath.direction(this, point);
 		moveAlong(speed, direction);
@@ -308,6 +312,11 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	public void moveRandomly(int maxDistX, int maxDistY) {
 		Random random = new Random();
 		moveDelta(maxDistX - random.nextInt(2*maxDistX+1), maxDistY - random.nextInt(2*maxDistY+1));
+	}
+	
+	/** I'm including placeAt because moveTo might imply actual movement */
+	public void placeAt(int cellX, int cellY) {
+		moveTo(cellX, cellY);
 	}
 	
 	public void placeRandomly() {

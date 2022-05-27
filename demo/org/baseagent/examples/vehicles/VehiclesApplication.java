@@ -53,7 +53,7 @@ public class VehiclesApplication extends Application {
 	public void doSimulation1(Simulation simulation) {
 		Signal lightSignal = new Signal("light");
 		this.light = new LightBeacon("lightLayer", lightSignal, 20, 20);
-		simulation.addSimulationComponent(light);
+		simulation.add(light);
 
 		List<GridAgent> agents = new ArrayList<>();
 		agents.add(new VehiclesAgent("vehicleLayer", Color.LIGHTSALMON, lightSignal, VehiclesAgent.ATTRACTED_TO_LIGHT));
@@ -62,7 +62,7 @@ public class VehiclesApplication extends Application {
 		agents.add(new VehiclesAgent("vehicleLayer", Color.AZURE, lightSignal, VehiclesAgent.SCARED_OF_LIGHT));
 		
 		for (GridAgent agent : agents) {
-			simulation.addSimulationComponent(agent);
+			simulation.add(agent);
 			agent.placeRandomly();
 		}
 	}

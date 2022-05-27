@@ -30,6 +30,9 @@ public class Simulation {
 	private List<Beacon> beacons;
 	private List<Patch> patches; 
 	private List<Metric> metrics;
+	
+	private List<SimulationComponent> componentsToAddAtEndOfStep;
+	private List<SimulationComponent> componentsToRemoveAtEndOfStep;
 
 	private Predicate<Simulation> endCondition;
 	private Map<String, Object> properties;
@@ -38,6 +41,7 @@ public class Simulation {
 	private long delayInMillis = 0;
 	private boolean paused;
 	private boolean stopped;
+	private boolean currentlyInStep;
 	private List<SimulationListener> listeners;
 	
 	public Simulation() {
@@ -50,6 +54,9 @@ public class Simulation {
 		this.beacons = new ArrayList<>();
 		this.patches = new ArrayList<>();
 		this.metrics = new ArrayList<>();
+
+		componentsToAddAtEndOfStep = new ArrayList<>();
+		componentsToRemoveAtEndOfStep = new ArrayList<>();
 
 		this.properties = new HashMap<>();
 		this.listeners = new ArrayList<>();
@@ -115,7 +122,12 @@ public class Simulation {
 		this.properties = props;
 	}
 	
-	public void addSimulationComponent(SimulationComponent simulatee) {
+	public void add(SimulationComponent simulatee) {
+		if (currentlyInStep) {
+			this.componentsToAddAtEndOfStep.add(simulatee);
+			return;
+		}
+		
 		simulatee.setSimulation(this);
 		if (simulatee.getType() == SimulationComponent.Type.AGENT) {
 			agents.add((Agent)simulatee);
@@ -134,9 +146,16 @@ public class Simulation {
 		if (simulatee instanceof MessageListener) {
 			messageListeners.add((MessageListener)simulatee);
 		}
+		
+		fireSimulationComponentAdded(simulatee);
 	}
 	
-	public void removeSimulationComponent(SimulationComponent simulatee) {
+	public void remove(SimulationComponent simulatee) {
+		if (currentlyInStep) {
+			this.componentsToRemoveAtEndOfStep.add(simulatee);
+			return;
+		}
+		
 		simulatee.setSimulation(null);
 		if (simulatee.getType() == SimulationComponent.Type.AGENT) {
 			agents.remove(simulatee);
@@ -144,6 +163,9 @@ public class Simulation {
 		else if (simulatee.getType() == SimulationComponent.Type.PATCH) {
 			patches.remove((Patch)simulatee);
 		}
+		else if (simulatee.getType() == SimulationComponent.Type.BEACON) {
+			beacons.remove((Beacon)simulatee);
+		}		
 		
 		if (simulatee instanceof HasStep) {
 			hasSteps.remove((HasStep)simulatee);
@@ -152,6 +174,8 @@ public class Simulation {
 		if (simulatee instanceof MessageListener) {
 			messageListeners.remove((MessageListener)simulatee);
 		}
+		
+		fireSimulationComponentRemoved(simulatee);
 	}
 	
 	public List<Agent> getAgents() {
@@ -252,6 +276,18 @@ public class Simulation {
 		}
 	}
 
+	private void fireSimulationComponentAdded(SimulationComponent simulatee) {
+		for (SimulationListener listener : listeners) {
+			listener.onSimulationComponentAdded(this, simulatee);
+		}
+	}
+	
+	private void fireSimulationComponentRemoved(SimulationComponent simulatee) {
+		for (SimulationListener listener : listeners) {
+			listener.onSimulationComponentRemoved(this, simulatee);
+		}
+	}
+	
 	public void endWhen(Predicate<Simulation> endCondition) {
 		this.endCondition = endCondition;
 	}
@@ -351,6 +387,7 @@ public class Simulation {
 			
 			fireBeforeStepStarted();
 			fireStepStarted();
+			this.currentlyInStep = true;
 			fireAfterStepStarted();
 
 			for (HasStep hasStep : hasSteps) {
@@ -359,16 +396,34 @@ public class Simulation {
 
 			fireBeforeStepEnded();
 			fireStepEnded();
+			this.currentlyInStep = false;
 			fireAfterStepEnded();
 
 //			evaluateMetrics();
 //
+			addAtEndOfStep();
+			removeAtEndOfStep();
+			
 			sleep(delayInMillis);
 			time++;
 //
 //			fireStepEnded();
 		}
 		fireSimulationEnded();
+	}
+
+	private void addAtEndOfStep() {
+		for (SimulationComponent component : componentsToAddAtEndOfStep) {
+			add(component);
+		}
+		componentsToAddAtEndOfStep.clear();
+	}
+
+	private void removeAtEndOfStep() {
+		for (SimulationComponent component : componentsToRemoveAtEndOfStep) {
+			remove(component);
+		}
+		componentsToRemoveAtEndOfStep.clear();
 	}
 
     private void sleep(long millis) {

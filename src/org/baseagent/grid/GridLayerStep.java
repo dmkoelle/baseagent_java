@@ -73,12 +73,24 @@ public class GridLayerStep {
 		cells.get(parentGrid.getBoundsPolicy().boundY(y)).set(parentGrid.getBoundsPolicy().boundX(x), value);
 	}
 
+	public void set(GridPosition position, Object value) {
+		set(position.getCellX(), position.getCellY(), value);
+	}
+
 	public void clear(int x, int y) {
 		cells.get(parentGrid.getBoundsPolicy().boundY(y)).set(parentGrid.getBoundsPolicy().boundX(x), null);
 	}
 	
+	public void clear(GridPosition position) {
+		clear(position.getCellX(), position.getCellY());
+	}
+	
 	public Object get(int x, int y) {
 		return cells.get(parentGrid.getBoundsPolicy().boundY(y)).get(parentGrid.getBoundsPolicy().boundX(x));
+	}
+	
+	public Object get(GridPosition position) {
+		return get(position.getCellX(), position.getCellY());
 	}
 	
 	public void setEachCell(GridLayerStep conditionalLayer, Function<Object, Object> f) {
@@ -253,5 +265,19 @@ public class GridLayerStep {
 	
 	public void form(String... strings) {
 		throw new IllegalArgumentException("form not implemented");
+	}
+	
+	public GridPosition getRandomUnoccupiedPosition() {
+		int x, y = 0;
+		int numTries = (int)(this.parentGrid.getWidthInCells() * this.parentGrid.getHeightInCells() * 0.25);
+		do {
+			numTries--;
+			x = (int)Math.random() * this.parentGrid.getWidthInCells();
+			y = (int)Math.random() * this.parentGrid.getHeightInCells();
+		} while ((get(x, y) != null) && (numTries > 0));
+		if (numTries == 0) {
+			throw new IllegalArgumentException("Not implemented: Second strategy in getRandomUnoccupiedPosition that starts methodically scanning rows for an empty position, since the random search didn't work for 25% of the cells in the grid.");
+		}
+		return new GridPosition(x, y);
 	}
 }

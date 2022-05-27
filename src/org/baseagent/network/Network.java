@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Network<T, R> {
+import org.baseagent.sim.Universe;
+
+public class Network<T, R> implements Universe {
 	private Map<T, Node<T>> nodes;
 	private Map<String, Edge<T,R>> edges;
 	private Map<Node<T>, List<Edge<T,R>>> edgesFromNode;

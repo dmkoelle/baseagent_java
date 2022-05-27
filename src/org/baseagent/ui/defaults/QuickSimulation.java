@@ -73,7 +73,7 @@ public class QuickSimulation {
 	//
 	
 	public void add(SimulationComponent simulatee) {
-		getSimulation().addSimulationComponent(simulatee);
+		getSimulation().add(simulatee);
 	}
 	
 	public void fill(Object value) {

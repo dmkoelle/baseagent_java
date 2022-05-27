@@ -40,7 +40,7 @@ public class LargeSwarm extends Application {
 		
 		for (int i=0; i < 100; i++) {
 			GridAgent flocker = new Flocker(i);
-			simulation.addSimulationComponent(flocker);
+			simulation.add(flocker);
 			flocker.placeRandomly();
 		}
 

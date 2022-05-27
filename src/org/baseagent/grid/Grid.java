@@ -10,28 +10,22 @@ import org.baseagent.sim.SimulationComponent;
 import org.baseagent.sim.Universe;
 
 public class Grid extends SimulationComponent implements Universe {
-	public static String DEFAULT_GRID = "DEFAULT_GRID";
+	public static String DEFAULT_GRID_LAYER = "DEFAULT_GRID_LAYER";
 	private int widthInCells, heightInCells;
-	private String id;
 	private Map<String, GridLayer> layers;
 	private GridBoundsPolicy boundsPolicy;
 	private GridStepPolicy stepPolicy;
 	
 	public Grid(int widthInCells, int heightInCells) {
-		this(Grid.DEFAULT_GRID, widthInCells, heightInCells);
-	}
-	
-	public Grid(String id, int widthInCells, int heightInCells) {
 		super();
 		
-		this.id = id;
 		this.widthInCells = widthInCells;
 		this.heightInCells = heightInCells;
 	
 		this.layers = new HashMap<>();
 		this.boundsPolicy = new TorusBoundsPolicy(widthInCells, heightInCells);
 		this.stepPolicy = new FullGridStepPolicy(this);
-//		addGridLayer("default", new GridLayer(this));  // TODO - Should a Grid have a default layer?
+		createGridLayer(DEFAULT_GRID_LAYER, GridLayerUpdateOption.NO_SWITCH);  
 	}
 	
 	public int getWidthInCells() {

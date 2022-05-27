@@ -40,7 +40,7 @@ public class S1Application extends Application {
 		
 		for (int i=0; i < 100; i++) {
 			GridAgent drone = new S1Agent();
-			simulation.addSimulationComponent(drone);
+			simulation.add(drone);
 			drone.placeRandomly();
 		}
 		

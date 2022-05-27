@@ -32,7 +32,7 @@ public class SmoothTravelTest extends Application {
 		
 		for (int i=0; i < 500; i++) {
 			GridAgent agent = new GridAgent();
-			sim.addSimulationComponent(agent);
+			sim.add(agent);
 			agent.moveTo(100, 100);
 	//		WalkToBehavior walkTo = new WalkToBehavior(200, 100, 0.2);
 			RandomWanderBehavior walkTo = new RandomWanderBehavior(20, 2.3);

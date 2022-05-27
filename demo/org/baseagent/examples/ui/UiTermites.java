@@ -34,7 +34,7 @@ public class UiTermites extends Application {
 		
 		for (int i=0; i < 1000; i++) {
 			GridAgent termite = new GridAgent(new TermiteBehavior());
-			simulation.addSimulationComponent(termite);
+			simulation.add(termite);
 			termite.placeRandomly();
 		}
 		

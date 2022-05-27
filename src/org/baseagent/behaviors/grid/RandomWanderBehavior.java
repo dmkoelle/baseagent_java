@@ -3,7 +3,7 @@ package org.baseagent.behaviors.grid;
 import java.util.function.Predicate;
 
 import org.baseagent.Agent;
-import org.baseagent.behaviors.StatefulBehavior;
+import org.baseagent.behaviors.StateBehavior;
 import org.baseagent.sim.GridAgent;
 import org.baseagent.sim.Simulation;
 import org.baseagent.statemachine.State;

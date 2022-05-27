@@ -70,7 +70,7 @@ public class BoardPlaneSimulation extends Application {
 		for (Destination destination : pathNetwork.getAllDestinations()) {
 			PassengerAgent passenger = new PassengerAgent(destination);
 			passengers.add(passenger);
-			simulation.addSimulationComponent(passenger);
+			simulation.add(passenger);
 		}
 
         List<PassengerAgent> boardingSequence = createBoardingSequence(passengers);

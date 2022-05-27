@@ -77,7 +77,7 @@ public class TrafficApplication extends Application {
 			Script workdayCommute = workdayCommuteTemplate.createInstance(home, workplace); // 11/25/19 - New Idea: A Script that is a Behavior
 			CarAgent agent = new CarAgent(); // Actually, an Agent should just be something that has step?
 			agent.addBehavior(workdayCommute);
-			simulation.addSimulationComponent(agent);
+			simulation.add(agent);
 		}
 		
 		simulation.endWhen(sim -> sim.getStepTime() == 10000);
