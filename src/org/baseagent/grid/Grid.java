@@ -1,10 +1,18 @@
 package org.baseagent.grid;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import org.baseagent.grid.GridLayer.GridLayerUpdateOption;
+import org.baseagent.grid.rgb.GridLayerAndObject;
+import org.baseagent.grid.rgb.RGB;
 import org.baseagent.sim.Simulation;
 import org.baseagent.sim.SimulationComponent;
 import org.baseagent.sim.Universe;
@@ -26,6 +34,29 @@ public class Grid extends SimulationComponent implements Universe {
 		this.boundsPolicy = new TorusBoundsPolicy(widthInCells, heightInCells);
 		this.stepPolicy = new FullGridStepPolicy(this);
 		createGridLayer(DEFAULT_GRID_LAYER, GridLayerUpdateOption.NO_SWITCH);  
+	}
+	
+	public static Grid generateFromImage(File imageFile, File rgbMapFile) throws IOException {
+		 Map<RGB, GridLayerAndObject> rgbMap = GridLayerAndObject.generateFromRGB(rgbMapFile);
+		 return generateFromImage(imageFile, rgbMap);
+	}
+	
+	public static Grid generateFromImage(File imageFile, Map<RGB, GridLayerAndObject> rgbMap) throws IOException {
+		 BufferedImage image = ImageIO.read(imageFile);
+		 Grid grid = new Grid(image.getWidth(), image.getHeight());
+		 for (int x=0; x < image.getWidth(); x++) {
+			 for (int y=0; y < image.getHeight(); y++) {
+				 RGB rgb = RGB.get(image.getRGB(x, y), ColorModel.getRGBdefault());
+				 GridLayerAndObject glo = rgbMap.get(rgb);
+				 if (glo != null) {
+					 GridLayer layer = grid.getOrCreateGridLayer(glo.gridLayer, GridLayerUpdateOption.NO_SWITCH);
+					 if (glo.object != null) {
+						 layer.set(x, y, glo.object);
+					 }
+				 }
+			 }
+		 }
+		 return grid;
 	}
 	
 	public int getWidthInCells() {
@@ -64,6 +95,15 @@ public class Grid extends SimulationComponent implements Universe {
 	
 	public GridLayer getGridLayer(String name) {
 		return layers.get(name);
+	}
+	
+	public GridLayer getOrCreateGridLayer(String name, GridLayerUpdateOption updateOption) {
+		GridLayer retVal = layers.get(name);
+		if (retVal == null) {
+			return createGridLayer(name, updateOption);
+		} else {
+			return retVal;
+		}
 	}
 	
 	public void removeGridLayer(String name) {

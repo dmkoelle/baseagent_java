@@ -87,7 +87,8 @@ public class VisualizationLibrary {
 		graphics.setFill(fill);
 		graphics.fillRect(x, y, width, height);
 		graphics.setStroke(stroke);
-		graphics.strokeOval(x, y, width, height);
+		graphics.setLineWidth(0.15);
+		graphics.strokeRect(x, y, width, height);
 	}
 
 	public static void fillRectForCell(GridCanvasContext gcc, int cellX, int cellY, Color stroke, Color fill, double margin) {
