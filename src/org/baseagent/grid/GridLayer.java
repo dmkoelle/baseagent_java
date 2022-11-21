@@ -1,9 +1,11 @@
 package org.baseagent.grid;
 
+import java.io.PrintStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class GridLayer {
+public class GridLayer implements Iterable<GridCell> {
 	private String layerName;
 	private GridLayerStep current;
 	private GridLayerStep next;
@@ -33,7 +35,7 @@ public class GridLayer {
 	public String getLayerName() {
 		return this.layerName;
 	}
-	
+
 	public Grid getParentGrid() {
 		return this.parentGrid;
 	}
@@ -53,6 +55,10 @@ public class GridLayer {
 		}
 	}
 	
+	public GridLayerUpdateOption getUpdateOption() {
+		return this.updateOption;
+	}
+	
 	public void setUpdateOption(GridLayerUpdateOption updateOption) {
 		this.updateOption = updateOption;
 	}
@@ -61,6 +67,30 @@ public class GridLayer {
 		if (current().get(x, y) == value) {
 			next().set(x, y, value);
 		}
+	}
+	
+	@Override
+	public Iterator<GridCell> iterator() {
+		return new Iterator<GridCell>() {
+			int x=0, y=0;
+			
+			@Override
+			public boolean hasNext() {
+				if (x + 1 < parentGrid.getWidthInCells()) return true;
+				if (y + 1 < parentGrid.getHeightInCells()) return true;
+				return false;
+			}
+			
+			@Override
+			public GridCell next() {
+				x = x + 1;
+				if (x > parentGrid.getWidthInCells()) {
+					x = 0;
+					y = y + 1;
+				}
+				return new GridCell(GridLayer.this, x, y);
+			}
+		};
 	}
 	
 	//
@@ -90,4 +120,26 @@ public class GridLayer {
 	public void scatter(List<? super Object> things, int x1, int y1, int x2, int y2) { current().scatter(things, x1, y1, x2, y2); }
 	public void form(Object thing, int x, int y, String... strings) { current().form(thing, x, y, strings); }
 	public GridPosition getRandomUnoccupiedPosition() { return current().getRandomUnoccupiedPosition(); }
+
+	public void debug(PrintStream s) {
+		s.println(getLayerName());
+		for (int x=0; x < this.getParentGrid().getWidthInCells(); x++) {
+			for (int y=0; y < this.getParentGrid().getHeightInCells(); y++) {
+				Object o = get(x,y);
+				if (o == null) {
+					s.print("  (null)  ");
+				} else {
+					String t = o.toString();
+					String u = t.substring(0, Math.min(t.length(), 10));
+					String v = PADDING[u.length()];
+					s.print(u);
+					s.print(v);
+				}
+				s.print(" ");
+			}
+			s.println();
+		}
+	}
+	
+	private static String[] PADDING = new String[] { "          ", "         ", "        ", "       ", "      ", "     ", "    ", "   ", "  ", " ", "" };
 }

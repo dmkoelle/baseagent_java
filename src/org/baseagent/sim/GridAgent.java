@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Random;
 
 import org.baseagent.behaviors.Behavior;
-import org.baseagent.grid.GridPosition;
 import org.baseagent.grid.Grid;
 import org.baseagent.grid.GridLayer;
+import org.baseagent.grid.GridPosition;
+import org.baseagent.grid.HasFineGridPosition;
 import org.baseagent.grid.HasGridPosition;
 import org.baseagent.ui.Drawable;
 import org.baseagent.ui.DrawableAgent;
@@ -18,24 +19,25 @@ import org.baseagent.util.Vector2D;
 
 import javafx.scene.paint.Color;
 
-public class GridAgent extends DrawableAgent implements HasGridPosition {
+public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	private int cellX;
 	private int cellY;
 	private double heading;
 	private String gridLayerName;
 	
 	// Moving subsystem
-	private double movingX;
-	private double movingY;
+	private double fineX;
+	private double fineY;
 	private HasGridPosition destinationPoint;
 	private double movingSpeed;
+	private int xFactor, yFactor;
 	
 	public GridAgent() {
 		super();
 		setDrawable(new Drawable() {
 			@Override
 			public void draw(GridCanvasContext gcc) {
-				VisualizationLibrary.drawTriangleWithHeadingForCell(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
+				VisualizationLibrary.drawTriangleWithHeading(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
 			}
 		});
 	}
@@ -71,6 +73,16 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 		return this.cellY;
 	}
 	
+	@Override
+	public double getFineX() {
+		return this.fineX;
+	}
+	
+	@Override
+	public double getFineY() {
+		return this.fineY;
+	}
+	
 	public GridPosition getGridPosition() {
 		return new GridPosition(getCellX(), getCellY());
 	}
@@ -83,11 +95,25 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	@Override
 	public void setCellX(int x) {
 		this.cellX = x;
+		this.fineX = x;
 	}
 	
 	@Override
 	public void setCellY(int y) {
 		this.cellY = y;
+		this.fineY = y;
+	}
+	
+	@Override
+	public void setFineX(double x) {
+		this.fineX = x;
+		this.cellX = (int)Math.round(x);
+	}
+	
+	@Override
+	public void setFineY(double y) {
+		this.fineY = y;
+		this.cellY = (int)Math.round(y);
 	}
 	
 	public void setHeading(double heading) {
@@ -155,8 +181,8 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 	
 	private void startMovingToward0() {
 		setHeading(BaseAgentMath.direction(this, this.destinationPoint));
-		this.movingX = getCellX();
-		this.movingY = getCellY();
+		this.fineX = getCellX();
+		this.fineY = getCellY();
 	}
 
 	public boolean continueMovingToward() {
@@ -166,9 +192,9 @@ public class GridAgent extends DrawableAgent implements HasGridPosition {
 			return true;
 		} else {
 			setHeading(BaseAgentMath.direction(this, this.destinationPoint));
-			movingX += movingSpeed * Math.cos(getHeading());
-			movingY += movingSpeed * Math.sin(getHeading());
-			moveTo((int)movingX, (int)movingY);
+			fineX += movingSpeed * Math.cos(getHeading());
+			fineY += movingSpeed * Math.sin(getHeading());
+			moveTo((int)fineX, (int)fineY);
 			return false;
 		}
 	}

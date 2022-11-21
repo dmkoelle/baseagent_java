@@ -1,5 +1,6 @@
 package org.baseagent.network;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -20,6 +21,7 @@ public class Edge<T, R> {
 		this.destinationNode = destinationNode;
 		this.doesEdgeApply = (t -> true);
 		this.toDoOnEdge = (t -> { });
+		this.payload = new HashMap<>();
 	}
 	
 	public Edge(Node<T> sourceNode, Node<T> destinationNode, Predicate<R> doesEdgeApply, Consumer<R> toDoOnEdge) {

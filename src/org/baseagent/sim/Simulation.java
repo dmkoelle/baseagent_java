@@ -433,4 +433,8 @@ public class Simulation {
 			e.printStackTrace();
 		}
     }
+    
+    public boolean stepTimeInterval(long interval) {
+    	return (getStepTime() % interval == 0);
+    }
 }

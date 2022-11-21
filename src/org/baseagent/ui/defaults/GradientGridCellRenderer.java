@@ -1,7 +1,8 @@
 package org.baseagent.ui.defaults;
 
-import org.baseagent.ui.GridCellRenderer;
+import org.baseagent.grid.GridLayer;
 import org.baseagent.ui.GridCanvasContext;
+import org.baseagent.ui.GridCellRenderer;
 
 import javafx.scene.paint.Color;
 
@@ -15,7 +16,7 @@ public class GradientGridCellRenderer implements GridCellRenderer {
 	}
 	
 	@Override
-	public void drawCell(GridCanvasContext gcc, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels) {
+	public void drawCell(GridCanvasContext gcc, GridLayer layer, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels) {
 		if (value == null) return;
 		if (!(value instanceof Double)) {
 			System.out.println("value is "+value.getClass());

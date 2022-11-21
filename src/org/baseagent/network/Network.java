@@ -5,8 +5,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
+import org.baseagent.grid.Grid;
+import org.baseagent.grid.GridPosition;
 import org.baseagent.sim.Universe;
+import org.baseagent.util.BaseAgentMath;
 
 public class Network<T, R> implements Universe {
 	private Map<T, Node<T>> nodes;
@@ -14,6 +18,7 @@ public class Network<T, R> implements Universe {
 	private Map<Node<T>, List<Edge<T,R>>> edgesFromNode;
 	private Map<Node<T>, List<Edge<T,R>>> edgesToNode;
 	private List<NetworkListener> networkListeners;
+	private Node<T> root; // For trees
 	
 	public Network() {
 		nodes = new HashMap<>();
@@ -32,7 +37,7 @@ public class Network<T, R> implements Universe {
 		fireNodeAdded(node);
 	}
 
-	public Node getNode(T object) {
+	public Node<T> getNode(T object) {
 		return nodes.get(object);
 	}
 	
@@ -57,6 +62,15 @@ public class Network<T, R> implements Universe {
 		edgesToNode.remove(node);
 		edgesFromNode.remove(node);
 		fireNodeRemoved(node);
+	}
+	
+	public Collection<Node<T>> getAdjacentNodes(Node<T> node) {
+		List<Node<T>> retVal = new ArrayList<>();
+		List<Edge<T, R>> edgesFromN = edgesFromNode.get(node);
+		for (Edge<T, R> edge : edgesFromN) {
+			retVal.add(edge.getDestinationNode());
+		}
+		return retVal;
 	}
 	
 	public void addEdge(String edgeName, String sourceNodeId, String destinationNodeId) {
@@ -84,6 +98,7 @@ public class Network<T, R> implements Universe {
 			edges = map.get(node);
 		} else {
 			edges = new ArrayList<Edge<T,R>>();
+			map.put(node, edges);
 		}
 		edges.add(edge);
 	}
@@ -92,7 +107,7 @@ public class Network<T, R> implements Universe {
 		return this.getEdgesTo(nodes.get(object));
 	}
 
-	public Collection<Edge<T,R>> getEdgesTo(Node node) {
+	public Collection<Edge<T,R>> getEdgesTo(Node<T> node) {
 		return edgesToNode.get(node);
 	}
 	
@@ -171,8 +186,87 @@ public class Network<T, R> implements Universe {
 		}
 	}
 	
+	public void setRoot(Node<T> root) {
+		this.root = root;
+	}
+	
+	public Node<T> getRoot() {
+		return this.root;
+	}
+	
+	/**
+	 * Returns a map of all nodes to
+	 * @param startNode
+	 * @return
+	 */
+	
+	public Map<Node<T>, Double> getShortestPath(Node<T> startNode) {
+		List<Node<T>> pq = new ArrayList<>();
+		Map<Node<T>, Double> dist = new HashMap<>();
+		Map<Node<T>, Node<T>> pred = new HashMap<>();
+		for (Node<T> node : getNodes()) {
+			dist.put(node, Double.MAX_VALUE);
+			pred.put(node, null);
+		}
+		
+		dist.put(startNode, 0.0D);
+		
+		for (Node<T> node : getNodes()) {
+			pq.add(node);
+		}
+		
+		while (pq.size() > 0) {
+			/** Get minimum distance node from 'nodes' */
+			double minDist = Double.MAX_VALUE;
+			Node<T> minNode = null;
+			for (Map.Entry<Node<T>, Double> distEntry : dist.entrySet() ) {
+				if (distEntry.getValue() < minDist) {
+					minDist = distEntry.getValue();
+					minNode = distEntry.getKey();
+				}
+			}
+			
+			for (Node<T> neighborOfMinNode : getAdjacentNodes(minNode)) {
+				double w = 0.0;
+				Collection<Edge<T, R>> edges = getEdgesBetween(minNode, neighborOfMinNode);
+				for (Edge<T, R> edge : edges) {
+					if (edge.getPayload().containsKey("DISTANCE")) {
+						w = (Double)edge.getPayload().get("DISTANCE");
+					}
+				}
+				
+				double newW = dist.get(minNode) + w;
+				if (newW < dist.get(neighborOfMinNode)) {
+					pq.remove(neighborOfMinNode);
+					dist.put(neighborOfMinNode, newW);
+					pred.put(neighborOfMinNode, minNode);
+				}
+			}
+		}
+		
+		return dist;
+	}
+	
+	public void connectVisibleNodes(Grid grid, Predicate<GridPosition> barrierCondition) {
+		for (Node<T> node : getNodes()) {
+			for (Node<T> otherNode : getNodes()) {
+				if (!(node.equals(otherNode))) {
+					GridPosition positionA = ((Node<GridPosition>)node).getObject();
+					GridPosition positionB = ((Node<GridPosition>)otherNode).getObject();
+					if (BaseAgentMath.canSeeIt(grid, positionA, positionB, barrierCondition)) {
+						Edge<T, R> edge = new Edge<>("id", node, otherNode);
+						this.addEdge(edge);
+						edge.getPayload().put(Network.DISTANCE, BaseAgentMath.distance(positionA, positionB));
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "Network"; // TODO Make Network.toString more fully functional
 	}
+	
+	public static final String DISTANCE = "DISTANCE";
 }

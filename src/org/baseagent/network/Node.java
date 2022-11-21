@@ -1,5 +1,6 @@
 package org.baseagent.network;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Node<T> {
@@ -8,10 +9,15 @@ public class Node<T> {
 	
 	public Node(T object) {
 		this.object = object;
+		this.payload = new HashMap<>();
 	}
 	
 	public T getObject() {
 		return this.object;
+	}
+	
+	public Map<String, Object> getPayload() {
+		return this.payload;
 	}
 	
 	@Override

@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.function.Predicate;
 
+import org.baseagent.grid.Grid;
+import org.baseagent.grid.GridPosition;
 import org.baseagent.grid.HasGridPosition;
 
 public class BaseAgentMath {
@@ -80,4 +83,57 @@ public class BaseAgentMath {
 		int index = Arrays.binarySearch(dd, new Random().nextDouble());
 		return (index > 0) ? index : (-index - 1);
 	}
+	
+	// Returns TRUE if the agent at x,y can see the location at i,u - if there are no
+	// obstructions between the two positions. Specifically, we're looking for a barrier.
+	// The first time we see the barrier, that's okay, because the barrier is detectable.
+	// But if there is anything beyond the barrier, the agent cannot see it.
+	//
+	// Based on Bresenham's line algorithm
+	public static boolean canSeeIt(Grid grid, int x, int y, int i, int u, Predicate<GridPosition> barrierCondition)
+	{
+		int dx = Math.abs(i - x);
+		int dy = Math.abs(u - y);
+		
+		int sx = x < i ? 1 : -1;
+		int sy = y < u ? 1 : -1;
+		
+		int err = dx - dy;
+		int e2;
+		
+		boolean foundBarrierYet = false;
+		while (true) {
+			if (foundBarrierYet) {
+				return false;
+			}
+			
+			if (barrierCondition.test(new GridPosition(x, y))) {
+				if (!foundBarrierYet) {
+					foundBarrierYet = true;
+				}
+			}
+			if (x == i && y == u) {
+				break;
+			}
+			
+			e2 = 2 * err;
+			if (e2 > -dy) {
+				err = err - dy;
+				x = x + sx;
+			}
+			
+			if (e2 < dx) {
+				err = err + dx;
+				y = y + sy;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean canSeeIt(Grid grid, HasGridPosition a, HasGridPosition b, Predicate<GridPosition> barrierCondition) {
+		return canSeeIt(grid, a.getCellX(), a.getCellY(), b.getCellX(), b.getCellY(), barrierCondition);
+	}
 }
+
+
+	

@@ -11,8 +11,6 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.baseagent.grid.Grid;
-import org.baseagent.sim.Simulation;
-import org.baseagent.sim.SimulationListener;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -22,37 +20,30 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
-public class GridCanvas extends Canvas implements SimulationListener {
-	private Simulation simulation;
+public class GridCanvas extends Canvas {
 	private Grid grid;
 	private String id = DEFAULT_GRID_CANVAS_ID;
 	private GridCanvasContext gcc;
 	private GridLayerRenderer defaultGridCanvasRenderer;
 	private List<String> orderedListOfLayerNames;
 	private Map<String, GridLayerRenderer> renderersByName;
-//	private List<String> renderersToShow;
 	private List<Drawable> customDrawables;
 	private List<Toast> toasts;
-	boolean drawBeacons = true;
-	boolean drawAgents = true;
-	boolean drawCustomDrawables = false;
-	boolean drawToasts = true;
+	boolean drawCustomDrawables = true;
 	
-	public GridCanvas(Simulation simulation, Grid grid) {
-		this(simulation, grid, 5, 5, 0, 0);
+	public GridCanvas(Grid grid) {
+		this(grid, 5, 5, 0, 0);
 	}
 
-	public GridCanvas(Simulation simulation, Grid grid, int cellWidth, int cellHeight) {
-		this(simulation, grid, cellWidth, cellHeight, 0, 0);
+	public GridCanvas(Grid grid, int cellWidth, int cellHeight) {
+		this(grid, cellWidth, cellHeight, 0, 0);
 	}
 
-	public GridCanvas(Simulation simulation, Grid grid, int cellWidth, int cellHeight, int cellXSpacing, int cellYSpacing) {
+	public GridCanvas(Grid grid, int cellWidth, int cellHeight, int cellXSpacing, int cellYSpacing) {
 		super(grid.getWidthInCells() * cellWidth + (grid.getWidthInCells()-1) * cellXSpacing, 
 			  grid.getHeightInCells() * cellHeight + (grid.getHeightInCells()-1) * cellYSpacing);
-		this.simulation = simulation;
-		this.simulation.addSimulationListener(this);
 		this.grid = grid;
-		this.gcc = new GridCanvasContext(simulation, grid, this, cellWidth, cellHeight, cellXSpacing, cellYSpacing);
+		this.gcc = new GridCanvasContext(null, grid, this, cellWidth, cellHeight, cellXSpacing, cellYSpacing);
 		this.orderedListOfLayerNames = new ArrayList<>();
 		this.renderersByName = new HashMap<>();
 		this.customDrawables = new ArrayList<>();
@@ -67,25 +58,21 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		timer.start();
 	}
 
-	public GridCanvas(String id, Simulation simulation, Grid grid) {
-		this(id, simulation, grid, 5, 5, 0, 0);
+	public GridCanvas(String id, Grid grid) {
+		this(id, grid, 5, 5, 0, 0);
 	}
 
-	public GridCanvas(String id, Simulation simulation, Grid grid, int cellWidth, int cellHeight) {
-		this(id, simulation, grid, cellWidth, cellHeight, 0, 0);
+	public GridCanvas(String id, Grid grid, int cellWidth, int cellHeight) {
+		this(id, grid, cellWidth, cellHeight, 0, 0);
 	}
 
-	public GridCanvas(String id, Simulation simulation, Grid grid, int cellWidth, int cellHeight, int cellXSpacing, int cellYSpacing) {
-		this(simulation, grid, cellWidth, cellHeight, cellXSpacing, cellYSpacing);
+	public GridCanvas(String id, Grid grid, int cellWidth, int cellHeight, int cellXSpacing, int cellYSpacing) {
+		this(grid, cellWidth, cellHeight, cellXSpacing, cellYSpacing);
 		this.id = id;
 	}
 
 	public String getGridCanvasId() {
 		return this.id;
-	}
-	
-	public Simulation getSimulation() {
-		return this.simulation;
 	}
 	
 	public Grid getGrid() {
@@ -114,30 +101,6 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		this.toasts.remove(toast);
 	}
 	
-	public boolean drawsBeacons() {
-		return drawBeacons;
-	}
-
-	public void setDrawBeacons(boolean drawBeacons) {
-		this.drawBeacons = drawBeacons;
-	}
-
-	public boolean drawsAgents() {
-		return drawAgents;
-	}
-
-	public void setDrawAgents(boolean drawAgents) {
-		this.drawAgents = drawAgents;
-	}
-
-	public boolean willDrawToasts() {
-		return drawToasts;
-	}
-
-	public void setDrawToasts(boolean drawToasts) {
-		this.drawToasts = drawToasts;
-	}
-
 	public List<Toast> getToasts() {
 		return this.toasts;
 	}
@@ -184,35 +147,18 @@ public class GridCanvas extends Canvas implements SimulationListener {
 				renderer.draw(gcc, grid.getGridLayer(layerName), this.getWidth(), this.getHeight());
 			}
 		}
-		
-		// Then draw beacons
-		if (drawBeacons) {
-			simulation.getBeacons().stream().forEach(beacon -> ((Drawable)beacon).drawBefore(gcc));
-			simulation.getBeacons().stream().forEach(beacon -> ((Drawable)beacon).draw(gcc));
-			simulation.getBeacons().stream().forEach(beacon -> ((Drawable)beacon).drawAfter(gcc));
-		}
-		
-		// Then draw agents
-		if (drawAgents) {
-			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).drawBefore(gcc));
-			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).draw(gcc));
-			simulation.getAgents().stream().forEach(agent -> ((Drawable)agent).drawAfter(gcc));
-		}
 
+		update0(gcc);
+		
 		// Then draw any custom art
 		if (drawCustomDrawables) {
 			customDrawables.stream().forEach(drawable -> drawable.drawBefore(gcc));
 			customDrawables.stream().forEach(drawable -> drawable.draw(gcc));
 			customDrawables.stream().forEach(drawable -> drawable.drawAfter(gcc));
 		}
-		
-		// Finally, draw toasts on top
-		if (drawToasts) {
-			// Then draw any toasts, and remove old toasts
-			toasts.stream().filter(toast -> toast.isActive(getSimulation())).forEach(toast -> toast.draw(gcc));
-			toasts.removeIf(toast -> toast.readyToRemove(getSimulation()));
-		}
 	}
+	
+	protected void update0(GridCanvasContext gcc) { }
 	
 	public void saveSnapshot(String filenameBeginning) {
 		Platform.runLater(new Runnable() {
@@ -232,8 +178,8 @@ public class GridCanvas extends Canvas implements SimulationListener {
 		});
 	}
 	
-	private String generateSnapshotFilename(String filenameBeginning) {
-		return filenameBeginning + "_" + String.format("%06d", getSimulation().getStepTime())+".png";
+	protected String generateSnapshotFilename(String filenameBeginning) {
+		return filenameBeginning + ".png";
 	}
 	
 	public static final String DEFAULT_GRID_CANVAS_ID = "DEFAULT_GRID_CANVAS_ID";

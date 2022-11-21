@@ -31,7 +31,7 @@ public class QuickSimulation {
 		this.simulation.setDelayAfterEachStep(100);
 		this.simulation.endWhen(sim -> sim.getStepTime() == 10000);
 		
-		this.canvas = new GridCanvas(simulation, grid, cellWidth, cellHeight);
+		this.canvas = new GridCanvas(grid, cellWidth, cellHeight);
 		canvas.addGridLayerRenderer(GRIDLAYER_DEFAULT, new GridCellRenderer() {
 			private Map<Object, Paint> colorForObject = new HashMap<>();
 			private int nextColor = 0;
@@ -39,7 +39,7 @@ public class QuickSimulation {
 			                                       Color.ORANGE, Color.BROWN, Color.PINK, Color.DARKGRAY, Color.GRAY, Color.LIGHTGREEN, Color.LIGHTBLUE, Color.LIGHTGRAY  }; 
 			
 			@Override
-			public void drawCell(GridCanvasContext gcc, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels) {
+			public void drawCell(GridCanvasContext gcc, GridLayer layer, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels) {
 				if (!colorForObject.containsKey(value)) {
 					colorForObject.put(value, colors[nextColor]);
 					nextColor = (nextColor+1) % colors.length;

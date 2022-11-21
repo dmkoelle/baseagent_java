@@ -8,32 +8,32 @@ import javafx.scene.paint.Color;
 public class DrawableAgent extends Agent implements Drawable {
 	private Color color;
 	private Drawable drawable;
-	private int drawX;
-	private int drawY;
+	private double drawX;
+	private double drawY;
 
 	public DrawableAgent() {
 		super();
 		setDrawable(new Drawable() {
 			@Override
 			public void draw(GridCanvasContext gcc) {
-				VisualizationLibrary.drawCircleForCell(gcc, drawX, drawY, getColorOrUse(Color.CADETBLUE));
+				VisualizationLibrary.drawCircleForCell(gcc, (int)Math.round(drawX), (int)Math.round(drawY), getColorOrUse(Color.CADETBLUE));
 			}
 		});	
 	}
 	
-	public int getDrawX() {
+	public double getDrawX() {
 		return drawX;
 	}
 
-	public void setDrawX(int drawX) {
+	public void setDrawX(double drawX) {
 		this.drawX = drawX;
 	}
 
-	public int getDrawY() {
+	public double getDrawY() {
 		return drawY;
 	}
 
-	public void setDrawY(int drawY) {
+	public void setDrawY(double drawY) {
 		this.drawY = drawY;
 	}
 

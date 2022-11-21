@@ -12,10 +12,10 @@ public interface GridCellRenderer extends GridLayerRenderer {
 
 		for (int i=0; i < gridSizeWidth; i++) {
 			for (int u=0; u < gridSizeHeight; u++) {
-				drawCell(gcc, layer.current().get(i, u), i * xPixelsPerCell + i * gcc.getCellXSpacing(), u * yPixelsPerCell + u * gcc.getCellYSpacing(), xPixelsPerCell, yPixelsPerCell);
+				drawCell(gcc, layer, layer.current().get(i, u), i * xPixelsPerCell + i * gcc.getCellXSpacing(), u * yPixelsPerCell + u * gcc.getCellYSpacing(), xPixelsPerCell, yPixelsPerCell);
 			}
 		}
 	}
 	
-	public void drawCell(GridCanvasContext gcc, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels);
+	public void drawCell(GridCanvasContext gcc, GridLayer layer, Object value, double xInPixels, double yInPixels, double widthInPixels, double heightInPixels);
 }

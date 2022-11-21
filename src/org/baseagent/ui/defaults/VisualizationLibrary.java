@@ -8,6 +8,7 @@ import org.baseagent.embodied.EmbodiedAgent;
 import org.baseagent.embodied.effectors.EmbodiedEffector;
 import org.baseagent.embodied.sensors.EmbodiedSensor;
 import org.baseagent.grid.Grid;
+import org.baseagent.grid.HasFineGridPosition;
 import org.baseagent.grid.HasGridPosition;
 import org.baseagent.ui.GridCanvasContext;
 
@@ -16,39 +17,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 
 public class VisualizationLibrary {
-	public static void drawTriangleWithHeading(GraphicsContext graphics, int x, int y, int width, int height, double headingInRadians, Color fill, Color stroke) {
-		double centerX = x + width * 0.5;
-		double centerY = y + height * 0.5;
-		double tipX = centerX + width * 0.5 * Math.cos(headingInRadians);
-		double tipY = centerY + height * 0.5 * Math.sin(headingInRadians);
-		double halfBase = (width * 0.66) / 2.0;
-		double directionOfLeftPoint = headingInRadians - (7.0/8.0) * Math.PI;
-		double directionOfRightPoint = headingInRadians + (7.0/8.0) * Math.PI;
-		double leftX = centerX - halfBase * Math.cos(directionOfLeftPoint);
-		double leftY = centerY + height * 0.5 * Math.sin(directionOfLeftPoint);
-		double rightX = centerX + halfBase * Math.cos(directionOfRightPoint);
-		double rightY = centerY + height * 0.5 * Math.sin(directionOfRightPoint);
-		double[] xPoints = new double[] { tipX, leftX, rightX };
-		double[] yPoints = new double[] { tipY, leftY, rightY };
-		graphics.setFill(fill);
-		graphics.setStroke(stroke);
-		graphics.fillPolygon(xPoints, yPoints, 3);
-		graphics.strokePolygon(xPoints, yPoints, 3);
-	}
-	
-	public static void drawTriangleWithHeadingForCell(GraphicsContext graphics, int cellX, int cellY, int cellWidth, int cellHeight, double headingInRadians, Color fill, Color stroke) {
-		double cellSpacing = 0.0D;
-		double centerX = cellX*(cellWidth+cellSpacing) + cellWidth * 0.5;
-		double centerY = cellY*(cellHeight+cellSpacing) + cellHeight * 0.5;
+	public static void drawTriangleWithHeading(GraphicsContext graphics, double x, double y, int cellWidth, int cellHeight, double headingInRadians, Color fill, Color stroke) {
+		double centerX = x + cellWidth * 0.5;
+		double centerY = y + cellHeight * 0.5;
+		double tipX = centerX + cellWidth * 0.5 * Math.sin(headingInRadians);
+		double tipY = centerY + cellHeight * 0.5 * Math.cos(headingInRadians);
+		
 		double shortestExtent = Math.min(cellWidth / 2.0, cellHeight / 2.0);
-		double tipX = centerX + shortestExtent * 0.5 * Math.cos(headingInRadians);
-		double tipY = centerY + shortestExtent * 0.5 * Math.sin(headingInRadians);
-		double backLeftX = centerX + shortestExtent * Math.cos(headingInRadians + Math.toRadians(155));
-		double backLeftY = centerY + shortestExtent * Math.sin(headingInRadians + Math.toRadians(155));
-		double backRightX = centerX + shortestExtent * Math.cos(headingInRadians + Math.toRadians(205));
-		double backRightY = centerY + shortestExtent * Math.sin(headingInRadians + Math.toRadians(205));
+		double backLeftX = centerX + shortestExtent * Math.sin(headingInRadians + Math.toRadians(155));
+		double backLeftY = centerY + shortestExtent * Math.cos(headingInRadians + Math.toRadians(155));
+		double backRightX = centerX + shortestExtent * Math.sin(headingInRadians + Math.toRadians(205));
+		double backRightY = centerY + shortestExtent * Math.cos(headingInRadians + Math.toRadians(205));
 		double[] xPoints = new double[] { tipX, backLeftX, backRightX };
 		double[] yPoints = new double[] { tipY, backLeftY, backRightY };
+		
+//		double halfBase = (width * 0.66) / 2.0;
+//		double directionOfLeftPoint = headingInRadians - (7.0/8.0) * Math.PI;
+//		double directionOfRightPoint = headingInRadians + (7.0/8.0) * Math.PI;
+//		double leftX = centerX - halfBase * Math.cos(directionOfLeftPoint);
+//		double leftY = centerY + height * 0.5 * Math.sin(directionOfLeftPoint);
+//		double rightX = centerX + halfBase * Math.cos(directionOfRightPoint);
+//		double rightY = centerY + height * 0.5 * Math.sin(directionOfRightPoint);
+//		double[] xPoints = new double[] { tipX, leftX, rightX };
+//		double[] yPoints = new double[] { tipY, leftY, rightY };
+
 		graphics.setFill(fill);
 		graphics.setStroke(stroke);
 		graphics.fillPolygon(xPoints, yPoints, 3);
@@ -152,6 +144,32 @@ public class VisualizationLibrary {
         gcc.restore(); 
 	}
 	
+	public static void drawArrow(GridCanvasContext gcc, HasGridPosition a, HasGridPosition b, Color fill, Color stroke, int thickness, boolean drawPointAtOrigin, boolean drawPointAtDestination) {
+		drawArrow(gcc.getGraphicsContext(), 
+				(int)Math.round(a.getCellX() * gcc.getXFactor() + gcc.getCellWidth()/2.0), (int)Math.round(a.getCellY() * gcc.getYFactor() + gcc.getCellHeight()/2.0),
+				(int)Math.round(b.getCellX() * gcc.getXFactor() + gcc.getCellWidth()/2.0), (int)Math.round(b.getCellY() * gcc.getYFactor() + gcc.getCellHeight()/2.0),
+				fill, stroke, thickness, drawPointAtOrigin, drawPointAtDestination); 
+	}
+	
+	public static void drawArrow(GridCanvasContext gcc, HasFineGridPosition a, HasFineGridPosition b, Color fill, Color stroke, int thickness, boolean drawPointAtOrigin, boolean drawPointAtDestination) {
+		drawArrow(gcc.getGraphicsContext(), 
+				a.getFineX() * gcc.getXFactor() + gcc.getCellWidth()/2.0, a.getFineY() * gcc.getYFactor() + gcc.getCellHeight()/2.0,
+				b.getFineX() * gcc.getXFactor() + gcc.getCellWidth()/2.0, b.getFineY() * gcc.getYFactor() + gcc.getCellHeight()/2.0,
+				fill, stroke, thickness, drawPointAtOrigin, drawPointAtDestination); 
+	}
+	
+	public static void drawArrow(GridCanvasContext gcc, double ax, double ay, double bx, double by, Color fill, Color stroke, int thickness, boolean drawPointAtOrigin, boolean drawPointAtDestination) {
+		drawArrow(gcc.getGraphicsContext(), 
+				ax * gcc.getXFactor() + gcc.getCellWidth()/2.0, ay * gcc.getYFactor() + gcc.getCellHeight()/2.0,
+				bx * gcc.getXFactor() + gcc.getCellWidth()/2.0, by * gcc.getYFactor() + gcc.getCellHeight()/2.0,
+				fill, stroke, thickness, drawPointAtOrigin, drawPointAtDestination); 
+	}
+	
+	public static void drawArrow(GraphicsContext graphics, double x1, double y1, double x2, double y2, Color fill, Color stroke, int thickness, boolean drawPointAtOrigin, boolean drawPointAtDestination) {
+		graphics.setStroke(stroke);
+		graphics.strokeLine(x1, y1, x2, y2);
+	}
+
 	public static void drawArrow(GraphicsContext graphics, int x1, int y1, int x2, int y2, Color fill, Color stroke, int thickness, boolean drawPointAtOrigin, boolean drawPointAtDestination) {
 		graphics.setStroke(stroke);
 		graphics.strokeLine(x1, y1, x2, y2);
