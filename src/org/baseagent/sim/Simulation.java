@@ -24,6 +24,7 @@ public class Simulation {
 	private List<Scheduler> schedulers;
 	private List<DataCollector> dataCollectors;
 	
+	private List<SimulationListener> simulationListeners;
 	private List<MessageListener> messageListeners;
 	private List<HasStep> hasSteps;
 	private List<Agent> agents;
@@ -42,7 +43,6 @@ public class Simulation {
 	private boolean paused;
 	private boolean stopped;
 	private boolean currentlyInStep;
-	private List<SimulationListener> listeners;
 	
 	public Simulation() {
 		this.schedulers = new ArrayList<>();
@@ -59,16 +59,17 @@ public class Simulation {
 		componentsToRemoveAtEndOfStep = new ArrayList<>();
 
 		this.properties = new HashMap<>();
-		this.listeners = new ArrayList<>();
+		this.simulationListeners = new ArrayList<>();
 		this.time = 0L;
 		
 		this.communicator = new BroadcastCommunicator(this);
+		this.endCondition = sim -> sim.getStepTime() == 1000;
 	}
 	
 	public void setUniverse(Universe universe) {
 		this.universe = universe;
 		((SimulationComponent)universe).setSimulation(this);
-		this.listeners.add(universe);
+		this.simulationListeners.add(universe);
 	}
 		
 	public Universe getUniverse() {
@@ -77,7 +78,7 @@ public class Simulation {
 	
 	public void removeUniverse(Universe universe) {
 		this.universe = null;
-		this.listeners.remove(universe);
+		this.simulationListeners.remove(universe);
 	}
 		
 	public void setCommunicator(Communicator communicator) {
@@ -94,12 +95,12 @@ public class Simulation {
 	
 	public void addScheduler(Scheduler scheduler) {
 		this.schedulers.add(scheduler);
-		this.listeners.add(scheduler);
+		this.simulationListeners.add(scheduler);
 	}
 	
 	public void removeSchedule(Scheduler scheduler) {
 		schedulers.remove(scheduler);
-		this.listeners.remove(scheduler);
+		this.simulationListeners.remove(scheduler);
 	}
 	
 	public List<DataCollector> getDataCollectors() {
@@ -146,7 +147,11 @@ public class Simulation {
 		if (simulatee instanceof MessageListener) {
 			messageListeners.add((MessageListener)simulatee);
 		}
-		
+
+		if (simulatee instanceof SimulationListener) {
+			simulationListeners.add((SimulationListener)simulatee);
+		}
+
 		fireSimulationComponentAdded(simulatee);
 	}
 	
@@ -203,87 +208,87 @@ public class Simulation {
 	}
 	
 	public void addSimulationListener(SimulationListener listener) {
-		listeners.add(listener);
+		simulationListeners.add(listener);
 	}
 	
 	public void removeSimulationListener(SimulationListener listener) {
-		listeners.remove(listener);
+		simulationListeners.remove(listener);
 	}
 	
 	private void fireSimulationStarted() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onSimulationStarted(this);
 		}
 	}
 
 	private void fireSimulationEnded() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onSimulationEnded(this);
 		}
 	}
 
 	private void fireBeforeStepStarted() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onBeforeStepStarted(this);
 		}
 	}
 
 	private void fireStepStarted() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onStepStarted(this);
 		}
 	}
 
 	private void fireAfterStepStarted() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onAfterStepStarted(this);
 		}
 	}
 
 	private void fireBeforeStepEnded() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onBeforeStepEnded(this);
 		}
 	}
 
 	private void fireStepEnded() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onStepEnded(this);
 		}
 	}
 
 	private void fireAfterStepEnded() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onAfterStepEnded(this);
 		}
 	}
 
 	private void fireSimulationPaused() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onSimulationPaused(this);
 		}
 	}
 
 	private void fireSimulationResumed() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onSimulationResumed(this);
 		}
 	}
 
 	private void fireSimulationStopped() {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onSimulationStopped(this);
 		}
 	}
 
 	private void fireSimulationComponentAdded(SimulationComponent simulatee) {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onSimulationComponentAdded(this, simulatee);
 		}
 	}
 	
 	private void fireSimulationComponentRemoved(SimulationComponent simulatee) {
-		for (SimulationListener listener : listeners) {
+		for (SimulationListener listener : simulationListeners) {
 			listener.onSimulationComponentRemoved(this, simulatee);
 		}
 	}
@@ -293,7 +298,7 @@ public class Simulation {
 	}
 	
 	public void beforeEachStep(Consumer<Simulation> function) {
-		listeners.add(new SimulationListener() {
+		simulationListeners.add(new SimulationListener() {
 			@Override
 			public void onBeforeStepStarted(Simulation simulation) {
 				function.accept(simulation);
@@ -302,7 +307,7 @@ public class Simulation {
 	}
 
 	public void afterEachStep(Consumer<Simulation> function) {
-		listeners.add(new SimulationListener() {
+		simulationListeners.add(new SimulationListener() {
 			@Override
 			public void onAfterStepEnded(Simulation simulation) {
 				function.accept(simulation);
@@ -404,7 +409,7 @@ public class Simulation {
 			addAtEndOfStep();
 			removeAtEndOfStep();
 			
-			sleep(delayInMillis);
+			if (delayInMillis > 0) sleep(delayInMillis);
 			time++;
 //
 //			fireStepEnded();

@@ -35,10 +35,24 @@ public class StateMachine implements Behavior {
 		addState(new State(stateName, thingToDoWhileInState));
 	}
 
+	public void addStates(String... states) {
+		for (String state : states) {
+			addState(state);
+		}
+		setCurrentState(states[0]);
+	}
+	
 	public void addState(State state) {
 		Node<State> node = new Node<>(state);
 		network.addNode(node);
 		nodesByStateName.put(state.getStateName(), node);
+	}
+	
+	public void addStates(State... states) {
+		for (State state : states) {
+			addState(state);
+		}
+		setCurrentState(states[0]);
 	}
 	
 	public void removeState(String stateName) {
@@ -53,6 +67,11 @@ public class StateMachine implements Behavior {
 		return network.getNodes().stream().map(node -> node.getObject()).collect(Collectors.toList());
 	}
 	
+	public void addTransition(String originStateName, String destinationStateName, Predicate<Agent> check) {
+		Edge<State, Agent> edge = new Edge<>(nodesByStateName.get(originStateName), nodesByStateName.get(destinationStateName), check, agent -> {});
+		network.addEdge(edge);
+	}
+
 	public void addTransition(String originStateName, String destinationStateName, Predicate<Agent> check, Consumer<Agent> todo) {
 		Edge<State, Agent> edge = new Edge<>(nodesByStateName.get(originStateName), nodesByStateName.get(destinationStateName), check, todo);
 		network.addEdge(edge);

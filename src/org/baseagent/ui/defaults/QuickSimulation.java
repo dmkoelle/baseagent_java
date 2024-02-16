@@ -28,7 +28,7 @@ public class QuickSimulation {
 		this.layer = grid.createGridLayer(GRIDLAYER_DEFAULT, GridLayerUpdateOption.NEXT_BECOMES_CURRENT);
 
 		this.simulation.setUniverse(grid);
-		this.simulation.setDelayAfterEachStep(100);
+		this.simulation.setDelayAfterEachStep(75);
 		this.simulation.endWhen(sim -> sim.getStepTime() == 10000);
 		
 		this.canvas = new GridCanvas(grid, cellWidth, cellHeight);

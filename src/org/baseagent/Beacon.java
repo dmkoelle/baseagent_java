@@ -5,8 +5,6 @@ import org.baseagent.signals.Signal;
 import org.baseagent.sim.GridAgent;
 import org.baseagent.sim.SimulationComponent;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class Beacon extends GridAgent {
 
 	public Beacon() {
@@ -18,7 +16,7 @@ public class Beacon extends GridAgent {
 	}
 
 	public Beacon(Signal signal) {
-		throw new NotImplementedException();
+		throw new RuntimeException("Beacon(Signal) not implemented");
 	}
 	
 

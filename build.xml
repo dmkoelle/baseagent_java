@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="BaseAgent-java">
+    <property environment="env"/>
+    <property name="BaseAgent-java-devtest.location" value="P:/Projects/BaseAgent2018/BaseAgent-java/BaseAgent-java-devtest"/>
+    <property name="EvolvingWorld2.location" value="P:/Projects/BaseAgent Projects/EvolvingWorld2"/>
+    <property name="jfxpath" value="../../../../Progra~1/Java/javafx-sdk-14.0.1/lib"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="BaseAgent-java.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <path id="run.ExperimentApplication.classpath">
+        <path refid="BaseAgent-java.classpath"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <path id="run.GameOfLife.classpath">
+        <path refid="BaseAgent-java.classpath"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <path id="run.GameOfLife2.classpath">
+        <path refid="BaseAgent-java.classpath"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <path id="run.GameOfRain.classpath">
+        <path refid="BaseAgent-java.classpath"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <path id="run.ScenalonIV (1).classpath">
+        <path refid="BaseAgent-java.classpath"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <path id="run.SmoothTravelTest.classpath">
+        <path refid="BaseAgent-java.classpath"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <path id="run.UiTermites.classpath">
+        <path refid="BaseAgent-java.classpath"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.base.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.controls.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.fxml.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.graphics.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.media.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.swing.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx.web.jar"/>
+        <pathelement location="../../../../Program Files/Java/javafx-sdk-15/lib/javafx-swt.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="demo">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="test">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="apps">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="experiments">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <src path="demo"/>
+            <src path="test"/>
+            <src path="apps"/>
+            <src path="experiments"/>
+            <classpath refid="BaseAgent-java.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="build.xml" dir="${BaseAgent-java-devtest.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${BaseAgent-java-devtest.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+        <ant antfile="build.xml" dir="${EvolvingWorld2.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${EvolvingWorld2.location}" inheritAll="false" target="build">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="ExperimentApplication">
+        <java classname="org.baseagent.apps.exper.ExperimentApplication" failonerror="true" fork="yes">
+            <classpath refid="run.ExperimentApplication.classpath"/>
+        </java>
+    </target>
+    <target name="GameOfLife">
+        <java classname="org.baseagent.examples.ui.GameOfLife" failonerror="true" fork="yes">
+            <jvmarg line="--module-path &quot;\program files\java\javafx-sdk-15\lib&quot; --add-modules javafx.controls,javafx.fxml"/>
+            <classpath refid="run.GameOfLife.classpath"/>
+        </java>
+    </target>
+    <target name="GameOfLife2">
+        <java classname="org.baseagent.examples.ui.GameOfLife2" failonerror="true" fork="yes">
+            <jvmarg line="--module-path &quot;\program files\java\javafx-sdk-15\lib&quot; --add-modules javafx.controls,javafx.fxml"/>
+            <classpath refid="run.GameOfLife2.classpath"/>
+        </java>
+    </target>
+    <target name="GameOfRain">
+        <java classname="org.baseagent.examples.ui.GameOfRain" failonerror="true" fork="yes">
+            <jvmarg line="--module-path &quot;\program files\java\javafx-sdk-15\lib&quot; --add-modules javafx.controls,javafx.fxml"/>
+            <classpath refid="run.GameOfRain.classpath"/>
+        </java>
+    </target>
+    <target name="ScenalonIV (1)">
+        <java classname="org.baseagent.examples.evolvingworld.ScenalonIV" failonerror="true" fork="yes">
+            <jvmarg line="--module-path &quot;\program files\java\javafx-sdk-15\lib&quot; --add-modules javafx.controls,javafx.fxml"/>
+            <classpath refid="run.ScenalonIV (1).classpath"/>
+        </java>
+    </target>
+    <target name="SmoothTravelTest">
+        <java classname="org.baseagent.grid.SmoothTravelTest" failonerror="true" fork="yes">
+            <classpath refid="run.SmoothTravelTest.classpath"/>
+        </java>
+    </target>
+    <target name="UiTermites">
+        <java classname="org.baseagent.examples.ui.UiTermites" failonerror="true" fork="yes">
+            <jvmarg line="--module-path ${jfxpath} --add-modules=javafx.controls"/>
+            <classpath refid="run.UiTermites.classpath"/>
+        </java>
+    </target>
+</project>

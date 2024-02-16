@@ -5,7 +5,7 @@ import java.util.UUID;
 // A SimulationComponent is not a SimulationListener by default because there could be million of them and that would
 // really slow down the processing - and in general, components (say agents) don't need to know about simulation
 // lifecycle events.
-public abstract class SimulationComponent {
+public abstract class SimulationComponent implements SimulationListener {
 	private UUID uuid;
 	private Simulation simulation;
 

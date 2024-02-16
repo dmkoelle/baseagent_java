@@ -20,27 +20,17 @@ public class VisualizationLibrary {
 	public static void drawTriangleWithHeading(GraphicsContext graphics, double x, double y, int cellWidth, int cellHeight, double headingInRadians, Color fill, Color stroke) {
 		double centerX = x + cellWidth * 0.5;
 		double centerY = y + cellHeight * 0.5;
-		double tipX = centerX + cellWidth * 0.5 * Math.sin(headingInRadians);
-		double tipY = centerY + cellHeight * 0.5 * Math.cos(headingInRadians);
+		double tipX = centerX + cellWidth * 0.5 * Math.cos(headingInRadians);
+		double tipY = centerY + cellHeight * 0.5 * Math.sin(headingInRadians);
 		
 		double shortestExtent = Math.min(cellWidth / 2.0, cellHeight / 2.0);
-		double backLeftX = centerX + shortestExtent * Math.sin(headingInRadians + Math.toRadians(155));
-		double backLeftY = centerY + shortestExtent * Math.cos(headingInRadians + Math.toRadians(155));
-		double backRightX = centerX + shortestExtent * Math.sin(headingInRadians + Math.toRadians(205));
-		double backRightY = centerY + shortestExtent * Math.cos(headingInRadians + Math.toRadians(205));
+		double backLeftX = centerX + shortestExtent * Math.cos(headingInRadians + Math.toRadians(155));
+		double backLeftY = centerY + shortestExtent * Math.sin(headingInRadians + Math.toRadians(155));
+		double backRightX = centerX + shortestExtent * Math.cos(headingInRadians + Math.toRadians(205));
+		double backRightY = centerY + shortestExtent * Math.sin(headingInRadians + Math.toRadians(205));
 		double[] xPoints = new double[] { tipX, backLeftX, backRightX };
 		double[] yPoints = new double[] { tipY, backLeftY, backRightY };
 		
-//		double halfBase = (width * 0.66) / 2.0;
-//		double directionOfLeftPoint = headingInRadians - (7.0/8.0) * Math.PI;
-//		double directionOfRightPoint = headingInRadians + (7.0/8.0) * Math.PI;
-//		double leftX = centerX - halfBase * Math.cos(directionOfLeftPoint);
-//		double leftY = centerY + height * 0.5 * Math.sin(directionOfLeftPoint);
-//		double rightX = centerX + halfBase * Math.cos(directionOfRightPoint);
-//		double rightY = centerY + height * 0.5 * Math.sin(directionOfRightPoint);
-//		double[] xPoints = new double[] { tipX, leftX, rightX };
-//		double[] yPoints = new double[] { tipY, leftY, rightY };
-
 		graphics.setFill(fill);
 		graphics.setStroke(stroke);
 		graphics.fillPolygon(xPoints, yPoints, 3);

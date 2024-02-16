@@ -12,6 +12,10 @@ import org.baseagent.grid.GridPosition;
 import org.baseagent.grid.HasGridPosition;
 
 public class BaseAgentMath {
+	public static double PI = Math.PI;
+	public static double HALF_PI = Math.PI / 2.0;
+	public static double THREE_HALF_PI = 3.0 * Math.PI / 2.0;
+	
 	public static double distance(double x1, double y1, double x2, double y2) {
 		return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 	}

@@ -83,6 +83,10 @@ public class GridCanvas extends Canvas {
 		return this.gcc;
 	}
 	
+	public void addGridLayerRenderer(GridLayerRenderer r) {
+		addGridLayerRenderer(Grid.DEFAULT_GRID_LAYER, r);
+	}
+
 	public void addGridLayerRenderer(String layerName, GridLayerRenderer r) {
 		orderedListOfLayerNames.add(layerName);
 		renderersByName.put(layerName, r);

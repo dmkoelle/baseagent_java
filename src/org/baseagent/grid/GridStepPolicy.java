@@ -1,5 +1,9 @@
 package org.baseagent.grid;
 
-public interface GridStepPolicy {
-	public void step();
+import org.baseagent.HasStep;
+import org.baseagent.sim.Simulation;
+
+public interface GridStepPolicy extends HasStep {
+	@Override
+	public void step(Simulation simulation);
 }

@@ -103,6 +103,10 @@ public class Network<T, R> implements Universe {
 		edges.add(edge);
 	}
 	
+	public Collection<Edge<T,R>> getEdges() {
+		return edges.values();
+	}
+	
 	public Collection<Edge<T,R>> getEdgesTo(T object) {
 		return this.getEdgesTo(nodes.get(object));
 	}

@@ -8,10 +8,7 @@ import org.baseagent.sim.Simulation;
 
 public class RandomWanderBehavior extends WalkToBehavior {
 	private int distance;
-	private WalkToBehavior walkToBehavior;
 	private Predicate<Simulation> endCondition;
-	private int nextX;
-	private int nextY;
 	
 	public RandomWanderBehavior() {
 		super();

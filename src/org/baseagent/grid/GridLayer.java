@@ -48,7 +48,7 @@ public class GridLayer implements Iterable<GridCell> {
 		return this.next;
 	}
 
-	public void switchToNextStep() {
+	protected void switchToNextStep() {
 		if (updateOption == GridLayerUpdateOption.NEXT_BECOMES_CURRENT) {
 			this.current = this.next;
 			this.next = new GridLayerStep(parentGrid);
@@ -93,33 +93,46 @@ public class GridLayer implements Iterable<GridCell> {
 		};
 	}
 	
+	private GridLayerStep getWriteLayer() {
+		switch (updateOption) {
+		case NEXT_BECOMES_CURRENT : return next;
+		case NO_SWITCH : 
+		default: return current;
+		}
+	}
+	
+	private GridLayerStep getReadLayer() {
+		return current;
+	}
+	
+	
 	//
 	// Methods typically seen in GridLayerStep that should be delegated to current()
 	//
 	
-	public void fill(Object value) { current().fill(value); }
-	public void fill(Object value, int x1, int y1, int x2, int y2) { current().fill(value, x1, y1, x2, y2); }
-	public double laplacian_3x3(int x, int y, double centerWeight, double adjacentWeight, double diagonalWeight) { return current().laplacian_3x3(x, y, centerWeight, adjacentWeight, diagonalWeight); }
-	public void set(int x, int y, Object value) { current().set(x, y, value); }
-	public void set(GridPosition position, Object value) { current().set(position, value); }
-	public void clear(int x, int y) { current().clear(x, y); }
-	public void clear(GridPosition position) { current().clear(position); }
-	public Object get(int x, int y) { return current().get(x, y); }
-	public Object get(GridPosition position) { return current().get(position); }
-	public int count8Neighbors(int x, int y, Predicate<? super Object> predicate) { return current().count8Neighbors(x, y, predicate); }
-	public int count4Neighbors(int x, int y, Predicate<? super Object> predicate) { return current().count4Neighbors(x, y, predicate); }
-	public double average9Neighbors(int x, int y) { return current().average9Neighbors(x, y); }
-	public double average8Neighbors(int x, int y) { return current().average8Neighbors(x, y); }
-	public double average4Neighbors(int x, int y) { return current().average4Neighbors(x, y); }
-	public long count(Predicate<Object> predicate) { return current().count(predicate); }
-	public int getBooleanAsOneOrZero(int x, int y, Predicate<? super Object> predicate) { return current().getBooleanAsOneOrZero(x, y, predicate); }
-	public void scatter(Object thing) { current().scatter(thing, 1); }
-	public void scatter(Object thing, int howMany) { current().scatter(thing, howMany); }
-    public void scatter(Object thing, int howMany, int x1, int y1, int x2, int y2) { current().scatter(thing, howMany, x1, y1, x2, y2); }
-	public void scatter(List<? super Object> things) { current().scatter(things); }
-	public void scatter(List<? super Object> things, int x1, int y1, int x2, int y2) { current().scatter(things, x1, y1, x2, y2); }
-	public void form(Object thing, int x, int y, String... strings) { current().form(thing, x, y, strings); }
-	public GridPosition getRandomUnoccupiedPosition() { return current().getRandomUnoccupiedPosition(); }
+	public void fill(Object value) { getWriteLayer().fill(value); }
+	public void fill(Object value, int x1, int y1, int x2, int y2) { getWriteLayer().fill(value, x1, y1, x2, y2); }
+	public double laplacian_3x3(int x, int y, double centerWeight, double adjacentWeight, double diagonalWeight) { return getWriteLayer().laplacian_3x3(x, y, centerWeight, adjacentWeight, diagonalWeight); }
+	public void set(int x, int y, Object value) { getWriteLayer().set(x, y, value); }
+	public void set(GridPosition position, Object value) { getWriteLayer().set(position, value); }
+	public void clear(int x, int y) { getWriteLayer().clear(x, y); }
+	public void clear(GridPosition position) { getWriteLayer().clear(position); }
+	public Object get(int x, int y) { return getReadLayer().get(x, y); }
+	public Object get(GridPosition position) { return getReadLayer().get(position); }
+	public int count8Neighbors(int x, int y, Predicate<? super Object> predicate) { return getReadLayer().count8Neighbors(x, y, predicate); }
+	public int count4Neighbors(int x, int y, Predicate<? super Object> predicate) { return getReadLayer().count4Neighbors(x, y, predicate); }
+	public double average9Neighbors(int x, int y) { return getReadLayer().average9Neighbors(x, y); }
+	public double average8Neighbors(int x, int y) { return getReadLayer().average8Neighbors(x, y); }
+	public double average4Neighbors(int x, int y) { return getReadLayer().average4Neighbors(x, y); }
+	public long count(Predicate<Object> predicate) { return getReadLayer().count(predicate); }
+	public int getBooleanAsOneOrZero(int x, int y, Predicate<? super Object> predicate) { return getReadLayer().getBooleanAsOneOrZero(x, y, predicate); }
+	public void scatter(Object thing) { getWriteLayer().scatter(thing, 1); }
+	public void scatter(Object thing, int howMany) { getWriteLayer().scatter(thing, howMany); }
+    public void scatter(Object thing, int howMany, int x1, int y1, int x2, int y2) { getWriteLayer().scatter(thing, howMany, x1, y1, x2, y2); }
+	public void scatter(List<? super Object> things) { getWriteLayer().scatter(things); }
+	public void scatter(List<? super Object> things, int x1, int y1, int x2, int y2) { getWriteLayer().scatter(things, x1, y1, x2, y2); }
+	public void form(Object thing, int x, int y, String... strings) { getWriteLayer().form(thing, x, y, strings); }
+	public GridPosition getRandomUnoccupiedPosition() { return getWriteLayer().getRandomUnoccupiedPosition(); }
 
 	public void debug(PrintStream s) {
 		s.println(getLayerName());

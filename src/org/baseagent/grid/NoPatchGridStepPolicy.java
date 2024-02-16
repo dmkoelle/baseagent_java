@@ -1,5 +1,7 @@
 package org.baseagent.grid;
 
+import org.baseagent.sim.Simulation;
+
 public class NoPatchGridStepPolicy implements GridStepPolicy {
 	private Grid grid;
 	
@@ -8,5 +10,5 @@ public class NoPatchGridStepPolicy implements GridStepPolicy {
 	}
 	
 	@Override
-	public void step() { }
+	public void step(Simulation simulation) { }
 }

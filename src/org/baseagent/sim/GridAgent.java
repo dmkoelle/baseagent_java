@@ -37,7 +37,8 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 		setDrawable(new Drawable() {
 			@Override
 			public void draw(GridCanvasContext gcc) {
-				VisualizationLibrary.drawTriangleWithHeading(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
+//				VisualizationLibrary.drawTriangleWithHeading(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
+				VisualizationLibrary.drawTriangleWithHeading(gcc.getGraphicsContext(), getFineX() * gcc.getXFactor(), getFineY() * gcc.getYFactor(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
 			}
 		});
 	}
@@ -148,19 +149,6 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	}
 	
 	
-    //
-	// Inventory subsystem and its interaction with GridLayers
-	//
-	
-	public void take(String layerName, Object thing, Object replacement) {
-		getGrid().getGridLayer(layerName).set(getCellX(), getCellY(), replacement);
-		getInventory().add(thing);
-	}
-
-	public void drop(String layerName, Object thing) {
-		getGrid().getGridLayer(layerName).set(getCellX(), getCellY(), thing);
-		getInventory().remove(thing);
-	}
 
 	//
 	// Movement subsystem
@@ -187,13 +175,13 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 
 	public boolean continueMovingToward() {
 		if (BaseAgentMath.distance(destinationPoint, this) <= movingSpeed) {
-			setCellX(destinationPoint.getCellX());
-			setCellY(destinationPoint.getCellY());
+			this.cellX = destinationPoint.getCellX();
+			this.cellY = destinationPoint.getCellY();
 			return true;
 		} else {
 			setHeading(BaseAgentMath.direction(this, this.destinationPoint));
-			fineX += movingSpeed * Math.cos(getHeading());
-			fineY += movingSpeed * Math.sin(getHeading());
+			this.fineX += movingSpeed * Math.cos(getHeading());
+			this.fineY += movingSpeed * Math.sin(getHeading());
 			moveTo((int)fineX, (int)fineY);
 			return false;
 		}
@@ -238,8 +226,8 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	
 	public void moveTo(int x, int y) {
 		Grid grid = (Grid)getSimulation().getUniverse();
-		setCellX(grid.getBoundsPolicy().boundX(x));
-		setCellY(grid.getBoundsPolicy().boundY(y));
+		this.cellX = grid.getBoundsPolicy().boundX(x);
+		this.cellY = grid.getBoundsPolicy().boundY(y);
 	}
 	
 	public boolean isAt(int cellX, int cellY) {
@@ -258,37 +246,6 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 		setHeading(r);
 	}
 	
-	public void moveForward() {
-		moveForward(1.0);
-	}
-	
-	public void moveForward(double distance) {
-		moveTo(getCellX() + (int)(distance * Math.cos(getHeading())), getCellY() + (int)(distance * Math.sin(getHeading())));
-	}
-	
-	public void turnLeft() {
-		turnLeft(0.1);
-	}
-	
-	public void turnLeft(double radians) {
-		rotateDelta(-radians);
-	}
-	
-	public void turnRight() {
-		turnRight(0.1);
-	}
-	
-	public void turnRight(double radians) {
-		rotateDelta(+radians);
-	}
-	
-	public void moveBackward() {
-		moveBackward(1);
-	}
-	
-	public void moveBackward(double distance) {
-		moveTo(getCellX() - (int)(distance * Math.cos(getHeading())), getCellY() + (int)(distance * Math.sin(getHeading())));
-	}
 	
 	public CellPoint2D getLeft() {
 		return new CellPoint2D(getCellX() - 1, getCellY());
@@ -306,25 +263,6 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 		return new CellPoint2D(getCellX(), getCellY() + 1);
 	}
 	
-	// Note that moveLeft() is not parameterized with the agent's heading
-	public void moveLeft() {
-		setCellX(getCellX() - 1);
-	}
-
-	// Note that moveRight() is not parameterized with the agent's heading
-	public void moveRight() {
-		setCellX(getCellX() + 1);
-	}
-
-	// Note that moveUp() is not parameterized with the agent's heading
-	public void moveUp() {
-		setCellX(getCellY() - 1);
-	}
-	
-	// Note that moveDown() is not parameterized with the agent's heading
-	public void moveDown() {
-		setCellX(getCellX() + 1);
-	}
 
 	public void moveRandomly() {
 		moveRandomly(1);
@@ -368,6 +306,47 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 
 		double r = random.nextDouble() * Math.PI * 2.0;
 		rotateTo(r);
+	}
+	
+	//
+	//
+	// Turtle Functions
+	//
+	//
+	
+	public void turnLeft() { this.rotateDelta(-BaseAgentMath.HALF_PI); }
+	public void turnRight() { this.rotateDelta(BaseAgentMath.HALF_PI); }
+	public void turnAround() { this.rotateDelta(BaseAgentMath.PI); }
+	public void moveLeft() { this.cellX = getGrid().getBoundsPolicy().boundX(this.cellX - 1); setHeading(BaseAgentMath.PI); }
+	public void moveRight() { this.cellX = getGrid().getBoundsPolicy().boundX(this.cellX + 1); setHeading(0); }
+	public void moveUp() { this.cellY = getGrid().getBoundsPolicy().boundY(this.cellY - 1); setHeading(BaseAgentMath.HALF_PI); }
+	public void moveDown() { this.cellY = getGrid().getBoundsPolicy().boundY(this.cellY + 1); setHeading(BaseAgentMath.THREE_HALF_PI); }
+	public void moveForward() { this.moveForward(1.0); }
+	public void moveForward(double distance) { moveTo(this.cellX + (int)(distance * Math.cos(getHeading())), this.cellY + (int)(distance * Math.sin(getHeading()))); }
+	public void moveBackward() { this.moveBackward(1.0); }
+	public void moveBackward(double distance) { moveTo(this.cellX - (int)(distance * Math.cos(getHeading())), this.cellY + (int)(distance * Math.sin(getHeading()))); }
+	public boolean isOn(Object value) { return isOn(Grid.DEFAULT_GRID_LAYER, value); }
+    public boolean isOn(String gridLayerName, Object value) { return getGrid().getGridLayer(gridLayerName).get(getCellX(), getCellY()).equals(value); }
+    public void setCell(Object value) { setCell(Grid.DEFAULT_GRID_LAYER, value); }
+    public void setCell(String gridLayerName, Object value) { getGrid().getGridLayer(gridLayerName).set(getCellX(), getCellY(), value); }
+
+    
+
+    
+    //
+    //
+	// Inventory subsystem and its interaction with GridLayers
+	//
+    //
+	
+	public void take(String layerName, Object thing, Object replacement) {
+		getGrid().getGridLayer(layerName).set(getCellX(), getCellY(), replacement);
+		getInventory().add(thing);
+	}
+
+	public void drop(String layerName, Object thing) {
+		getGrid().getGridLayer(layerName).set(getCellX(), getCellY(), thing);
+		getInventory().remove(thing);
 	}
 
 }

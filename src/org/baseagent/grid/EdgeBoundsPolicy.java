@@ -31,4 +31,26 @@ public class EdgeBoundsPolicy implements GridBoundsPolicy {
 		else return y;
 	}
 
+	@Override
+	public double boundX(double x) {
+		if (x < 0.0) {
+			return 0.0;
+		}
+		else if (x > widthInCells-0.1) {
+			return widthInCells-0.1;
+		} 
+		else return x;
+	}
+
+	@Override
+	public double boundY(double y) {
+		if (y < 0.0) {
+			return 0.0;
+		}
+		else if (y > heightInCells-1.0) {
+			return heightInCells-1.0;
+		} 
+		else return y;
+	}
+
 }

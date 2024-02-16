@@ -26,11 +26,11 @@ public class Agent extends SimulationComponent implements MessageListener, HasSt
 	private int simpleId;
 	private Inventory inventory;
 	private Map<String, Object> knowledge;
-	private Map<String, Object> properties;
+	private Map<String, Behavior> namedBehaviors;
+	private List<Behavior> behaviors;
 	private Behavior currentBehavior; // TODO: Replace this with a BehaviorExecutor, which can select behaviors?
 	private String simpleState;
 	private Behavior behaviorPolicy;
-	private List<Behavior> behaviors;
 
 	public Agent() {
 		super();
@@ -57,7 +57,7 @@ public class Agent extends SimulationComponent implements MessageListener, HasSt
 		this.simpleId = Agent.SIMPLE_ID_COUNTER++;
 		this.inventory = new Inventory();
 		this.knowledge = new HashMap<>();
-		this.properties = new HashMap<>();
+		this.namedBehaviors = new HashMap<>();
 		this.behaviorPolicy = new ParallelBehaviorsPolicy();
 		this.behaviors = new ArrayList<>();
 	}
@@ -79,16 +79,6 @@ public class Agent extends SimulationComponent implements MessageListener, HasSt
 		behaviorPolicy.executeBehavior(this);
 	}
 	
-	//
-	// Properties subsystem
-	//
-	public void setProperties(Map<String, Object> properties) {
-		this.properties = properties;
-	}
-	
-	public Map<String, Object> getProperties() {
-		return this.properties;
-	}
 	
 
 	//
@@ -147,9 +137,22 @@ public class Agent extends SimulationComponent implements MessageListener, HasSt
 	public void addBehavior(Behavior behavior) {
 		this.behaviors.add(behavior);
 	}
+
+	public void addBehavior(String name, Behavior behavior) {
+		namedBehaviors.put(name, behavior);
+		addBehavior(behavior);
+	}
 	
+	public Behavior getBehavior(String name) {
+		return namedBehaviors.get(name);
+	}
+
 	public void removeBehavior(Behavior behavior) {
 		this.behaviors.remove(behavior);
+	}
+	
+	public void removeBehavior(String name) {
+		removeBehavior(namedBehaviors.get(name));
 	}
 	
 	public List<Behavior> getBehaviors() {
