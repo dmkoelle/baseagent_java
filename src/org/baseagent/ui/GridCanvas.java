@@ -79,6 +79,10 @@ public class GridCanvas extends Canvas {
 		return this.grid;
 	}
 	
+	public void setGrid(Grid grid) {
+		this.grid = grid;
+	}
+	
 	public GridCanvasContext getGridCanvasContext() {
 		return this.gcc;
 	}
