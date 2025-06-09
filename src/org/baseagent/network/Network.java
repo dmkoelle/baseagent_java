@@ -3,8 +3,10 @@ package org.baseagent.network;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import org.baseagent.grid.Grid;
@@ -67,8 +69,10 @@ public class Network<T, R> implements Universe {
 	public Collection<Node<T>> getAdjacentNodes(Node<T> node) {
 		List<Node<T>> retVal = new ArrayList<>();
 		List<Edge<T, R>> edgesFromN = edgesFromNode.get(node);
-		for (Edge<T, R> edge : edgesFromN) {
-			retVal.add(edge.getDestinationNode());
+		if (edgesFromN != null) {
+    		for (Edge<T, R> edge : edgesFromN) {
+    			retVal.add(edge.getDestinationNode());
+    		}
 		}
 		return retVal;
 	}
@@ -86,10 +90,10 @@ public class Network<T, R> implements Universe {
 	}
 	
 	public void addEdge(Edge<T,R> edge) {
-		edges.put(edge.getId(), edge);
-		addEdgeToEdgesList(edge, edgesToNode, edge.getSoureNode());
-		addEdgeToEdgesList(edge, edgesFromNode, edge.getDestinationNode());
-		fireEdgeAdded(edge);
+	    edges.put(edge.getId(), edge);
+	    addEdgeToEdgesList(edge, edgesToNode, edge.getDestinationNode());
+	    addEdgeToEdgesList(edge, edgesFromNode, edge.getSoureNode());
+	    fireEdgeAdded(edge);
 	}
 	
 	private void addEdgeToEdgesList(Edge<T,R> edge, Map<Node<T>, List<Edge<T,R>>> map, Node<T> node) {
@@ -205,50 +209,60 @@ public class Network<T, R> implements Universe {
 	 */
 	
 	public Map<Node<T>, Double> getShortestPath(Node<T> startNode) {
-		List<Node<T>> pq = new ArrayList<>();
-		Map<Node<T>, Double> dist = new HashMap<>();
-		Map<Node<T>, Node<T>> pred = new HashMap<>();
-		for (Node<T> node : getNodes()) {
-			dist.put(node, Double.MAX_VALUE);
-			pred.put(node, null);
-		}
-		
-		dist.put(startNode, 0.0D);
-		
-		for (Node<T> node : getNodes()) {
-			pq.add(node);
-		}
-		
-		while (pq.size() > 0) {
-			/** Get minimum distance node from 'nodes' */
-			double minDist = Double.MAX_VALUE;
-			Node<T> minNode = null;
-			for (Map.Entry<Node<T>, Double> distEntry : dist.entrySet() ) {
-				if (distEntry.getValue() < minDist) {
-					minDist = distEntry.getValue();
-					minNode = distEntry.getKey();
-				}
-			}
-			
-			for (Node<T> neighborOfMinNode : getAdjacentNodes(minNode)) {
-				double w = 0.0;
-				Collection<Edge<T, R>> edges = getEdgesBetween(minNode, neighborOfMinNode);
-				for (Edge<T, R> edge : edges) {
-					if (edge.getPayload().containsKey("DISTANCE")) {
-						w = (Double)edge.getPayload().get("DISTANCE");
-					}
-				}
-				
-				double newW = dist.get(minNode) + w;
-				if (newW < dist.get(neighborOfMinNode)) {
-					pq.remove(neighborOfMinNode);
-					dist.put(neighborOfMinNode, newW);
-					pred.put(neighborOfMinNode, minNode);
-				}
-			}
-		}
-		
-		return dist;
+	    Set<Node<T>> unvisited = new HashSet<>();
+	    Map<Node<T>, Double> dist = new HashMap<>();
+	    
+	    // Initialize distances
+	    for (Node<T> node : getNodes()) {
+	        dist.put(node, Double.MAX_VALUE);
+	        unvisited.add(node);
+	    }
+	    
+	    dist.put(startNode, 0.0D);
+	    
+	    while (!unvisited.isEmpty()) {
+	        // Get minimum distance node from unvisited nodes
+	        Node<T> minNode = null;
+	        double minDist = Double.MAX_VALUE;
+	        
+	        for (Node<T> node : unvisited) {
+	            if (dist.get(node) < minDist) {
+	                minDist = dist.get(node);
+	                minNode = node;
+	            }
+	        }
+	        
+	        if (minNode == null) break; // No more reachable nodes
+	        
+	        unvisited.remove(minNode); // This was missing!
+	        
+	        // Update distances to neighbors
+	        Collection<Node<T>> neighbors = getAdjacentNodes(minNode);
+	        if (neighbors != null) {
+	            for (Node<T> neighbor : neighbors) {
+	                if (unvisited.contains(neighbor)) {
+	                    double edgeWeight = 1.0; // Default weight
+	                    
+	                    Collection<Edge<T, R>> edges = getEdgesBetween(minNode, neighbor);
+	                    if (edges != null) {
+	                        for (Edge<T, R> edge : edges) {
+	                            if (edge.getPayload().containsKey("DISTANCE")) {
+	                                edgeWeight = (Double)edge.getPayload().get("DISTANCE");
+	                                break; // Use first edge's distance
+	                            }
+	                        }
+	                    }
+	                    
+	                    double newDist = dist.get(minNode) + edgeWeight;
+	                    if (newDist < dist.get(neighbor)) {
+	                        dist.put(neighbor, newDist);
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    
+	    return dist;
 	}
 	
 	public void connectVisibleNodes(Grid grid, Predicate<GridPosition> barrierCondition) {
