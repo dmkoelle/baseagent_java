@@ -106,38 +106,37 @@ public class RoadNetwork {
         String roadData = """
 ###
 ###
-### ROAD NETWORK FOR PUMPKIN NECK MAP
-### (Hand-entered)
+### ROAD NETWORK 
 ###
 ###
-# "A": Left road that moves SSE
+# "A"
 1,41 , 17,66 # End of image to Intersection with "B"
 17,66 , 36,86
 36,86  , 56,140 # End of image
-# "B": Road from leftmost road that goes into field
+# "B"
 17,66 , 27,54 # Intersection with "A"
 27,54 , 34,43 # Intersection with "D"
 34,43 , 44,43 # Intersection with "C"
 44,43 , 52, 43 # Dead end
-# "C": Long road from that field road that goes to other field through the forest
+# "C"
 44,43 , 53,52 # Intersection with "D"
 53,52 , 56,55 # Intersection with "E"
 56,55 , 62,67
 62,67 , 108,78
 108,78 , 118,74
 118,74 , 147,83 # Intersection with "F" and "G"
-# "D": Arc that connects in leftmost field
+# "D"
 27,54 , 37,57 # Intersection with "B"
 37,57 , 53,52 # Intersectoin with "C"
-# "E": Spur road that goes into field second-from-left
+# "E"
 56,55 , 72,54 # Intersection with "C"
 72,54 , 72,51 # Dead end
-# "F": Spur road at top of rightmost field
+# "F"
 147,83 , 159,74 # Intersection with "C" and "G"
 157,74 , 169,71 # Dead end
-# "G": Road connecting long road "C" with long road "H"
+# "G"
 147,83 , 161,116 # Intersection with "C" and "G" to Intersection with "H"
-# "H": Long road that cuts through the bottom of the rightmost field
+# "H"
 148, 140 , 152,129 # End of image to Intersection with "I"
 152,129 , 161,116 # Intersection with "G"
 161,116 , 173,110 # Intersection with loop "J"
@@ -146,31 +145,31 @@ public class RoadNetwork {
 182,106 , 186,103 # Intersection with spur "L"
 186,103 , 203,93 # Intersection with road "M"
 203,93 , 226,80 # Intersection with road "N"
-# "I": Stuff at the bottom of the image. Dead-end road first.
+# "I"
 152,129 , 145,127 # Intersection with "I2"
 145,127 , 135,122 # Intersection with "I3"
 135,122 , 129,119
 129,119 , 119,128 # Dead end
-# "I2" is a little spur road connecting "I" to "I3"
+# "I2"
 145,127 , 131,126 # Intersection with "I" to Intersection with "I3"
-# "I3" is a road that ends in a loop, we'll just call it a dead end
+# "I3"
 135,122 , 118,133 # Intersection with "I" to Dead End
-# "J" is a big loop in the big field
+# "J" 
 173,110 , 161,103
 161,103 , 163,92
 163,92 , 171,88
 171,88 , 180,95
 180,95 , 180,102
 180,102 , 173,110 
-# "K" is a small loop
+# "K" 
 176,109 , 183,113
 183,113 , 182,106
-# "L" is a straight spur
+# "L" 
 186,103 , 194,119
-# "M" is a long road going up tp the water. Ignore the loop at the top.
+# "M" 
 203,93 , 197,27 # Intersection with "N"
 197,27 , 188,15 # End at water
-# "N" is the long road on the right side of the map
+# "N" 
 197,27 , 205,27
 205,27 , 214,33
 214,33 , 226,80 # Intersection with "M"
