@@ -1,6 +1,7 @@
 package org.baseagent.network;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -13,7 +14,7 @@ import org.baseagent.util.BaseAgentMath;
  * Utility class to load road network data from a formatted text file
  * and create a Network instance representing the road connections.
  */
-public class RoadNetwork {
+public class GridNetworkLoader {
     
     // Pattern to match coordinate pairs: "x,y"
     private static final Pattern COORDINATE_PATTERN = Pattern.compile("(\\d+)\\s*,\\s*(\\d+)");
@@ -24,7 +25,7 @@ public class RoadNetwork {
      * @return Network instance representing the road network
      */
     public static Network<GridPosition, Object> loadFromString(String fileContent) {
-        Network<GridPosition, Object> roadNetwork = new Network<>();
+        Network<GridPosition, Object> pathNetwork = new Network<>();
         
         String[] lines = fileContent.split("\n");
         
@@ -52,14 +53,14 @@ public class RoadNetwork {
                 GridPosition currentGridPosition = new GridPosition(x, y);
                 
                 // Add node if it doesn't exist
-                if (roadNetwork.getNode(currentGridPosition) == null) {
-                    roadNetwork.addNode(currentGridPosition);
+                if (pathNetwork.getNode(currentGridPosition) == null) {
+                    pathNetwork.addNode(currentGridPosition);
                 }
                 
                 // If we have a previous GridPosition, create an edge between them
                 if (previousGridPosition != null) {
-                    Node<GridPosition> sourceNode = roadNetwork.getNode(previousGridPosition);
-                    Node<GridPosition> destinationNode = roadNetwork.getNode(currentGridPosition);
+                    Node<GridPosition> sourceNode = pathNetwork.getNode(previousGridPosition);
+                    Node<GridPosition> destinationNode = pathNetwork.getNode(currentGridPosition);
                     
                     // Create edge with unique ID based on coordinates
                     String edgeId = previousGridPosition.toString() + "->" + currentGridPosition.toString();
@@ -69,14 +70,14 @@ public class RoadNetwork {
                     double distance = BaseAgentMath.distance(currentGridPosition, previousGridPosition);
                     edge.getPayload().put(Network.DISTANCE, distance);
                     
-                    roadNetwork.addEdge(edge);
+                    pathNetwork.addEdge(edge);
                 }
                 
                 previousGridPosition = currentGridPosition;
             }
         }
         
-        return roadNetwork;
+        return pathNetwork;
     }
     
     /**
@@ -85,10 +86,10 @@ public class RoadNetwork {
      * @return Network instance representing the road network
      * @throws IOException if file cannot be read
      */
-    public static Network<GridPosition, Object> loadFromFile(String filename) throws IOException {
+    public static Network<GridPosition, Object> loadFromFile(File file) throws IOException {
         StringBuilder content = new StringBuilder();
         
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 content.append(line).append("\n");
@@ -189,7 +190,7 @@ public class RoadNetwork {
         int edgeCount = 0;
         for (Edge<GridPosition, Object> edge : roadNetwork.getEdges()) {
             if (edgeCount++ < 10) {
-                GridPosition source = edge.getSoureNode().getObject();
+                GridPosition source = edge.getSourceNode().getObject();
                 GridPosition dest = edge.getDestinationNode().getObject();
                 double distance = (Double) edge.getPayload().get(Network.DISTANCE);
                 System.out.printf("  %s -> %s (%.2f)\n", source, dest, distance);
