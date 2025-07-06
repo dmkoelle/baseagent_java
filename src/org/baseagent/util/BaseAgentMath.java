@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
@@ -137,7 +138,84 @@ public class BaseAgentMath {
 	public static boolean canSeeIt(Grid grid, HasGridPosition a, HasGridPosition b, Predicate<GridPosition> barrierCondition) {
 		return canSeeIt(grid, a.getCellX(), a.getCellY(), b.getCellX(), b.getCellY(), barrierCondition);
 	}
+	
+    /**
+     * Calculates the interception point where Agent 1 should move to meet Agent 2
+     * 
+     * @param agent1Pos Current position of Agent 1
+     * @param agent1Speed Speed of Agent 1
+     * @param agent2Pos Current position of Agent 2
+     * @param agent2Velocity Velocity vector of Agent 2 (direction and speed combined)
+     * @return Optional containing the interception point, or empty if interception is impossible
+     */
+	public static Optional<GridPosition> calculateInterceptionPoint(GridPosition agent1Pos, double agent1Speed, GridPosition agent2Pos, GridPosition agent2Dest, double agent2Speed) {
+        // Calculate Agent 2's velocity vector
+        GridPosition agent2Direction = agent2Dest.subtract(agent2Pos);
+        double distanceToDestination = agent2Direction.magnitude();
+        
+        // Handle case where Agent 2 is already at destination
+        if (distanceToDestination < 1e-10) {
+            return Optional.of(agent2Pos);
+        }
+        
+        // Normalize direction and multiply by speed to get velocity
+        GridPosition agent2Velocity = agent2Direction.normalize().multiply(agent2Speed);
+        
+        // Calculate time for Agent 2 to reach its destination
+        double timeToDestination = distanceToDestination / agent2Speed;
+        
+        // Vector from agent2 to agent1
+        GridPosition relativePos = agent1Pos.subtract(agent2Pos);
+        
+        // Coefficients for quadratic equation: at² + bt + c = 0
+        double a = agent2Velocity.magnitudeSquared() - agent1Speed * agent1Speed;
+        double b = 2 * agent2Velocity.dot(relativePos);
+        double c = relativePos.magnitudeSquared();
+        
+        // Handle special case where speeds are equal (linear equation)
+        if (Math.abs(a) < 1e-10) {
+            if (Math.abs(b) < 1e-10) {
+                // If both a and b are zero, either always intercept or never intercept
+                return Math.abs(c) < 1e-10 ? Optional.of(agent2Pos) : Optional.empty();
+            }
+            double t = -c / b;
+            if (t >= 0 && t <= timeToDestination) {
+                return Optional.of(agent2Pos.add(agent2Velocity.multiply(t)));
+            }
+            return Optional.empty();
+        }
+        
+        // Solve quadratic equation
+        double discriminant = b * b - 4 * a * c;
+        
+        if (discriminant < 0) {
+            return Optional.empty(); // No real solution - interception impossible
+        }
+        
+        double sqrtDiscriminant = Math.sqrt(discriminant);
+        double t1 = (-b - sqrtDiscriminant) / (2 * a);
+        double t2 = (-b + sqrtDiscriminant) / (2 * a);
+        
+        // Choose the smallest positive time that's within Agent 2's travel time
+        double t = -1;
+        if (t1 >= 0 && t1 <= timeToDestination && t2 >= 0 && t2 <= timeToDestination) {
+            t = Math.min(t1, t2);
+        } else if (t1 >= 0 && t1 <= timeToDestination) {
+            t = t1;
+        } else if (t2 >= 0 && t2 <= timeToDestination) {
+            t = t2;
+        }
+        
+        if (t < 0) {
+            return Optional.empty(); // No future interception possible
+        }
+        
+        // Calculate interception point
+        GridPosition interceptionPoint = agent2Pos.add(agent2Velocity.multiply(t));
+        return Optional.of(interceptionPoint);	
+    }
 }
+
 
 
 	

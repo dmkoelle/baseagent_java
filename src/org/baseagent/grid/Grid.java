@@ -84,6 +84,10 @@ public class Grid extends SimulationComponent implements Universe {
 		this.layers.remove(name);
 	}
 	
+	public GridCell getCell(GridLayer layer, int x, int y) {
+	    return new GridCell(layer, x, y);
+	}
+	
 	//
 	// Operations on the default layer
 	//

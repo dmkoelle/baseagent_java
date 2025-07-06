@@ -27,6 +27,7 @@ public class GridCanvasForSimulation extends GridCanvas implements SimulationLis
 		super(grid, cellWidth, cellHeight, cellXSpacing, cellYSpacing);
 		this.simulation = simulation;
 		this.simulation.addSimulationListener(this);
+		this.simulation.setGridCanvasForSimulation(this);
 		
 		AnimationTimer timer = new AnimationTimer() {
 			@Override

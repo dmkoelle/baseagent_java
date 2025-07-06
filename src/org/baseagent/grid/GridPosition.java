@@ -37,6 +37,40 @@ public class GridPosition implements HasGridPosition {
 	public GridLayer getGridLayer() {
 		return null;
 	}
+
+	//
+	// Grid Position math
+	//
+	
+    public GridPosition subtract(GridPosition other) {
+        return new GridPosition(getCellX() - other.getCellX(), getCellY() - other.getCellY());
+    }
+    
+    public GridPosition add(GridPosition other) {
+        return new GridPosition(getCellX() + other.getCellX(), getCellY() + other.getCellY());
+    }
+    
+    public GridPosition multiply(double scalar) {
+        return new GridPosition((int)(getCellX() * scalar), (int)(getCellY() * scalar));
+    }
+    
+    public double dot(GridPosition other) {
+        return getCellX() * other.getCellX() + getCellY() * other.getCellY();
+    }
+    
+    public double magnitude() {
+        return Math.sqrt(getCellX() * getCellX() + getCellY() * getCellY());
+    }
+    
+    public double magnitudeSquared() {
+        return getCellX() * getCellX() + getCellY() * getCellY();
+    }
+    
+    public GridPosition normalize() {
+        double mag = magnitude();
+        if (mag == 0) return new GridPosition(0, 0);
+        return new GridPosition((int)((double)getCellX() / mag), (int)((double)getCellY() / mag));
+    }
 	
 	@Override
 	public String toString() {

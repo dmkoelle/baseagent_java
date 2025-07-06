@@ -9,20 +9,20 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class Toast {
-	private long startTime = -1;
-	private long endTime = -1;
-	private long duration = 1L;
-	private Predicate<Simulation> activeCondition;
-	private Predicate<Simulation> removeCondition;
-	private int graphicX;
-	private int graphicY;
-	private int width;
-	private int height;
-	private String text;
-	private boolean needsTimes = true;
+public class Toast implements Drawable {
+	protected long startTime = -1;
+	protected long endTime = -1;
+	protected long duration = 1L;
+	protected Predicate<Simulation> activeCondition;
+	protected Predicate<Simulation> removeCondition;
+	protected int graphicX;
+	protected int graphicY;
+	protected int width;
+	protected int height;
+	protected String text;
+	protected boolean needsTimes = true;
 	
-	public Toast(String text, int graphicX, int graphicY, int width, int height) {
+	public Toast(int graphicX, int graphicY, int width, int height, String text) {
 		this.text = text;
 		this.graphicX = graphicX;
 		this.graphicY = graphicY;
@@ -30,19 +30,19 @@ public class Toast {
 		this.height = height;
 	}
 
-	public Toast(String text, int graphicX, int graphicY, int width, int height, long duration) {
-		this(text, graphicX, graphicY, width, height);
+	public Toast(int graphicX, int graphicY, int width, int height, String text, long duration) {
+		this(graphicX, graphicY, width, height, text);
 		setDuration(duration);
 	}
 
-	public Toast(long startTime, long endTime, String text, int graphicX, int graphicY, int width, int height) {
-		this(text, graphicX, graphicY, width, height);
+	public Toast(int graphicX, int graphicY, int width, int height, String text, long startTime, long endTime) {
+		this(graphicX, graphicY, width, height, text);
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.duration = endTime - startTime;
 		this.needsTimes = false;
 	}
-
+	
 	public void setStartTime(long startTime) {
 		this.startTime = startTime;
 		if (getDuration() != 0) {
@@ -129,6 +129,7 @@ public class Toast {
 		else return true;
 	}
 
+	@Override
 	public void draw(GridCanvasContext gcc) {
 		GraphicsContext gc = gcc.getGraphicsContext();
 		gc.setFill(Color.BLACK);

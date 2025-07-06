@@ -17,6 +17,7 @@ import org.baseagent.comms.MessageListener;
 import org.baseagent.data.DataCollector;
 import org.baseagent.metrics.Metric;
 import org.baseagent.schedule.Scheduler;
+import org.baseagent.ui.GridCanvasForSimulation;
 
 public class Simulation {
 	private Universe universe;
@@ -43,6 +44,8 @@ public class Simulation {
 	private boolean paused;
 	private boolean stopped;
 	private boolean currentlyInStep;
+	
+	private GridCanvasForSimulation gridCanvasForSimulation;
 	
 	public Simulation() {
 		this.schedulers = new ArrayList<>();
@@ -121,6 +124,14 @@ public class Simulation {
 	
 	public void setProperties(Map<String, Object> props) {
 		this.properties = props;
+	}
+	
+	public void setGridCanvasForSimulation(GridCanvasForSimulation gc) {
+	    this.gridCanvasForSimulation = gc;
+	}
+	
+	public GridCanvasForSimulation getGridCanvasForSimulation() {
+	    return gridCanvasForSimulation;
 	}
 	
 	public void add(SimulationComponent simulatee) {
