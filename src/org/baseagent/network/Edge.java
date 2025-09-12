@@ -34,7 +34,7 @@ public class Edge<T, R> {
 		return this.id;
 	}
 	
-	public Node<T> getSoureNode() {
+	public Node<T> getSourceNode() {
 		return this.sourceNode;
 	}
 	
@@ -65,12 +65,12 @@ public class Edge<T, R> {
 		Edge<T, R> e2 = (Edge<T, R>)o;
 		
 		return (this.getId().equals(e2.getId()) && 
-				this.getSoureNode().equals(e2.getSoureNode()) &&
+				this.getSourceNode().equals(e2.getSourceNode()) &&
 				this.getDestinationNode().equals(e2.getDestinationNode()));
 	}
 	
 	@Override
 	public int hashCode() {
-		return this.getId().hashCode() + 37*this.getSoureNode().hashCode() + 41*this.getDestinationNode().hashCode();
+		return this.getId().hashCode() + 37*this.getSourceNode().hashCode() + 41*this.getDestinationNode().hashCode();
 	}
 }

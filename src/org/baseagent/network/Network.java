@@ -87,7 +87,7 @@ public class Network<T, R> implements Universe {
 	
 	public void addEdge(Edge<T,R> edge) {
 		edges.put(edge.getId(), edge);
-		addEdgeToEdgesList(edge, edgesToNode, edge.getSoureNode());
+		addEdgeToEdgesList(edge, edgesToNode, edge.getSourceNode());
 		addEdgeToEdgesList(edge, edgesFromNode, edge.getDestinationNode());
 		fireEdgeAdded(edge);
 	}
