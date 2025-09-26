@@ -39,7 +39,7 @@ public class HillyDoubleGridLayerGenerator implements GridLayerGenerator {
 					}
 				}
 			}
-			g.switchToNextStep();
+			g.next();
 		}
 		
 		return g;
