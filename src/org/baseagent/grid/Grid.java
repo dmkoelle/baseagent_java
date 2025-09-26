@@ -88,15 +88,14 @@ public class Grid extends SimulationComponent implements Universe {
 	    return new GridCell(layer, x, y);
 	}
 	
+	public boolean isValidPosition(int x, int y) {
+		return (x >= 0) && (x < getWidthInCells()) && (y >= 0) && (y < getHeightInCells());
+	}
+	
 	//
 	// Operations on the default layer
 	//
 
-	// TODO: Operations on the default layer
-	
-//	@Override
-//	public void step(Simulation simulation) { }
-	
 	public void step0(Simulation simulation) {
 		stepPolicy.step(simulation);
 	}
