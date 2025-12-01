@@ -1,12 +1,12 @@
 package org.baseagent.sim;
-
+ 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
+ 
 import org.baseagent.Agent;
 import org.baseagent.Beacon;
 import org.baseagent.HasStep;
@@ -18,7 +18,7 @@ import org.baseagent.data.DataCollector;
 import org.baseagent.metrics.Metric;
 import org.baseagent.schedule.Scheduler;
 import org.baseagent.ui.GridCanvasForSimulation;
-
+ 
 public class Simulation {
 	private Universe universe;
 	private Communicator communicator;
@@ -46,6 +46,10 @@ public class Simulation {
 	private boolean currentlyInStep;
 	
 	private GridCanvasForSimulation gridCanvasForSimulation;
+	// Spatial index: layerName -> (cellKey -> list of beacons)
+	private java.util.Map<String, java.util.Map<Long, java.util.List<Beacon>>> beaconIndexByLayer;
+	// Current key for each beacon so we can update quickly when a beacon moves
+	private java.util.Map<Beacon, Long> beaconCurrentIndexKey;
 	
 	public Simulation() {
 		this.schedulers = new ArrayList<>();
@@ -67,6 +71,9 @@ public class Simulation {
 		
 		this.communicator = new BroadcastCommunicator(this);
 		this.endCondition = sim -> sim.getStepTime() == 1000;
+		
+		this.beaconIndexByLayer = new HashMap<>();
+		this.beaconCurrentIndexKey = new HashMap<>();
 	}
 	
 	public void setUniverse(Universe universe) {
@@ -149,6 +156,8 @@ public class Simulation {
 		}
 		else if (simulatee.getType() == SimulationComponent.Type.BEACON) {
 			beacons.add((Beacon)simulatee);
+			// index beacon spatially
+			indexBeacon((Beacon)simulatee);
 		}
 		
 		if (simulatee instanceof HasStep) {
@@ -181,6 +190,8 @@ public class Simulation {
 		}
 		else if (simulatee.getType() == SimulationComponent.Type.BEACON) {
 			beacons.remove((Beacon)simulatee);
+			// remove from spatial index
+			unindexBeacon((Beacon)simulatee);
 		}		
 		
 		if (simulatee instanceof HasStep) {
@@ -452,5 +463,93 @@ public class Simulation {
     
     public boolean stepTimeInterval(long interval) {
     	return (getStepTime() % interval == 0);
+    }
+    
+    private long keyFor(int x, int y) {
+        return (((long)x) << 32) | (y & 0xffffffffL);
+    }
+
+    private void indexBeacon(Beacon b) {
+        if (b == null) return;
+        String layerName = null;
+        try {
+            if (b.getGridLayer() != null) layerName = b.getGridLayer().getLayerName();
+        } catch (Exception ex) {
+            // ignore
+        }
+        if (layerName == null) layerName = "DEFAULT";
+
+        int x = b.getCellX();
+        int y = b.getCellY();
+        long key = keyFor(x, y);
+
+        java.util.Map<Long, java.util.List<Beacon>> layerIndex = beaconIndexByLayer.get(layerName);
+        if (layerIndex == null) {
+            layerIndex = new HashMap<>();
+            beaconIndexByLayer.put(layerName, layerIndex);
+        }
+
+        java.util.List<Beacon> list = layerIndex.get(key);
+        if (list == null) {
+            list = new ArrayList<>();
+            layerIndex.put(key, list);
+        }
+        if (!list.contains(b)) list.add(b);
+        beaconCurrentIndexKey.put(b, key);
+    }
+
+    private void unindexBeacon(Beacon b) {
+        if (b == null) return;
+        Long key = beaconCurrentIndexKey.remove(b);
+        String layerName = null;
+        try {
+            if (b.getGridLayer() != null) layerName = b.getGridLayer().getLayerName();
+        } catch (Exception ex) {
+            // ignore
+        }
+        if (layerName == null) layerName = "DEFAULT";
+        if (key == null) return;
+        java.util.Map<Long, java.util.List<Beacon>> layerIndex = beaconIndexByLayer.get(layerName);
+        if (layerIndex == null) return;
+        java.util.List<Beacon> list = layerIndex.get(key);
+        if (list != null) {
+            list.remove(b);
+            if (list.isEmpty()) layerIndex.remove(key);
+        }
+    }
+
+    public void reindexBeacon(Beacon b) {
+        unindexBeacon(b);
+        indexBeacon(b);
+    }
+
+    /** Return beacons near (cellX,cellY) on the given layer within integer radius (inclusive)
+     *  Uses layer-level spatial hashing for efficiency.
+     */
+    public List<Beacon> getBeaconsNear(String layerName, int cellX, int cellY, int radius) {
+        List<Beacon> result = new ArrayList<>();
+        if (layerName == null) layerName = "DEFAULT";
+        java.util.Map<Long, java.util.List<Beacon>> layerIndex = beaconIndexByLayer.get(layerName);
+        if (layerIndex == null) return result;
+
+        int minX = Math.max(0, cellX - radius);
+        int maxX = cellX + radius;
+        int minY = Math.max(0, cellY - radius);
+        int maxY = cellY + radius;
+
+        int r2 = radius * radius;
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                long key = keyFor(x, y);
+                java.util.List<Beacon> list = layerIndex.get(key);
+                if (list == null) continue;
+                for (Beacon b : list) {
+                    int dx = b.getCellX() - cellX;
+                    int dy = b.getCellY() - cellY;
+                    if (dx*dx + dy*dy <= r2) result.add(b);
+                }
+            }
+        }
+        return result;
     }
 }

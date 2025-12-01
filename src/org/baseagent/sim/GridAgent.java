@@ -228,6 +228,14 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 		Grid grid = (Grid)getSimulation().getUniverse();
 		this.cellX = grid.getBoundsPolicy().boundX(x);
 		this.cellY = grid.getBoundsPolicy().boundY(y);
+		// if this agent is a Beacon, update simulation spatial index
+		try {
+			if (this instanceof org.baseagent.Beacon && getSimulation() != null) {
+				getSimulation().reindexBeacon((org.baseagent.Beacon)this);
+			}
+		} catch (Exception ex) {
+			// ignore index errors
+		}
 	}
 	
 	public boolean isAt(int cellX, int cellY) {
@@ -281,6 +289,14 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	/** I'm including placeAt because moveTo might imply actual movement */
 	public void placeAt(int cellX, int cellY) {
 		moveTo(cellX, cellY);
+		// if this agent is a Beacon, update simulation spatial index
+		try {
+			if (this instanceof org.baseagent.Beacon && getSimulation() != null) {
+				getSimulation().reindexBeacon((org.baseagent.Beacon)this);
+			}
+		} catch (Exception ex) {
+			// ignore index errors
+		}
 	}
 	
 	public void placeRandomly() {
