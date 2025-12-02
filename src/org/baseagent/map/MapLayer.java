@@ -2,7 +2,11 @@ package org.baseagent.map;
 
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.List;
+import java.util.function.Predicate;
 
+import org.baseagent.grid.GridLayer;
+import org.baseagent.grid.Grid;
 import org.baseagent.util.GeoUtils;
 
 public class MapLayer implements Iterable<Object> {
@@ -21,6 +25,9 @@ public class MapLayer implements Iterable<Object> {
     private double topLat, leftLon, bottomLat, rightLon;
     private int rows = 0, cols = 0;
 
+    // Optional backing GridLayer (to reuse Grid/GridLayer infrastructure)
+    private GridLayer backingGridLayer = null;
+
     public void setGridBounds(double topLat, double leftLon, double bottomLat, double rightLon, int rows, int cols) {
         this.topLat = topLat;
         this.leftLon = leftLon;
@@ -29,6 +36,22 @@ public class MapLayer implements Iterable<Object> {
         this.rows = rows;
         this.cols = cols;
     }
+
+    /** Attach an existing GridLayer as the backing data store for this MapLayer. This will set
+     *  the MapLayer's rows/cols to match the backing grid's dimensions. You should still call
+     *  setGridBounds(...) on the MapLayer to provide geographic anchoring (lat/lon bbox).
+     */
+    public void attachBackingGridLayer(GridLayer gridLayer) {
+        this.backingGridLayer = gridLayer;
+        if (gridLayer != null && gridLayer.getParentGrid() != null) {
+            Grid parent = gridLayer.getParentGrid();
+            // parent grid width -> cols, height -> rows
+            this.cols = parent.getWidthInCells();
+            this.rows = parent.getHeightInCells();
+        }
+    }
+
+    public GridLayer getBackingGridLayer() { return this.backingGridLayer; }
 
     public boolean isGridLayer() {
         return (rows > 0) && (cols > 0);
