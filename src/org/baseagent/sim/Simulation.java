@@ -15,9 +15,9 @@ import org.baseagent.comms.BroadcastCommunicator;
 import org.baseagent.comms.Communicator;
 import org.baseagent.comms.MessageListener;
 import org.baseagent.data.DataCollector;
+import org.baseagent.grid.ui.GridCanvasForSimulation;
 import org.baseagent.metrics.Metric;
 import org.baseagent.schedule.Scheduler;
-import org.baseagent.ui.GridCanvasForSimulation;
  
 public class Simulation {
 	private Universe universe;

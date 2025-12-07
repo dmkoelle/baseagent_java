@@ -46,6 +46,8 @@ public class EmbodiedBehavior extends GridPosition implements Behavior {
 		for (EmbodiedEffector effector : embodiedAgent.getEffectors()) {
 			effector.effect(embodiedAgent);
 		}
+		// apply accumulated forces to update agent position
+		embodiedAgent.processForces();
 	}
 
 	@Override

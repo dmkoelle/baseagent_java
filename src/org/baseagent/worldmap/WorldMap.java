@@ -1,26 +1,26 @@
-package org.baseagent.map;
+package org.baseagent.worldmap;
 
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.baseagent.grid.GridLayer;
 import org.baseagent.sim.Simulation;
 import org.baseagent.sim.SimulationComponent;
-import org.baseagent.grid.Grid;
 import org.baseagent.sim.Universe;
 
-public class Map extends SimulationComponent implements Universe {
+public class WorldMap extends SimulationComponent implements Universe {
     private int widthInTiles;
     private int heightInTiles;
-    private java.util.Map<String, MapLayer> layers;
+    private java.util.Map<String, WorldMapGridLayer> layers;
 
-    public Map(int widthInTiles, int heightInTiles) {
+    public WorldMap(int widthInTiles, int heightInTiles) {
         super();
         this.widthInTiles = widthInTiles;
         this.heightInTiles = heightInTiles;
         this.layers = new HashMap<>();
         // create a default layer
-        createMapLayer(MapLayer.DEFAULT_MAP_LAYER);
+        createMapLayer(WorldMapGridLayer.DEFAULT_MAP_LAYER);
     }
 
     /**
@@ -29,14 +29,14 @@ public class Map extends SimulationComponent implements Universe {
      * setGridBounds(...) on the returned MapLayer to provide geographic anchoring if you
      * want the overlay to be positioned on the MapCanvas.
      */
-    public MapLayer addGridOverlay(org.baseagent.grid.Grid grid) {
-        if (grid == null) return addGridOverlay((org.baseagent.grid.GridLayer)null);
+    public WorldMapGridLayer addGridOverlay(org.baseagent.grid.Grid grid) {
+        if (grid == null) return addGridOverlay((GridLayer)null);
         // prefer the grid's default layer name if present
         String defaultLayerName = org.baseagent.grid.Grid.DEFAULT_GRID_LAYER;
-        org.baseagent.grid.GridLayer gl = grid.getGridLayer(defaultLayerName);
+        GridLayer gl = grid.getGridLayer(defaultLayerName);
         if (gl == null) {
             // create a GridLayer if it doesn't exist
-            gl = grid.createGridLayer(defaultLayerName, org.baseagent.grid.GridLayer.GridLayerUpdateOption.NO_SWITCH);
+            gl = grid.createGridLayer(defaultLayerName, GridLayer.GridLayerUpdateOption.NO_SWITCH);
         }
         return addGridOverlay(gl);
     }
@@ -47,19 +47,19 @@ public class Map extends SimulationComponent implements Universe {
      * registered with a Simulation, the Grid will be added to the Simulation so
      * its step/swap behavior runs automatically.
      */
-    public MapLayer addGridOverlay(String layerName, org.baseagent.grid.Grid grid) {
+    public WorldMapGridLayer addGridOverlay(String layerName, org.baseagent.grid.Grid grid) {
         // Convenience: locate or create the GridLayer on the grid with the given name
-        if (grid == null) return addGridOverlay((org.baseagent.grid.GridLayer)null);
+        if (grid == null) return addGridOverlay((GridLayer)null);
         if (layerName == null) layerName = org.baseagent.grid.Grid.DEFAULT_GRID_LAYER;
-        org.baseagent.grid.GridLayer gl = grid.getGridLayer(layerName);
+        GridLayer gl = grid.getGridLayer(layerName);
         if (gl == null) {
-            gl = grid.createGridLayer(layerName, org.baseagent.grid.GridLayer.GridLayerUpdateOption.NO_SWITCH);
+            gl = grid.createGridLayer(layerName, GridLayer.GridLayerUpdateOption.NO_SWITCH);
         }
         return addGridOverlay(layerName, gl);
     }
 
     /** Primary API: attach a GridLayer as the backing data store for a MapLayer. */
-    public MapLayer addGridOverlay(org.baseagent.grid.GridLayer gridLayer) {
+    public WorldMapGridLayer addGridOverlay(GridLayer gridLayer) {
         String layerName = (gridLayer == null) ? null : gridLayer.getLayerName();
         if (layerName == null || layerName.isEmpty()) layerName = "grid_overlay_" + layers.size();
         return addGridOverlay(layerName, gridLayer);
@@ -68,9 +68,9 @@ public class Map extends SimulationComponent implements Universe {
     /**
      * Attach an existing GridLayer as a Map overlay with an explicit map-layer name.
      */
-    public MapLayer addGridOverlay(String layerName, org.baseagent.grid.GridLayer gridLayer) {
+    public WorldMapGridLayer addGridOverlay(String layerName, GridLayer gridLayer) {
         if (layerName == null) layerName = "grid_overlay_" + layers.size();
-        MapLayer ml = createMapLayer(layerName);
+        WorldMapGridLayer ml = createMapLayer(layerName);
         ml.attachBackingGridLayer(gridLayer);
         // If map already has a simulation, register the parent Grid so it participates in stepping
         if (this.getSimulation() != null && gridLayer != null && gridLayer.getParentGrid() != null) {
@@ -86,8 +86,8 @@ public class Map extends SimulationComponent implements Universe {
     /**
      * Attach an existing Grid as a Map overlay and set geographic bounds in one call.
      */
-    public MapLayer addGridOverlay(String layerName, org.baseagent.grid.GridLayer gridLayer, double topLat, double leftLon, double bottomLat, double rightLon) {
-        MapLayer ml = addGridOverlay(layerName, gridLayer);
+    public WorldMapGridLayer addGridOverlay(String layerName, GridLayer gridLayer, double topLat, double leftLon, double bottomLat, double rightLon) {
+        WorldMapGridLayer ml = addGridOverlay(layerName, gridLayer);
         if (gridLayer != null && gridLayer.getParentGrid() != null) {
             ml.setGridBounds(topLat, leftLon, bottomLat, rightLon, gridLayer.getParentGrid().getHeightInCells(), gridLayer.getParentGrid().getWidthInCells());
         } else {
@@ -99,17 +99,17 @@ public class Map extends SimulationComponent implements Universe {
     public int getWidthInTiles() { return this.widthInTiles; }
     public int getHeightInTiles() { return this.heightInTiles; }
 
-    public MapLayer createMapLayer(String name) {
-        MapLayer layer = new MapLayer(name, this);
+    public WorldMapGridLayer createMapLayer(String name) {
+        WorldMapGridLayer layer = new WorldMapGridLayer(name, this);
         addMapLayer(name, layer);
         return layer;
     }
 
-    public void addMapLayer(String name, MapLayer layer) {
+    public void addMapLayer(String name, WorldMapGridLayer layer) {
         this.layers.put(name, layer);
     }
 
-    public MapLayer getMapLayer(String name) {
+    public WorldMapGridLayer getMapLayer(String name) {
         return layers.get(name);
     }
 
@@ -117,7 +117,7 @@ public class Map extends SimulationComponent implements Universe {
         this.layers.remove(name);
     }
 
-    public Collection<MapLayer> getMapLayers() { return layers.values(); }
+    public Collection<WorldMapGridLayer> getMapLayers() { return layers.values(); }
 
     @Override
     public Type getType() {
@@ -135,7 +135,7 @@ public class Map extends SimulationComponent implements Universe {
     }
 
     public void debug(PrintStream s) {
-        for (MapLayer layer : getMapLayers()) {
+        for (WorldMapGridLayer layer : getMapLayers()) {
             layer.debug(s);
             s.println();
         }

@@ -1,11 +1,11 @@
 // filepath: p:/Projects/BaseAgent/baseagent_java/src/org/baseagent/network/MapNetworkRenderer.java
 package org.baseagent.network;
 
-import org.baseagent.map.MapLayer;
-import org.baseagent.ui.GridCanvasContext;
-import org.baseagent.ui.MapLayerRenderer;
-import org.baseagent.sim.MapAgent;
+import org.baseagent.grid.ui.GridCanvasContext;
 import org.baseagent.util.GeoUtils;
+import org.baseagent.worldmap.WorldMapAgent;
+import org.baseagent.worldmap.WorldMapGridLayer;
+import org.baseagent.worldmap.ui.WorldMapLayerRenderer;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -14,7 +14,7 @@ import javafx.scene.paint.Color;
  * Renders a Network of Nodes whose Node.object is a MapAgent onto a MapCanvas.
  * Draws straight lines between node pixel positions and small circles for nodes.
  */
-public class MapNetworkRenderer<T,R> implements MapLayerRenderer {
+public class MapNetworkRenderer<T,R> implements WorldMapLayerRenderer {
     private Network<T, R> network;
 
     public MapNetworkRenderer(Network<T, R> network) {
@@ -22,7 +22,7 @@ public class MapNetworkRenderer<T,R> implements MapLayerRenderer {
     }
 
     @Override
-    public void draw(GridCanvasContext gcc, MapLayer layer, double canvasWidth, double canvasHeight) {
+    public void draw(GridCanvasContext gcc, WorldMapGridLayer layer, double canvasWidth, double canvasHeight) {
         Object zoomProp = gcc.getProperties().get("slippyZoom");
         Object offXProp = gcc.getProperties().get("viewOffsetX");
         Object offYProp = gcc.getProperties().get("viewOffsetY");
@@ -40,9 +40,9 @@ public class MapNetworkRenderer<T,R> implements MapLayerRenderer {
         for (Edge<T, R> edge : network.getEdges()) {
             T sObj = (edge.getSourceNode() == null) ? null : edge.getSourceNode().getObject();
             T dObj = (edge.getDestinationNode() == null) ? null : edge.getDestinationNode().getObject();
-            if (sObj instanceof MapAgent && dObj instanceof MapAgent) {
-                MapAgent sa = (MapAgent)sObj;
-                MapAgent da = (MapAgent)dObj;
+            if (sObj instanceof WorldMapAgent && dObj instanceof WorldMapAgent) {
+                WorldMapAgent sa = (WorldMapAgent)sObj;
+                WorldMapAgent da = (WorldMapAgent)dObj;
                 double[] sp = GeoUtils.latLonToPixelXY(sa.getLatitude(), sa.getLongitude(), slippyZoom, 256);
                 double[] dp = GeoUtils.latLonToPixelXY(da.getLatitude(), da.getLongitude(), slippyZoom, 256);
                 double sx = sp[0] * zoomScale - viewOffsetX;
@@ -58,8 +58,8 @@ public class MapNetworkRenderer<T,R> implements MapLayerRenderer {
         g.setStroke(Color.ORANGE);
         for (Node<T> node : network.getNodes()) {
             T obj = node.getObject();
-            if (obj instanceof MapAgent) {
-                MapAgent ma = (MapAgent)obj;
+            if (obj instanceof WorldMapAgent) {
+                WorldMapAgent ma = (WorldMapAgent)obj;
                 double[] p = GeoUtils.latLonToPixelXY(ma.getLatitude(), ma.getLongitude(), slippyZoom, 256);
                 double x = p[0] * zoomScale - viewOffsetX;
                 double y = p[1] * zoomScale - viewOffsetY;

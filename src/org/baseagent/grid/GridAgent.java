@@ -1,17 +1,12 @@
-package org.baseagent.sim;
+package org.baseagent.grid;
 
 import java.util.List;
 import java.util.Random;
 
 import org.baseagent.behaviors.Behavior;
-import org.baseagent.grid.Grid;
-import org.baseagent.grid.GridLayer;
-import org.baseagent.grid.GridPosition;
-import org.baseagent.grid.HasFineGridPosition;
-import org.baseagent.grid.HasGridPosition;
-import org.baseagent.ui.Drawable;
-import org.baseagent.ui.DrawableAgent;
-import org.baseagent.ui.GridCanvasContext;
+import org.baseagent.grid.ui.DrawableAgent;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridDrawable;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 import org.baseagent.util.BaseAgentMath;
 import org.baseagent.util.CellPoint2D;
@@ -34,7 +29,7 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	
 	public GridAgent() {
 		super();
-		setDrawable(new Drawable() {
+		setDrawable(new GridDrawable() {
 			@Override
 			public void draw(GridCanvasContext gcc) {
 //				VisualizationLibrary.drawTriangleWithHeading(gcc.getGraphicsContext(), getCellX(), getCellY(), gcc.getCellWidth(), gcc.getCellHeight(), getHeading(), getColorOrUse(Color.CADETBLUE), getColorOrUse(Color.CADETBLUE).darker());
@@ -127,7 +122,7 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	
 	// Convenience method to get the current layer
 	@Override
-	public GridLayer getGridLayer() {
+	public GridLayer<?> getGridLayer() {
 		return getGrid().getGridLayer(this.gridLayerName);
 	}
 
@@ -206,10 +201,12 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	}
 	
 	public void moveAlong(double distance, double direction) {
-		setHeading(direction);
-//		System.out.println("WARNING: Agent.moveToward is assuming a speed of 3.0 for testing purposes");
-//		moveDelta(distance * Math.sin(direction), distance * Math.cos(direction));
-		moveDelta(6.0 * Math.cos(direction), 6.0 * Math.sin(direction)); // TODO - Agent.moveAlong using 6.0 instead of 'distance'
+        setHeading(direction);
+        // Smooth movement using fine coordinates so small forces produce motion.
+        this.fineX += distance * Math.cos(direction);
+        this.fineY += distance * Math.sin(direction);
+        // update cell position based on fine coordinates (moveTo will apply bounds)
+        moveTo((int)Math.round(this.fineX), (int)Math.round(this.fineY));
 	}
 	
 	public void moveDelta(double deltaX, double deltaY) {
@@ -228,14 +225,15 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 		Grid grid = (Grid)getSimulation().getUniverse();
 		this.cellX = grid.getBoundsPolicy().boundX(x);
 		this.cellY = grid.getBoundsPolicy().boundY(y);
-		// if this agent is a Beacon, update simulation spatial index
-		try {
-			if (this instanceof org.baseagent.Beacon && getSimulation() != null) {
-				getSimulation().reindexBeacon((org.baseagent.Beacon)this);
-			}
-		} catch (Exception ex) {
-			// ignore index errors
-		}
+		// do NOT overwrite fineX/fineY here â€” preserve fractional position for smooth movement
+         // if this agent is a Beacon, update simulation spatial index
+         try {
+             if (this instanceof org.baseagent.Beacon && getSimulation() != null) {
+                 getSimulation().reindexBeacon((org.baseagent.Beacon)this);
+             }
+         } catch (Exception ex) {
+             // ignore index errors
+         }
 	}
 	
 	public boolean isAt(int cellX, int cellY) {
@@ -289,6 +287,9 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 	/** I'm including placeAt because moveTo might imply actual movement */
 	public void placeAt(int cellX, int cellY) {
 		moveTo(cellX, cellY);
+		// initialize fine position to the placed cell so rendering/movement is correct
+		this.fineX = this.cellX;
+		this.fineY = this.cellY;
 		// if this agent is a Beacon, update simulation spatial index
 		try {
 			if (this instanceof org.baseagent.Beacon && getSimulation() != null) {
@@ -298,13 +299,17 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 			// ignore index errors
 		}
 	}
-	
+
 	public void placeRandomly() {
 		Grid grid = (Grid)getSimulation().getUniverse();
 		Random random = new Random();
 		int x = random.nextInt(grid.getWidthInCells());
 		int y = random.nextInt(grid.getHeightInCells());
 		moveTo(x, y);
+
+		// initialize fine position after random placement
+		this.fineX = this.cellX;
+		this.fineY = this.cellY;
 
 		double r = random.nextDouble() * Math.PI * 2.0;
 		rotateTo(r);
@@ -319,6 +324,10 @@ public class GridAgent extends DrawableAgent implements HasFineGridPosition {
 		int x = x1 + random.nextInt(x2-x1);
 		int y = y1 + random.nextInt(y2-y1);
 		moveTo(x, y);
+
+		// initialize fine position after bounded random placement
+		this.fineX = this.cellX;
+		this.fineY = this.cellY;
 
 		double r = random.nextDouble() * Math.PI * 2.0;
 		rotateTo(r);

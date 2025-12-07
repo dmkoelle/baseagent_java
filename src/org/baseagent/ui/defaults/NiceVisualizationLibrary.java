@@ -1,6 +1,6 @@
 package org.baseagent.ui.defaults;
 
-import org.baseagent.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridCanvasContext;
 
 import javafx.scene.paint.Color;
 

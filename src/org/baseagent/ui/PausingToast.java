@@ -3,6 +3,7 @@ package org.baseagent.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.baseagent.grid.ui.GridCanvasContext;
 import org.baseagent.sim.Simulation;
 
 import javafx.scene.canvas.GraphicsContext;

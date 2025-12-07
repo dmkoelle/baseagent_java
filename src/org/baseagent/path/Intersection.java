@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.baseagent.sim.PathAgent;
-
 public class Intersection extends PathComponent {
 	private List<Consumer<PathAgent>> interactionFunctions;
 	

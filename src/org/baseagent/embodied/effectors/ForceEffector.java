@@ -23,7 +23,14 @@ public class ForceEffector extends EmbodiedEffector {
 	@Override
 	public void effect(Agent xagent) {
 		EmbodiedAgent agent = (EmbodiedAgent)xagent;
-		agent.addForce(new Vector2D(getIntensityPort().getInputValue(), getDirectionPort().getInputValue()));
+		Double inVal = this.getIntensityPort().getInputValue();
+		Double dirVal = this.getDirectionPort().getInputValue();
+		double intensity = (inVal == null) ? 0.0 : inVal.doubleValue();
+		double direction = (dirVal == null) ? agent.getHeading() : dirVal.doubleValue();
+		// only apply a force when intensity is positive
+		if (intensity > 0.0) {
+			agent.addForce(new Vector2D(intensity, direction));
+		}
 	}
 
 	public ConnectedComponent<Double> getDirectionPort() {

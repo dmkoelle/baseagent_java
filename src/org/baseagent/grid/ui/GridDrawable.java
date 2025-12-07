@@ -1,6 +1,6 @@
-package org.baseagent.ui;
+package org.baseagent.grid.ui;
 
-public interface Drawable {
+public interface GridDrawable {
 	/**
 	 * Draw to the canvas *before* drawing the agents or beacons or other drawables.
 	 * Use this to draw a component's view of the world without overwriting the components.

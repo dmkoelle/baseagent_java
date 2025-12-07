@@ -18,8 +18,17 @@ public class Vector2D {
 	}
 	
 	public void add(Vector2D v2) {
-		this.magnitude = Math.sqrt(this.magnitude * this.magnitude + v2.magnitude * v2.magnitude);
-		this.direction = Math.atan2(this.direction, v2.direction);
+		// Convert both vectors to Cartesian coordinates
+		double x1 = this.magnitude * Math.cos(this.direction);
+		double y1 = this.magnitude * Math.sin(this.direction);
+		double x2 = v2.magnitude * Math.cos(v2.direction);
+		double y2 = v2.magnitude * Math.sin(v2.direction);
+		// Sum components
+		double xr = x1 + x2;
+		double yr = y1 + y2;
+		// Convert back to polar
+		this.magnitude = Math.sqrt(xr * xr + yr * yr);
+		this.direction = Math.atan2(yr, xr);
 	}
 	
 	@Override

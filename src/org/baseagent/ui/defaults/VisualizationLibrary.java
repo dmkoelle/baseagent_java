@@ -10,7 +10,7 @@ import org.baseagent.embodied.sensors.EmbodiedSensor;
 import org.baseagent.grid.Grid;
 import org.baseagent.grid.HasFineGridPosition;
 import org.baseagent.grid.HasGridPosition;
-import org.baseagent.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridCanvasContext;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

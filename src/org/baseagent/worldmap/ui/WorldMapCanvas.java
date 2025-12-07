@@ -1,13 +1,17 @@
-package org.baseagent.ui;
+package org.baseagent.worldmap.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.baseagent.sim.MapAgent;
-import org.baseagent.map.Map;
-import org.baseagent.map.MapLayer;
+import org.baseagent.ui.Toast;
+import org.baseagent.worldmap.WorldMap;
+import org.baseagent.worldmap.WorldMapAgent;
+import org.baseagent.worldmap.WorldMapGridLayer;
 import org.baseagent.grid.Grid;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridDrawable;
+import org.baseagent.grid.ui.GridOverlayRenderer;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
@@ -16,15 +20,15 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 
-public class MapCanvas extends Canvas {
-    private Map map;
+public class WorldMapCanvas extends Canvas {
+    private WorldMap map;
     private String id = "DEFAULT_MAP_CANVAS_ID";
     private Grid dummyGrid;
     private GridCanvasContext gcc;
 
     private List<String> orderedListOfLayerNames;
-    private java.util.Map<String, MapLayerRenderer> renderersByName;
-    private List<Drawable> customDrawables;
+    private java.util.Map<String, WorldMapLayerRenderer> renderersByName;
+    private List<GridDrawable> customDrawables;
     private List<Toast> toasts;
 
     // View state in global slippy pixel coordinates at current slippyZoom
@@ -40,10 +44,10 @@ public class MapCanvas extends Canvas {
 
     // Tile system & renderers
     private SlippyTileFetcher tileFetcher;
-    private MapTileLayerRenderer tileRenderer;
+    private WorldMapTileLayerRenderer tileRenderer;
     private GridOverlayRenderer gridOverlayRenderer;
 
-    public MapCanvas(Map map, int tileWidth, int tileHeight, int tileXSpacing, int tileYSpacing) {
+    public WorldMapCanvas(WorldMap map, int tileWidth, int tileHeight, int tileXSpacing, int tileYSpacing) {
         super(map.getWidthInTiles() * tileWidth + (map.getWidthInTiles()-1) * tileXSpacing,
               map.getHeightInTiles() * tileHeight + (map.getHeightInTiles()-1) * tileYSpacing);
         this.map = map;
@@ -57,7 +61,7 @@ public class MapCanvas extends Canvas {
         // default tile fetcher (Esri World Imagery) with disk cache under ./tilecache
         String esriTemplate = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
         this.tileFetcher = new SlippyTileFetcher(esriTemplate, true, "./tilecache", 256);
-        this.tileRenderer = new MapTileLayerRenderer(this.tileFetcher);
+        this.tileRenderer = new WorldMapTileLayerRenderer(this.tileFetcher);
         this.gridOverlayRenderer = new GridOverlayRenderer();
 
         // ensure properties contain slippy info
@@ -68,7 +72,7 @@ public class MapCanvas extends Canvas {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                MapCanvas.this.update();
+                WorldMapCanvas.this.update();
             }
         };
         timer.start();
@@ -156,8 +160,8 @@ public class MapCanvas extends Canvas {
                 selectedAgent = null;
                 if (gcc.getSimulation() != null) {
                     for (org.baseagent.Agent a : gcc.getSimulation().getAgents()) {
-                        if (a instanceof MapAgent) {
-                            MapAgent ma = (MapAgent)a;
+                        if (a instanceof WorldMapAgent) {
+                            WorldMapAgent ma = (WorldMapAgent)a;
                             double[] pxpy = org.baseagent.util.GeoUtils.latLonToPixelXY(ma.getLatitude(), ma.getLongitude(), slippyZoom, 256);
                             double px = pxpy[0] * zoomScale;
                             double py = pxpy[1] * zoomScale;
@@ -175,17 +179,17 @@ public class MapCanvas extends Canvas {
         });
     }
 
-    public void setMap(Map map) {
+    public void setMap(WorldMap map) {
         this.map = map;
         this.dummyGrid = new Grid(map.getWidthInTiles(), map.getHeightInTiles());
         this.gcc = new GridCanvasContext(this.gcc.getSimulation(), this.dummyGrid, null, this.gcc.getCellWidth(), this.gcc.getCellHeight(), this.gcc.getCellXSpacing(), this.gcc.getCellYSpacing());
     }
 
-    public Map getMap() { return this.map; }
+    public WorldMap getMap() { return this.map; }
 
     public Object getSelectedAgent() { return this.selectedAgent; }
 
-    public void addMapLayerRenderer(String layerName, MapLayerRenderer r) {
+    public void addMapLayerRenderer(String layerName, WorldMapLayerRenderer r) {
         orderedListOfLayerNames.add(layerName);
         renderersByName.put(layerName, r);
     }
@@ -195,7 +199,7 @@ public class MapCanvas extends Canvas {
         renderersByName.remove(layerName);
     }
 
-    public List<Drawable> getCustomDrawables() { return this.customDrawables; }
+    public List<GridDrawable> getCustomDrawables() { return this.customDrawables; }
 
     public void addToast(Toast toast) { this.toasts.add(toast); }
     public void removeToast(Toast toast) { this.toasts.remove(toast); }
@@ -229,8 +233,8 @@ public class MapCanvas extends Canvas {
 
         // Draw map layers
         for (String layerName : orderedListOfLayerNames) {
-            MapLayerRenderer renderer = renderersByName.get(layerName);
-            MapLayer layer = (map == null) ? null : map.getMapLayer(layerName);
+            WorldMapLayerRenderer renderer = renderersByName.get(layerName);
+            WorldMapGridLayer layer = (map == null) ? null : map.getMapLayer(layerName);
             if (renderer != null && layer != null) {
                 renderer.draw(gcc, layer, this.getWidth(), this.getHeight());
             }
@@ -242,8 +246,8 @@ public class MapCanvas extends Canvas {
         // draw agents
         if (gcc.getSimulation() != null) {
             for (org.baseagent.Agent a : gcc.getSimulation().getAgents()) {
-                if (a instanceof MapAgent) {
-                    ((MapAgent)a).draw(gcc);
+                if (a instanceof WorldMapAgent) {
+                    ((WorldMapAgent)a).draw(gcc);
                 }
             }
         }
@@ -268,7 +272,7 @@ public class MapCanvas extends Canvas {
 
     public void setTileSource(String urlTemplate, boolean useDiskCache, String cacheDir) {
         this.tileFetcher = new SlippyTileFetcher(urlTemplate, useDiskCache, cacheDir, 256);
-        this.tileRenderer = new MapTileLayerRenderer(this.tileFetcher);
+        this.tileRenderer = new WorldMapTileLayerRenderer(this.tileFetcher);
     }
 
     /** Shutdown background resources (tile fetcher). Call on application exit. */

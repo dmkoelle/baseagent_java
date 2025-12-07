@@ -4,7 +4,7 @@ import java.util.Random;
 
 import org.baseagent.Agent;
 import org.baseagent.behaviors.Behavior;
-import org.baseagent.sim.GridAgent;
+import org.baseagent.grid.GridAgent;
 import org.baseagent.util.CellPoint2D;
 
 public class RandomForwardWalkBehavior implements Behavior {

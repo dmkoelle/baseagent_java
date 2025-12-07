@@ -1,24 +1,22 @@
-package org.baseagent.ui;
+package org.baseagent.worldmap.ui;
 
-import javafx.application.Platform;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.worldmap.WorldMapGridLayer;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-import org.baseagent.map.Map;
-import org.baseagent.map.MapLayer;
-import org.baseagent.ui.SlippyTileFetcher;
-
-public class MapTileLayerRenderer implements MapLayerRenderer {
+public class WorldMapTileLayerRenderer implements WorldMapLayerRenderer {
     private final SlippyTileFetcher fetcher;
     private final int prefetchRadius = 1; // tiles around viewport to prefetch
 
-    public MapTileLayerRenderer(SlippyTileFetcher fetcher) {
+    public WorldMapTileLayerRenderer(SlippyTileFetcher fetcher) {
         this.fetcher = fetcher;
     }
 
     @Override
-    public void draw(GridCanvasContext gcc, MapLayer layer, double canvasWidth, double canvasHeight) {
+    public void draw(GridCanvasContext gcc, WorldMapGridLayer layer, double canvasWidth, double canvasHeight) {
         // read slippy properties from gcc
         Object zProp = gcc.getProperties().get("slippyZoom");
         Object offXProp = gcc.getProperties().get("viewOffsetX");

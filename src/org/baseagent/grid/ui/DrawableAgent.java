@@ -1,19 +1,19 @@
-package org.baseagent.ui;
+package org.baseagent.grid.ui;
 
 import org.baseagent.Agent;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 
 import javafx.scene.paint.Color;
 
-public class DrawableAgent extends Agent implements Drawable {
+public class DrawableAgent extends Agent implements GridDrawable {
 	private Color color;
-	private Drawable drawable;
+	private GridDrawable drawable;
 	private double drawX;
 	private double drawY;
 
 	public DrawableAgent() {
 		super();
-		setDrawable(new Drawable() {
+		setDrawable(new GridDrawable() {
 			@Override
 			public void draw(GridCanvasContext gcc) {
 				VisualizationLibrary.drawCircleForCell(gcc, (int)Math.round(drawX), (int)Math.round(drawY), getColorOrUse(Color.CADETBLUE));
@@ -60,11 +60,11 @@ public class DrawableAgent extends Agent implements Drawable {
 		}
 	}
 
-	public void setDrawable(Drawable drawable) {
+	public void setDrawable(GridDrawable drawable) {
 		this.drawable = drawable;
 	}
 	
-	public Drawable getDrawable() {
+	public GridDrawable getDrawable() {
 		return this.drawable;
 	}
 	

@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.baseagent.Agent;
 import org.baseagent.behaviors.LifecycleBehavior;
+import org.baseagent.grid.GridAgent;
 import org.baseagent.grid.GridPosition;
-import org.baseagent.sim.GridAgent;
 import org.baseagent.util.BaseAgentMath;
 
 public class WalkToBehavior extends LifecycleBehavior {

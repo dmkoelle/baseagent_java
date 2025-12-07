@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.baseagent.Agent;
 import org.baseagent.Beacon;
 import org.baseagent.embodied.ConnectedComponent;
-import org.baseagent.sim.GridAgent;
+import org.baseagent.grid.GridAgent;
 import org.baseagent.util.BaseAgentMath;
 
 /**

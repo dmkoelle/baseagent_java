@@ -7,13 +7,13 @@ import org.baseagent.behaviors.Behavior;
 import org.baseagent.embodied.effectors.EmbodiedEffector;
 import org.baseagent.embodied.sensors.EmbodiedSensor;
 import org.baseagent.grid.Grid;
+import org.baseagent.grid.GridAgent;
 import org.baseagent.grid.GridLayer;
 import org.baseagent.grid.GridLayer.GridLayerUpdateOption;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridDrawable;
 import org.baseagent.grid.HasGridPosition;
 import org.baseagent.network.Network;
-import org.baseagent.sim.GridAgent;
-import org.baseagent.ui.Drawable;
-import org.baseagent.ui.GridCanvasContext;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 import org.baseagent.util.Vector2D;
 
@@ -50,7 +50,7 @@ public class EmbodiedAgent extends GridAgent implements HasBody {
 		forcesToApply = new ArrayList<>();
 		setBehaviorPolicy(embodiedBehavior);
 		
-		this.setDrawable(new Drawable() {
+		this.setDrawable(new GridDrawable() {
 			@Override
 			public void draw(GridCanvasContext gcc) {
 				// TODO: actually, you do want this agent to draw itself if it's asked to by the prime agent

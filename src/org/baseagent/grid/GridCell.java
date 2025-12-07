@@ -1,11 +1,11 @@
 package org.baseagent.grid;
 
-public class GridCell implements HasGridPosition {
-	private GridLayer layer;
+public class GridCell<T> implements HasGridPosition<T> {
+	private GridLayer<T> layer;
 	private int x;
 	private int y;
 	
-	public GridCell(GridLayer layer, int x, int y) {
+	public GridCell(GridLayer<T> layer, int x, int y) {
 		this.layer = layer;
 		this.x = x;
 		this.y = y;
@@ -36,7 +36,7 @@ public class GridCell implements HasGridPosition {
 	}
 	
 	@Override
-	public GridLayer getGridLayer() {
+	public GridLayer<T> getGridLayer() {
 		return this.layer;
 	}
 	
@@ -45,11 +45,11 @@ public class GridCell implements HasGridPosition {
 		return 0.0D;
 	}
 	
-	public Object get() {
+	public T get() {
 		return layer.get(x, y);
 	}
 	
-	public void set(Object object) {
+	public void set(T object) {
 		layer.set(x, y, object);
 	}
 }

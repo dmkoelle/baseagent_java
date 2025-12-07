@@ -1,4 +1,4 @@
-package org.baseagent.ui;
+package org.baseagent.grid.ui;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.baseagent.grid.Grid;
 import org.baseagent.sim.Simulation;
 import org.baseagent.sim.SimulationListener;
+import org.baseagent.ui.Toast;
 
 import javafx.animation.AnimationTimer;
 
@@ -71,24 +72,24 @@ public class GridCanvasForSimulation extends GridCanvas implements SimulationLis
 		
 		// Then draw beacons
 		if (drawBeacons) {
-			List<Drawable> drawableBeacons = simulation.getBeacons().stream().filter(a -> a instanceof Drawable).map(a -> (Drawable)a).collect(Collectors.toList());
-			drawableBeacons.forEach(beacon -> ((Drawable)beacon).drawBefore(gcc));
-			drawableBeacons.forEach(beacon -> ((Drawable)beacon).draw(gcc));
-			drawableBeacons.forEach(beacon -> ((Drawable)beacon).drawAfter(gcc));
+			List<GridDrawable> drawableBeacons = simulation.getBeacons().stream().filter(a -> a instanceof GridDrawable).map(a -> (GridDrawable)a).collect(Collectors.toList());
+			drawableBeacons.forEach(beacon -> ((GridDrawable)beacon).drawBefore(gcc));
+			drawableBeacons.forEach(beacon -> ((GridDrawable)beacon).draw(gcc));
+			drawableBeacons.forEach(beacon -> ((GridDrawable)beacon).drawAfter(gcc));
 		}
 
 		// Then draw agents
 		if (drawAgents) {
-			List<Drawable> drawableAgents = simulation.getAgents().stream().filter(a -> a instanceof Drawable).map(a -> (Drawable)a).collect(Collectors.toList());
-			drawableAgents.forEach(agent -> ((Drawable)agent).drawBefore(gcc));
-			drawableAgents.forEach(agent -> ((Drawable)agent).draw(gcc));
-			drawableAgents.forEach(agent -> ((Drawable)agent).drawAfter(gcc));
+			List<GridDrawable> drawableAgents = simulation.getAgents().stream().filter(a -> a instanceof GridDrawable).map(a -> (GridDrawable)a).collect(Collectors.toList());
+			drawableAgents.forEach(agent -> ((GridDrawable)agent).drawBefore(gcc));
+			drawableAgents.forEach(agent -> ((GridDrawable)agent).draw(gcc));
+			drawableAgents.forEach(agent -> ((GridDrawable)agent).drawAfter(gcc));
 		}
 		
 		// Finally, draw toasts on top
 		if (drawToasts) {
 			// Then draw any toasts, and remove old toasts
-			List<Drawable> drawableToasts = getToasts().stream().filter(a -> a instanceof Drawable).map(a -> (Drawable)a).collect(Collectors.toList());
+			List<GridDrawable> drawableToasts = getToasts().stream().filter(a -> a instanceof GridDrawable).map(a -> (GridDrawable)a).collect(Collectors.toList());
 			drawableToasts.stream().filter(toast -> ((Toast)toast).isActive(getSimulation())).forEach(toast -> toast.draw(gcc));
 			drawableToasts.removeIf(toast -> ((Toast)toast).readyToRemove(getSimulation()));
 		}

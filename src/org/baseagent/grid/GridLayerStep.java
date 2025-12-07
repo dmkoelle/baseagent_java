@@ -7,8 +7,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class GridLayerStep {
-	List<List<Object>> cells;
+public class GridLayerStep<T> {
+	List<List<T>> cells;
 	Grid parentGrid;
 	
 	public GridLayerStep(Grid parentGrid) { 
@@ -16,26 +16,26 @@ public class GridLayerStep {
 		this.cells = initNewLayer(parentGrid.getWidthInCells(), parentGrid.getHeightInCells());
 	}
 
-	private List<List<Object>> initNewLayer(int width, int height) {
-		List<List<Object>> retVal;
+	private List<List<T>> initNewLayer(int width, int height) {
+		List<List<T>> retVal;
 		
 		retVal = new ArrayList<>();
 		for (int i=0; i < height; i++) {
-			List<Object> row = new ArrayList<>();
+			List<T> row = new ArrayList<>();
 			retVal.add(row);
 			for (int u=0; u < width; u++) {
-				Object cell = null;
+				T cell = null;
 				row.add(cell);
 			}
 		}
 		return retVal;
 	}
 
-	public void fill(Object value) {
+	public void fill(T value) {
 		fill(value, 0, 0, parentGrid.getWidthInCells(), parentGrid.getHeightInCells());
 	}
 
-	public void fill(Object value, int x1, int y1, int x2, int y2) {
+	public void fill(T value, int x1, int y1, int x2, int y2) {
 		for (int i=y1; i < y2; i++) {
 			for (int u=x1; u < x2; u++) {
 				cells.get(i).set(u, value);
@@ -69,11 +69,11 @@ public class GridLayerStep {
 			    diagonalWeight * d3) ;
 	}
 	
-	public void set(int x, int y, Object value) {
+	public void set(int x, int y, T value) {
 		cells.get(parentGrid.getBoundsPolicy().boundY(y)).set(parentGrid.getBoundsPolicy().boundX(x), value);
 	}
 
-	public void set(GridPosition position, Object value) {
+	public void set(GridPosition position, T value) {
 		set(position.getCellX(), position.getCellY(), value);
 	}
 
@@ -85,15 +85,15 @@ public class GridLayerStep {
 		clear(position.getCellX(), position.getCellY());
 	}
 	
-	public Object get(int x, int y) {
+	public T get(int x, int y) {
 		return cells.get(parentGrid.getBoundsPolicy().boundY(y)).get(parentGrid.getBoundsPolicy().boundX(x));
 	}
 	
-	public Object get(GridPosition position) {
+	public T get(GridPosition position) {
 		return get(position.getCellX(), position.getCellY());
 	}
 	
-	public void setEachCell(GridLayerStep conditionalLayer, Function<Object, Object> f) {
+	public void setEachCell(GridLayerStep<T> conditionalLayer, Function<T, T> f) {
 		if ((this.parentGrid.getWidthInCells() != conditionalLayer.parentGrid.getWidthInCells()) || (this.parentGrid.getHeightInCells() != conditionalLayer.parentGrid.getHeightInCells())) {
 			throw new IllegalArgumentException("The parent grid of this layer and the conditional layer must have the same width and height.");
 		}
@@ -104,7 +104,7 @@ public class GridLayerStep {
 		}
 	}
 
-	public void setEachCell(BiFunction<Integer, Integer, Object> f) {
+	public void setEachCell(BiFunction<Integer, Integer, T> f) {
 		for (int x=0; x < parentGrid.getWidthInCells(); x++) {
 			for (int y=0; y < parentGrid.getHeightInCells(); y++) {
 				set(x, y, f.apply(x, y));
@@ -116,7 +116,7 @@ public class GridLayerStep {
 	 * Returns a count of the neighbors surrounding
 	 * the given cell that match the predicate.
 	 */
-	public int count8Neighbors(int x, int y, Predicate<? super Object> predicate) {
+	public int count8Neighbors(int x, int y, Predicate<? super T> predicate) {
 		int retVal = 0;
 		if (predicate.test(get(x-1, y-1))) retVal++;
 		if (predicate.test(get(x,   y-1))) retVal++;
@@ -133,7 +133,7 @@ public class GridLayerStep {
 	 * Returns a count of the neighbors to the north, south, east, and west
 	 * of the given cell that match the predicate.
 	 */
-	public int count4Neighbors(int x, int y, Predicate<? super Object> predicate) {
+	public int count4Neighbors(int x, int y, Predicate<? super T> predicate) {
 		int retVal = 0;
 		if (predicate.test(get(x,   y-1))) retVal++;
 		if (predicate.test(get(x-1, y  ))) retVal++;
@@ -194,7 +194,7 @@ public class GridLayerStep {
 	 * Returns a count of the number of times the predicate is true
 	 * across the full layer.
 	 */
-	public long count(Predicate<Object> predicate) {
+	public long count(Predicate<T> predicate) {
 		long retVal = 0;
 		
 		for (int i=0; i < parentGrid.getHeightInCells(); i++) {
@@ -212,7 +212,7 @@ public class GridLayerStep {
 	 * Test the give predicate. If the predicate is true, return 1,
 	 * otherwise return 0.
 	 */
-	public int getBooleanAsOneOrZero(int x, int y, Predicate<Object> predicate) {
+	public int getBooleanAsOneOrZero(int x, int y, Predicate<? super T> predicate) {
 		return (predicate.test(get(x, y)) ? 1 : 0);
 	}
 	
@@ -220,21 +220,21 @@ public class GridLayerStep {
 	 * Randomly places the given thing throughout the GridLayerStep, making sure
 	 * to not place a thing on a space that already has the same thing.
 	 */
-	public void scatter(Object thing, int howMany) {
+	public void scatter(T thing, int howMany) {
 		scatter(thing, howMany, 0, 0, parentGrid.getWidthInCells(), parentGrid.getHeightInCells());
 	}
 	
-	public void scatter(List<?> things) {
+	public void scatter(List<? extends T> things) {
 		scatter(things, 0, 0, parentGrid.getWidthInCells(), parentGrid.getHeightInCells());
 	}
 
-	public void scatter(List<?> things, int x1, int y1, int x2, int y2) {
-		for (Object thing : things) {
+	public void scatter(List<? extends T> things, int x1, int y1, int x2, int y2) {
+		for (T thing : things) {
 			scatter(thing, 1, x1, y1, x2, y2);
 		}
 	}
 
-    public void scatter(Object thing, int howMany, int x1, int y1, int x2, int y2) {
+    public void scatter(T thing, int howMany, int x1, int y1, int x2, int y2) {
     	Random rand = new Random();
     	for (int i=0; i < howMany; i++) {
 			int x = 0;
@@ -252,7 +252,7 @@ public class GridLayerStep {
 	 * Defines a visual arrangement for playing the given thing on the grid.
 	 * Key: . = empty space, O = Thing
 	 */
-	public void form(Object thing, int x, int y, String... strings) {
+	public void form(T thing, int x, int y, String... strings) {
 		for (int sy = 0; sy < strings.length; sy++) {
 			for (int sx = 0; sx < strings[sy].length(); sx++) {
 				char ch = strings[sy].charAt(sx);

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import org.baseagent.HasStep;
 import org.baseagent.grid.GridLayer.GridLayerUpdateOption;
 import org.baseagent.sim.Simulation;
 import org.baseagent.sim.SimulationComponent;
@@ -17,7 +16,7 @@ import org.baseagent.sim.Universe;
 public class Grid extends SimulationComponent implements Universe {
 	public static String DEFAULT_GRID_LAYER = "DEFAULT_GRID_LAYER";
 	private int widthInCells, heightInCells;
-	private Map<String, GridLayer> layers;
+	private Map<String, GridLayer<?>> layers;
 	private GridBoundsPolicy boundsPolicy;
 	private GridStepPolicy stepPolicy;
 	
@@ -57,22 +56,23 @@ public class Grid extends SimulationComponent implements Universe {
 		return this.stepPolicy;
 	}
 	
-	public GridLayer createGridLayer(String name, GridLayerUpdateOption updateOption) {
-		GridLayer layer = new GridLayer(name, this, updateOption);
+	public <T> GridLayer<T> createGridLayer(String name, GridLayerUpdateOption updateOption) {
+		GridLayer<T> layer = new GridLayer<>(name, this, updateOption);
 		this.addGridLayer(name, layer);
 		return layer;
 	}
 	
-	public void addGridLayer(String name, GridLayer layer) {
+	public <T> void addGridLayer(String name, GridLayer<T> layer) {
 		this.layers.put(name, layer);
 	}
 	
-	public GridLayer getGridLayer(String name) {
-		return layers.get(name);
+	@SuppressWarnings("unchecked")
+	public <T> GridLayer<T> getGridLayer(String name) {
+		return (GridLayer<T>)layers.get(name);
 	}
 	
-	public GridLayer getOrCreateGridLayer(String name, GridLayerUpdateOption updateOption) {
-		GridLayer retVal = layers.get(name);
+	public <T> GridLayer<T> getOrCreateGridLayer(String name, GridLayerUpdateOption updateOption) {
+		GridLayer<T> retVal = (GridLayer<T>)layers.get(name);
 		if (retVal == null) {
 			return createGridLayer(name, updateOption);
 		} else {
@@ -84,8 +84,8 @@ public class Grid extends SimulationComponent implements Universe {
 		this.layers.remove(name);
 	}
 	
-	public GridCell getCell(GridLayer layer, int x, int y) {
-	    return new GridCell(layer, x, y);
+	public <T> GridCell<T> getCell(GridLayer<T> layer, int x, int y) {
+	    return new GridCell<T>(layer, x, y);
 	}
 	
 	public boolean isValidPosition(int x, int y) {
@@ -100,7 +100,7 @@ public class Grid extends SimulationComponent implements Universe {
 		stepPolicy.step(simulation);
 	}
 
-	public Collection<GridLayer> getGridLayers() {
+	public Collection<GridLayer<?>> getGridLayers() {
 		return layers.values();
 	}
 	
@@ -108,7 +108,7 @@ public class Grid extends SimulationComponent implements Universe {
 	
 	public void init() {
 		if (!hasBeenInitialized) {
-			for (GridLayer layer : getGridLayers()) {
+			for (GridLayer<?> layer : getGridLayers()) {
 				layer.switchToNextStep();
 			}
 			hasBeenInitialized = true;
@@ -116,7 +116,7 @@ public class Grid extends SimulationComponent implements Universe {
 	}
 
 	public void swap() {
-		for (GridLayer layer : getGridLayers()) {
+		for (GridLayer<?> layer : getGridLayers()) {
 			layer.switchToNextStep();
 		}
 	}
@@ -138,7 +138,7 @@ public class Grid extends SimulationComponent implements Universe {
 	}
 	
 	public void debug(PrintStream s) {
-		for (GridLayer layer : getGridLayers()) {
+		for (GridLayer<?> layer : getGridLayers()) {
 			layer.debug(s);
 			s.println();
 		}
@@ -149,12 +149,16 @@ public class Grid extends SimulationComponent implements Universe {
 	//
 	
 	public String getLayerName() { return Grid.DEFAULT_GRID_LAYER; }
-	public GridLayerStep current() { return getGridLayer(Grid.DEFAULT_GRID_LAYER).current(); }
-	public GridLayerStep next() { return getGridLayer(Grid.DEFAULT_GRID_LAYER).next(); }
+	public GridLayerStep<?> current() { return getGridLayer(Grid.DEFAULT_GRID_LAYER).current(); }
+	public GridLayerStep<?> next() { return getGridLayer(Grid.DEFAULT_GRID_LAYER).next(); }
 	public GridLayerUpdateOption getUpdateOption() { return getGridLayer(Grid.DEFAULT_GRID_LAYER).getUpdateOption(); }
 	public void setUpdateOption(GridLayerUpdateOption updateOption) { getGridLayer(Grid.DEFAULT_GRID_LAYER).setUpdateOption(updateOption); }
 	public void persist(Object value, int x, int y) { getGridLayer(Grid.DEFAULT_GRID_LAYER).persist(value, x, y); }
-	public Iterator<GridCell> iterator() { return getGridLayer(Grid.DEFAULT_GRID_LAYER).iterator(); }
+	@SuppressWarnings({"unchecked","rawtypes"})
+	public Iterator<GridCell<?>> iterator() { 
+		GridLayer<?> layer = getGridLayer(Grid.DEFAULT_GRID_LAYER);
+		return (Iterator) layer.iterator();
+	}
 	public void fill(Object value) { getGridLayer(Grid.DEFAULT_GRID_LAYER).fill(value); }
 	public void fill(Object value, int x1, int y1, int x2, int y2) { getGridLayer(Grid.DEFAULT_GRID_LAYER).fill(value, x1, y1, x2, y2); }
 	public double laplacian_3x3(int x, int y, double centerWeight, double adjacentWeight, double diagonalWeight) { return getGridLayer(Grid.DEFAULT_GRID_LAYER).laplacian_3x3(x, y, centerWeight, adjacentWeight, diagonalWeight); }

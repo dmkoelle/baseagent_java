@@ -2,6 +2,8 @@ package org.baseagent.ui;
 
 import java.util.function.Predicate;
 
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridDrawable;
 import org.baseagent.sim.Simulation;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -9,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-public class Toast implements Drawable {
+public class Toast implements GridDrawable {
 	protected long startTime = -1;
 	protected long endTime = -1;
 	protected long duration = 1L;

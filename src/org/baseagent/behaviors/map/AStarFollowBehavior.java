@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.baseagent.Agent;
 import org.baseagent.behaviors.LifecycleBehavior;
-import org.baseagent.map.MapLayer;
-import org.baseagent.sim.MapAgent;
 import org.baseagent.util.AStar;
+import org.baseagent.worldmap.WorldMapAgent;
+import org.baseagent.worldmap.WorldMapGridLayer;
 
 /**
  * Behavior that computes an A* path on a MapLayer and instantiates a MoveBehavior
@@ -15,13 +15,13 @@ import org.baseagent.util.AStar;
  * to the agent and then ends itself.
  */
 public class AStarFollowBehavior extends LifecycleBehavior {
-    private MapLayer layer;
+    private WorldMapGridLayer layer;
     private double endLat;
     private double endLon;
     private double speedDegreesPerStep = 0.2;
     private boolean loop = false;
 
-    public AStarFollowBehavior(MapLayer layer, double endLat, double endLon) {
+    public AStarFollowBehavior(WorldMapGridLayer layer, double endLat, double endLon) {
         this.layer = layer;
         this.endLat = endLat;
         this.endLon = endLon;
@@ -33,10 +33,10 @@ public class AStarFollowBehavior extends LifecycleBehavior {
     @Override
     public void executeBehavior(Agent agent) {
         if (isPaused()) return;
-        if (!(agent instanceof MapAgent)) return;
+        if (!(agent instanceof WorldMapAgent)) return;
         if (!isStarted()) startBehavior(agent);
 
-        MapAgent ma = (MapAgent)agent;
+        WorldMapAgent ma = (WorldMapAgent)agent;
         double startLat = ma.getLatitude();
         double startLon = ma.getLongitude();
 

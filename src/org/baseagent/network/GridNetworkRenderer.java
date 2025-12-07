@@ -5,8 +5,8 @@ import java.util.function.BiConsumer;
 
 import org.baseagent.grid.GridLayer;
 import org.baseagent.grid.HasGridPosition;
-import org.baseagent.ui.GridCanvasContext;
-import org.baseagent.ui.GridLayerRenderer;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridLayerRenderer;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;

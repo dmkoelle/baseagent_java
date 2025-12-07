@@ -1,19 +1,17 @@
-package org.baseagent.sim;
+package org.baseagent.worldmap;
 
 import java.util.List;
 
 import org.baseagent.behaviors.Behavior;
-import org.baseagent.ui.Drawable;
-import org.baseagent.ui.DrawableAgent;
-import org.baseagent.ui.GridCanvasContext;
-import org.baseagent.map.Map;
-import org.baseagent.map.MapLayer;
+import org.baseagent.grid.ui.DrawableAgent;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridDrawable;
 import org.baseagent.util.GeoUtils;
 
 import javafx.scene.paint.Color;
 import org.baseagent.ui.defaults.VisualizationLibrary;
 
-public class MapAgent extends DrawableAgent {
+public class WorldMapAgent extends DrawableAgent {
     private int tileX;
     private int tileY;
     private double fineX;
@@ -33,17 +31,17 @@ public class MapAgent extends DrawableAgent {
     public double getLatitude() { return this.latitude; }
     public double getLongitude() { return this.longitude; }
 
-    public MapAgent() {
+    public WorldMapAgent() {
         super();
         // default drawable does nothing; MapAgent overrides draw(GridCanvasContext) below to use lat/lon
     }
 
-    public MapAgent(String mapLayerName) {
+    public WorldMapAgent(String mapLayerName) {
         this();
         this.mapLayerName = mapLayerName;
     }
 
-    public MapAgent(List<Behavior> behaviors) {
+    public WorldMapAgent(List<Behavior> behaviors) {
         this();
         for (Behavior b : behaviors) addBehavior(b);
     }
@@ -60,9 +58,9 @@ public class MapAgent extends DrawableAgent {
     public void setFineY(double y) { this.fineY = y; this.tileY = (int)Math.round(y); setDrawY(y); }
     public void setHeading(double h) { this.heading = h; }
 
-    public Map getMap() { return (Map)getSimulation().getUniverse(); }
+    public WorldMap getMap() { return (WorldMap)getSimulation().getUniverse(); }
 
-    public MapLayer getMapLayer() { return getMap().getMapLayer(this.mapLayerName); }
+    public WorldMapGridLayer getMapLayer() { return getMap().getMapLayer(this.mapLayerName); }
 
     @Override
     public void draw(GridCanvasContext gcc) {

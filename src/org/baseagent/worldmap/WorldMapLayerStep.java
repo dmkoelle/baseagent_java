@@ -1,13 +1,13 @@
-package org.baseagent.map;
+package org.baseagent.worldmap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapLayerStep {
+public class WorldMapLayerStep {
     List<List<Object>> tiles;
-    Map parentMap;
+    WorldMap parentMap;
 
-    public MapLayerStep(Map parentMap) {
+    public WorldMapLayerStep(WorldMap parentMap) {
         this.parentMap = parentMap;
         this.tiles = initNewLayer(parentMap.getWidthInTiles(), parentMap.getHeightInTiles());
     }

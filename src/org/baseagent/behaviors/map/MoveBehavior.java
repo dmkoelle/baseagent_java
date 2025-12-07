@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.baseagent.Agent;
 import org.baseagent.behaviors.LifecycleBehavior;
-import org.baseagent.sim.MapAgent;
+import org.baseagent.worldmap.WorldMapAgent;
 
 /**
  * MoveBehavior moves a MapAgent between one or more geographic waypoints (lat, lon).
@@ -29,7 +29,7 @@ public class MoveBehavior extends LifecycleBehavior {
         waypoints.add(new double[] { lat, lon });
     }
 
-    public void addWaypoint(MapAgent ma) {
+    public void addWaypoint(WorldMapAgent ma) {
         waypoints.add(new double[] { ma.getLatitude(), ma.getLongitude() });
     }
 
@@ -52,8 +52,8 @@ public class MoveBehavior extends LifecycleBehavior {
         if (isPaused()) return;
         if (!isStarted()) startBehavior(agent);
 
-        if (!(agent instanceof MapAgent)) return;
-        MapAgent ma = (MapAgent)agent;
+        if (!(agent instanceof WorldMapAgent)) return;
+        WorldMapAgent ma = (WorldMapAgent)agent;
         if (waypoints.isEmpty()) return;
 
         double[] target = waypoints.get(currentIndex);

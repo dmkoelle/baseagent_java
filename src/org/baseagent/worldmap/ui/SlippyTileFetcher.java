@@ -1,4 +1,4 @@
-package org.baseagent.ui;
+package org.baseagent.worldmap.ui;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

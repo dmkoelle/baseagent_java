@@ -1,4 +1,4 @@
-package org.baseagent.ui;
+package org.baseagent.grid.ui;
 
 import org.baseagent.grid.GridLayer;
 

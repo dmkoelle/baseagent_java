@@ -1,4 +1,4 @@
-package org.baseagent.ui;
+package org.baseagent.grid.ui;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.baseagent.grid.Grid;
+import org.baseagent.grid.GridLayer;
+import org.baseagent.ui.Toast;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -20,7 +22,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
 
 public class GridCanvas extends Canvas {
     private Grid grid;
@@ -29,7 +36,8 @@ public class GridCanvas extends Canvas {
     private GridLayerRenderer defaultGridCanvasRenderer;
     private List<String> orderedListOfLayerNames;
     private Map<String, GridLayerRenderer> renderersByName;
-    private List<Drawable> customDrawables;
+    private Map<String, Boolean> isRendererVisibleByName;
+    private List<GridDrawable> customDrawables;
     private List<Toast> toasts;
     boolean drawCustomDrawables = true;
     // View state in world pixel coordinates
@@ -38,6 +46,7 @@ public class GridCanvas extends Canvas {
     private double zoomScale = 1.0;
     private boolean panning = false;
     private double lastMouseX, lastMouseY;
+    private boolean pannedSincePress = false;
 
     public GridCanvas(Grid grid) {
         this(grid, 5, 5, 0, 0);
@@ -54,6 +63,7 @@ public class GridCanvas extends Canvas {
         this.gcc = new GridCanvasContext(null, grid, this, cellWidth, cellHeight, cellXSpacing, cellYSpacing);
         this.orderedListOfLayerNames = new ArrayList<>();
         this.renderersByName = new HashMap<>();
+        this.isRendererVisibleByName = new HashMap<>();
         this.customDrawables = new ArrayList<>();
         this.toasts = new ArrayList<>();
         
@@ -71,6 +81,7 @@ public class GridCanvas extends Canvas {
                 panning = true;
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
+                pannedSincePress = false;
             }
         });
 
@@ -85,6 +96,7 @@ public class GridCanvas extends Canvas {
                 viewOffsetY -= dy;
                 lastMouseX = e.getX();
                 lastMouseY = e.getY();
+                pannedSincePress = true;
             }
         });
 
@@ -114,6 +126,84 @@ public class GridCanvas extends Canvas {
             }
             e.consume();
         });
+
+        // High-level grid-cell click handling: translates a MouseEvent into a cell coordinate
+        // and invokes a registered CellClickHandler with a map of layer contents and agents.
+        this.setOnMouseClicked((MouseEvent e) -> {
+            if (this.cellClickHandler == null) return;
+            // suppress dispatch if the user just panned (dragged) the canvas
+            if (pannedSincePress) { pannedSincePress = false; return; }
+            // Convert scene coords to canvas-local coords to handle any transforms
+            javafx.geometry.Point2D local = this.sceneToLocal(e.getSceneX(), e.getSceneY());
+            int[] cell = this.gcc.screenToCell(local.getX(), local.getY());
+            int cx = cell[0]; int cy = cell[1];
+
+            // gather layer contents
+            java.util.Map<String, java.util.List<Object>> layerContents = new java.util.HashMap<>();
+            if (this.grid != null) {
+                for (GridLayer<?> layer : this.grid.getGridLayers()) {
+                    String lname = layer.getLayerName();
+                    java.util.List<Object> things = new java.util.ArrayList<>();
+                    Object v = null;
+                    try { v = layer.current().get(cx, cy); } catch (Exception ex) { v = null; }
+                    if (v != null) things.add(v);
+                    layerContents.put(lname, things);
+                }
+            }
+
+            // gather agents located at this cell (implements HasGridPosition)
+            java.util.List<Object> agents = new java.util.ArrayList<>();
+            if (this.gcc != null && this.gcc.getSimulation() != null) {
+                for (org.baseagent.Agent a : this.gcc.getSimulation().getAgents()) {
+                    if (a instanceof org.baseagent.grid.HasGridPosition) {
+                        @SuppressWarnings("rawtypes")
+                        org.baseagent.grid.HasGridPosition hp = (org.baseagent.grid.HasGridPosition)a;
+                        try {
+                            if (hp.getCellX() == cx && hp.getCellY() == cy) {
+                                agents.add(a);
+                            }
+                        } catch (Exception ex) {
+                            // ignore agents that don't expose cell coords
+                        }
+                    }
+                }
+            }
+
+            CellClickEvent ev = new CellClickEvent(cx, cy, e.getButton(), e.isShiftDown(), layerContents, agents, e);
+            this.cellClickHandler.handle(ev);
+        });
+    }
+
+    // Listener registration for higher-level cell click events
+    private CellClickHandler cellClickHandler = null;
+    public void setOnCellClicked(CellClickHandler h) { this.cellClickHandler = h; }
+
+    /** High-level event object delivered when a grid cell is clicked. */
+    public static class CellClickEvent {
+        private final int cellX, cellY;
+        private final MouseButton button;
+        private final boolean shiftDown;
+        private final java.util.Map<String, java.util.List<Object>> layerContents;
+        private final java.util.List<Object> agents;
+        private final MouseEvent originalEvent;
+
+        public CellClickEvent(int cellX, int cellY, MouseButton button, boolean shiftDown, java.util.Map<String, java.util.List<Object>> layerContents, java.util.List<Object> agents, MouseEvent originalEvent) {
+            this.cellX = cellX; this.cellY = cellY; this.button = button; this.shiftDown = shiftDown;
+            this.layerContents = layerContents; this.agents = agents; this.originalEvent = originalEvent;
+        }
+
+        public int getCellX() { return cellX; }
+        public int getCellY() { return cellY; }
+        public MouseButton getButton() { return button; }
+        public boolean isShiftDown() { return shiftDown; }
+        public java.util.Map<String, java.util.List<Object>> getLayerContents() { return layerContents; }
+        public java.util.List<Object> getAgents() { return agents; }
+        public MouseEvent getOriginalEvent() { return originalEvent; }
+    }
+
+    /** Listener interface for cell click events. */
+    public static interface CellClickHandler {
+        public void handle(CellClickEvent e);
     }
 
     public GridCanvas(String id, Grid grid) {
@@ -152,13 +242,23 @@ public class GridCanvas extends Canvas {
     public void addGridLayerRenderer(String layerName, GridLayerRenderer r) {
         orderedListOfLayerNames.add(layerName);
         renderersByName.put(layerName, r);
+        isRendererVisibleByName.put(layerName, true);
     }
 
     public void removeGridLayerRenderer(String layerName, GridLayerRenderer r) {
         orderedListOfLayerNames.remove(layerName);
         renderersByName.remove(layerName);
+        isRendererVisibleByName.remove(layerName);
     }
+
+    public void setRendererVisibility(String layerName, boolean isVisible) {
+		isRendererVisibleByName.put(layerName, isVisible);
+	}
     
+    public boolean isRendererVisible(String layerName) {
+   		return isRendererVisibleByName.getOrDefault(layerName, false);
+	}
+
     public void addToast(Toast toast) {
         this.toasts.add(toast);
     }
@@ -171,7 +271,7 @@ public class GridCanvas extends Canvas {
         return this.toasts;
     }
     
-    public List<Drawable> getCustomDrawables() {
+    public List<GridDrawable> getCustomDrawables() {
         return this.customDrawables;
     }
     
@@ -189,6 +289,39 @@ public class GridCanvas extends Canvas {
     
     public GridLayerRenderer getGridRenderer() {
         return this.defaultGridCanvasRenderer;
+    }
+    
+    /**
+     * Create a JavaFX panel containing a checkbox for each registered renderer.
+     * The checkbox is checked when the renderer is visible and toggling it
+     * will update the renderer visibility in this GridCanvas.
+     * The returned ScrollPane will have the provided width/height as its preferred
+     * size and will show scrollbars when the content exceeds those bounds.
+     *
+     * Note: the panel is a snapshot of the current renderers; if renderers are
+     * added or removed later the panel should be recreated to reflect the changes.
+     */
+    public ScrollPane createRendererVisibilityPanel(double width, double height) {
+        VBox vbox = new VBox(4);
+        vbox.setPadding(new Insets(6));
+
+        // Use the ordered list to present renderers in the same order they were added
+        for (String layerName : orderedListOfLayerNames) {
+            GridLayerRenderer renderer = renderersByName.get(layerName);
+            if (renderer == null) continue;
+            CheckBox cb = new CheckBox(layerName);
+            cb.setSelected(isRendererVisible(layerName));
+            cb.selectedProperty().addListener((obs, oldV, newV) -> setRendererVisibility(layerName, newV));
+            vbox.getChildren().add(cb);
+        }
+
+        ScrollPane sp = new ScrollPane(vbox);
+        sp.setFitToWidth(true);
+        sp.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        sp.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        sp.setPrefWidth(width);
+        sp.setPrefHeight(height);
+        return sp;
     }
     
     public void update() {

@@ -1,20 +1,21 @@
-package org.baseagent.ui;
+package org.baseagent.grid.ui;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import org.baseagent.map.MapLayer;
 import org.baseagent.grid.GridLayer;
 import org.baseagent.util.GeoUtils;
+import org.baseagent.worldmap.WorldMapGridLayer;
+import org.baseagent.worldmap.ui.WorldMapLayerRenderer;
 
-public class GridOverlayRenderer implements MapLayerRenderer {
+public class GridOverlayRenderer implements WorldMapLayerRenderer {
     private Color fillColor = Color.color(1.0, 0.0, 0.0, 0.15);
     private Color strokeColor = Color.color(1.0, 0.0, 0.0, 0.5);
 
     public GridOverlayRenderer() {}
 
     @Override
-    public void draw(GridCanvasContext gcc, MapLayer layer, double canvasWidth, double canvasHeight) {
+    public void draw(GridCanvasContext gcc, WorldMapGridLayer layer, double canvasWidth, double canvasHeight) {
         if (layer == null) return;
         if (!layer.isGridLayer()) return;
 

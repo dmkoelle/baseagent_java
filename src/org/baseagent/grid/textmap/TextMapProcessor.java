@@ -15,14 +15,14 @@ import org.baseagent.grid.Grid;
 import org.baseagent.grid.GridCell;
 import org.baseagent.grid.GridLayer;
 import org.baseagent.grid.GridLayer.GridLayerUpdateOption;
+import org.baseagent.grid.ui.GridCanvas;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridCanvasForSimulation;
+import org.baseagent.grid.ui.GridCellRenderer;
 import org.baseagent.grid.GridPosition;
 import org.baseagent.network.Network;
 import org.baseagent.network.Node;
 import org.baseagent.sim.Simulation;
-import org.baseagent.ui.GridCanvas;
-import org.baseagent.ui.GridCanvasContext;
-import org.baseagent.ui.GridCanvasForSimulation;
-import org.baseagent.ui.GridCellRenderer;
 import org.baseagent.util.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -375,13 +375,13 @@ public class TextMapProcessor {
 		}
 	}
 	
-	public Network<GridPosition, Double> makeWaypointNetwork(Grid groundTruthGrid, GridLayer waypointLayer, Predicate<GridPosition> barrierCondition) {
+	public Network<GridPosition, Double> makeWaypointNetwork(Grid groundTruthGrid, GridLayer<?> waypointLayer, Predicate<GridPosition> barrierCondition) {
 		Network<GridPosition, Double> network = new Network<>();
 		
 		// First, find all of the waypoints and the root
 		List<GridPosition> positionOfWaypoints = new ArrayList<>();
 		GridPosition positionOfRoot = null;
-		for (GridCell cell : waypointLayer) {
+		for (GridCell<?> cell : waypointLayer) {
 			if (cell.get().equals(WAYPOINT) || cell.get().equals(ROOT)) {
 				positionOfWaypoints.add(cell.getGridPosition());
 			} 

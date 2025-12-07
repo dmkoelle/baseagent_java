@@ -3,8 +3,8 @@ package org.baseagent.ui.defaults;
 import java.util.function.Function;
 
 import org.baseagent.grid.GridLayer;
-import org.baseagent.ui.GridCanvasContext;
-import org.baseagent.ui.GridCellRenderer;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridCellRenderer;
 
 import javafx.scene.paint.Color;
 

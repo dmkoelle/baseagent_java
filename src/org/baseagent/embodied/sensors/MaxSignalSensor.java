@@ -7,8 +7,8 @@ import org.baseagent.Agent;
 import org.baseagent.Beacon;
 import org.baseagent.embodied.ConnectedComponent;
 import org.baseagent.embodied.effectors.ForceEffector;
+import org.baseagent.grid.GridAgent;
 import org.baseagent.signals.Signal;
-import org.baseagent.sim.GridAgent;
 
 /**
  * A SignalSensor detects a Signal.

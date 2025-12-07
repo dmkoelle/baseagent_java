@@ -4,7 +4,7 @@ import java.util.Random;
 
 import org.baseagent.Agent;
 import org.baseagent.behaviors.Behavior;
-import org.baseagent.sim.GridAgent;
+import org.baseagent.grid.GridAgent;
 
 public class RandomWalkBehavior implements Behavior {
 	private Random random;

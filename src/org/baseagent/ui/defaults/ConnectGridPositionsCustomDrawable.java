@@ -3,13 +3,13 @@ package org.baseagent.ui.defaults;
 import java.util.List;
 
 import org.baseagent.grid.GridPosition;
-import org.baseagent.ui.Drawable;
-import org.baseagent.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridCanvasContext;
+import org.baseagent.grid.ui.GridDrawable;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-public class ConnectGridPositionsCustomDrawable implements Drawable {
+public class ConnectGridPositionsCustomDrawable implements GridDrawable {
 	protected List<GridPosition> points;
 	protected Paint stroke;
 	protected double width;
