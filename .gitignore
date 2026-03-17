@@ -3,6 +3,9 @@
 # With additions for IDEs such as Eclipse
 #
 
+# Buid target
+target/
+
 # Compiled class file
 *.class
 

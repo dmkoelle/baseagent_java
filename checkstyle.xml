@@ -51,9 +51,9 @@
 	<!-- Whitespace -->
 	<module name="EmptyForInitializerPad"/>
 	<module name="EmptyForIteratorPad"/>
-	<module name="EmptyLineSeparator"/>
+	<module name="EmptyLineSeparator">
 	  <property name="allowNoEmptyLineBetweenFields" value="true"/>
-	  <property name="allowMultipleEmptyLines" value="false/>
+	  <property name="allowMultipleEmptyLines" value="false"/>
 	</module>
 	<module name="GenericWhitespace"/>
 	<module name="MethodParamPad"/>
