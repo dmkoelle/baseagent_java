@@ -117,11 +117,13 @@ public class DataCollector {
             this.time = time;
         }
 
-        int hashCode() {
+        @Override
+        public int hashCode() {
             return uuid.hashCode() * Long.hashCode(time);
         }
 
-        boolean equals(Object o) {
+        @Override
+        public boolean equals(Object o) {
             if (o == null)
                 return false;
             if (!(o instanceof UuidAtTime))

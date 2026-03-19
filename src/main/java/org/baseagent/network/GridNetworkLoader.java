@@ -110,20 +110,19 @@ public class GridNetworkLoader {
      */
     public static void main(String[] args) {
         // Your road network data as a string
-        String roadData = """
-                ###
-                ###
-                ### TRAVERSIBLE NETWORK
-                ### On a 140x160 grid
-                ###
-                # "A"
-                1,41 , 17,66 # Edge of grid to Intersection with "B"
-                17,66 , 36,86
-                36,86  , 56,140 # Edge of grid
-                # "B"
-                17,66 , 27,54 # Intersection with "A"
-                44,43 , 52, 43 # Dead end
-                        """;
+        String roadData =
+                "###\n" +
+                "###\n" +
+                "### TRAVERSIBLE NETWORK\n" +
+                "### On a 140x160 grid\n" +
+                "###\n" +
+                "# 'A'\n" +
+                "1,41 , 17,66 # Edge of grid to Intersection with 'B'\n" +
+                "17,66 , 36,86\n" +
+                "36,86  , 56,140 # Edge of grid\n" +
+                "# 'B'\n" +
+                "17,66 , 27,54 # Intersection with 'A'\n" +
+                "44,43 , 52, 43 # Dead end\n";
 
         // Load the network
         Network<GridPosition, Object> roadNetwork = loadFromString(roadData);
