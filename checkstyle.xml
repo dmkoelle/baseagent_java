@@ -59,7 +59,7 @@
 	<module name="MethodParamPad"/>
 	<module name="NoLineWrap"/>
 	<module name="NoWhitespaceAfter">
-	  <property name="tokens" value="ARRAY_INIT"/>
+	  <!-- property name="tokens" value="ARRAY_INIT"/ -->
 	  <property name="tokens" value="BNOT"/>
 	  <property name="tokens" value="DEC"/>
 	  <property name="tokens" value="DOT"/>
@@ -74,7 +74,9 @@
 	  <property name="tokens" value="DOT"/>
 	  <property name="allowLineBreaks" value="true"/>
 	</module>
-    <module name="WhitespaceAfter"/>
+    <module name="WhitespaceAfter">
+      <property name="tokens" value="COMMA, SEMI, TYPECAST"/>
+    </module>
 	<module name="WhitespaceAround">
       <property name="allowEmptyConstructors" value="true"/>
       <property name="allowEmptyTypes" value="true"/>

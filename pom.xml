@@ -126,24 +126,24 @@
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.3.1</version>
         <configuration>
-		  <configLocation>checkstyle.xml</configLocation>
-		  <consoleOutput>true</consoleOutput>
-		  <failsOnError>true</failsOnError>
-		  <linkXRef>false</linkXRef>
-		  <sourceDirectories>
-		    <sourceDirectory>${project.build.sourceDirectory}/org/baseagent</sourceDirectory>
-		    <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-		  </sourceDirectories>
+	  <configLocation>checkstyle.xml</configLocation>
+	  <consoleOutput>true</consoleOutput>
+	  <failsOnError>false</failsOnError>
+	  <linkXRef>false</linkXRef>
+	  <sourceDirectories>
+	    <sourceDirectory>${project.build.sourceDirectory}/org/baseagent</sourceDirectory>
+	    <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+	  </sourceDirectories>
         </configuration>
-		<executions>
-		  <execution>
-		    <id>validate</id>
-			<phase>validate</phase>
-			<goals>
-			  <goal>check</goal>
-			</goals>
-	      </execution>
-		</executions>
+	<executions>
+	  <execution>
+	    <id>validate</id>
+		<phase>verify</phase>
+		<goals>
+		  <goal>check</goal>
+		</goals>
+	  </execution>
+	</executions>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

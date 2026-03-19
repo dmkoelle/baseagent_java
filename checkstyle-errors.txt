@@ -1,0 +1,23 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< org.baseagent:baseagent >-----------------------
+[INFO] Building BaseAgent 0.1.1
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[WARNING] 6 problems were encountered while building the effective model for org.openjfx:javafx-base:jar:21.0.2 during dependency collection step for project (use -X to see details)
+[INFO] 
+[INFO] --- checkstyle:3.3.1:checkstyle (default-cli) @ baseagent ---
+[INFO] Rendering content with org.apache.maven.skins:maven-default-skin:jar:1.3 skin.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.643 s
+[INFO] Finished at: 2026-03-18T22:17:38-04:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-checkstyle-plugin:3.3.1:checkstyle (default-cli) on project baseagent: An error has occurred in Checkstyle report generation.: Failed during checkstyle configuration: cannot initialize module TreeWalker - Token "ELLIPSIS" was not found in Acceptable tokens list in check com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAfterCheck -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
