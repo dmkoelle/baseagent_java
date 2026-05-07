@@ -6,6 +6,9 @@
 # Buid target
 target/
 
+# Binaries
+bin/
+
 # Compiled class file
 *.class
 
@@ -26,6 +29,7 @@ target/
 *.zip
 *.tar.gz
 *.rar
+*.rename_to_jar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -33,4 +37,5 @@ replay_pid*
 
 # Eclipse
 .classpath
-.profile
+.project
+
